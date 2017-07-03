@@ -1,0 +1,4 @@
+{ "col1" : "string" , "col2" : [0,1,2] , "col3" : { "a" : true , "b" : false } }
+{ "col1" : "string" , "col3" : { "c" : false , "z" : "a" } }
+{ "col1" : "string" , "col2" : [0] , "col3" : { "d" : true , "e" : false } }
+{ "col1" : "string" , "col2" : [] , "col3" : { "a" : false , "b" : false } }

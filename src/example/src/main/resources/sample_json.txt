@@ -1,0 +1,2 @@
+{ "name" : "apple" , "class" : "fruits" , "number" : 5 , "price" : 110 , "summary" : { "total_price" : 550 , "total_weight" : 412 } }
+{ "name" : "orange" , "class" : "fruits" , "number" : 10 , "price" : 80 , "summary" : { "total_price" : 800 , "total_weight" : 600 } }

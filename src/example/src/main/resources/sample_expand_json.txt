@@ -1,0 +1,2 @@
+{ "items" : [ { "name" : "apple" , "number" : 4 , "total_price" : 400 , "prices" : [ 100 , 50 , 100 , 150 ] } , { "name" : "orange" , "number" : 1 , "total_price" : 100 , "prices" : [ 100 ] } , { "name" : "lemon" , "number" : 2 , "total_price" : 120 , "prices" : [ 60 , 60 ] } ] }
+{ "items" : [ { "name" : "apple" , "number" : 1 , "total_price" : 100 , "prices" : [ 100 ] } ] }
