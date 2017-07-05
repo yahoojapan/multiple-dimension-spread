@@ -45,6 +45,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -92,6 +93,34 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ArrayColumnManager( columnBinary , primitiveObjectConnector ) );
   }
 
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
+      IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
+      IMemoryAllocator childMemoryAllocator = allocator.getChild( childColumnBinary.columnName , childColumnBinary.columnType );
+      maker.loadInMemoryStorage( childColumnBinary , childMemoryAllocator );
+    }
+
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    byte[] decompressBuffer = new byte[decompressSize];
+    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+
+    IntBuffer buffer = ByteBuffer.wrap( decompressBuffer , 0 , binaryLength ).asIntBuffer();
+    int length = buffer.capacity();
+    int currentIndex = 0;
+    for( int i = 0 ; i < length ; i++ ){
+      int arrayLength = buffer.get();
+      if( arrayLength != 0 ){
+        int start = currentIndex;
+        allocator.setArrayIndex( i , start , arrayLength );
+        currentIndex += arrayLength;
+      }
+      else{
+        allocator.setNull(i);
+      }
+    }
+  }
 
   public class ArrayCellManager implements ICellManager{
 

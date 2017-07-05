@@ -42,6 +42,7 @@ import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.SHORT_LENGTH;
@@ -84,6 +85,29 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ShortColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
+    int offset = 0;
+    int columnBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int columnBinaryStart = offset;
+    offset += columnBinaryLength;
+
+    int dicBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int dicBinaryStart = offset;
+    offset += dicBinaryLength;
+
+    List<Integer> columnIndexList = SortedIntegerConverter.getIntegerList( binary , columnBinaryStart , columnBinaryLength );
+    List<Short> dicList = BinaryDump.binaryToShortList( binary , dicBinaryStart , dicBinaryLength );
+    for( int i = 0 ; i < columnIndexList.size() ; i++ ){
+      allocator.setShort( columnIndexList.get( i ) , dicList.get( i ) );
+    }
   }
 
   public class ShortDicManager implements IDicManager{
