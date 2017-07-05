@@ -29,16 +29,16 @@ import java.util.HashMap;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
+import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
-import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-
-import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 
 public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -138,6 +138,15 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new UnionColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
+      IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
+      IMemoryAllocator childAllocator = allocator.getChild( childColumnBinary.columnName , childColumnBinary.columnType );
+      maker.loadInMemoryStorage( childColumnBinary , childAllocator );
+    }
   }
 
   public class UnionColumnManager implements IColumnManager{

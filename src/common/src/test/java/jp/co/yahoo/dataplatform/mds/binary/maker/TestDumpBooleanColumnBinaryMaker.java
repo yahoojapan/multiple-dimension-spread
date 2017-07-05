@@ -19,6 +19,9 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 
 import java.io.IOException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
@@ -30,6 +33,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -37,6 +41,80 @@ import jp.co.yahoo.dataplatform.schema.objects.BooleanObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 public class TestDumpBooleanColumnBinaryMaker {
+
+  private class TestBooleanMemoryAllocator implements IMemoryAllocator{
+
+    public final List<Boolean> list;
+
+    public TestBooleanMemoryAllocator(){
+      list = new ArrayList<Boolean>();
+      for( int i = 0 ; i < 6 ; i++ ){
+        list.add( null );
+      }
+    }
+
+    @Override
+    public void setNull( final int index ) throws IOException{
+    }
+
+    @Override
+    public void setBoolean( final int index , final boolean value ) throws IOException{
+      list.set( index , value );
+    }
+
+    @Override
+    public void setByte( final int index , final byte value ) throws IOException{
+    }
+
+    @Override
+    public void setShort( final int index , final short value ) throws IOException{
+    }
+
+    @Override
+    public void setInteger( final int index , final int value ) throws IOException{
+    }
+
+    @Override
+    public void setLong( final int index , final long value ) throws IOException{
+    }
+
+    @Override
+    public void setFloat( final int index , final float value ) throws IOException{
+    }
+
+    @Override
+    public void setDouble( final int index , final double value ) throws IOException{
+    }
+
+    @Override
+    public void setBytes( final int index , final byte[] value ) throws IOException{
+    }
+
+    @Override
+    public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final String value ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final char[] value ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
+    }
+
+    @Override
+    public void setArrayIndex( final int index , final int start , final int end ) throws IOException{
+    }
+
+    @Override
+    public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
+      return null;
+    }
+  }
 
   @Test
   public void T_toBinary_1() throws IOException{
@@ -64,5 +142,34 @@ public class TestDumpBooleanColumnBinaryMaker {
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
   }
+
+  @Test
+  public void T_loadInMemoryStorage_1() throws IOException{
+    IColumn column = new PrimitiveColumn( ColumnType.BOOLEAN , "boolean" );
+    column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 0 );
+    column.add( ColumnType.BOOLEAN , new BooleanObj( false ) , 1 );
+    column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 5 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new DumpBooleanColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+
+    assertEquals( columnBinary.columnName , "boolean" );
+    assertEquals( columnBinary.rowCount , 3 );
+    Assert.assertEquals( columnBinary.columnType , ColumnType.BOOLEAN );
+
+    TestBooleanMemoryAllocator allocator = new TestBooleanMemoryAllocator();
+    maker.loadInMemoryStorage( columnBinary , allocator );
+
+    assertEquals( allocator.list.get( 0 ).booleanValue() , true );
+    assertEquals( allocator.list.get( 1 ).booleanValue() , false );
+    assertEquals( allocator.list.get( 2 ) , null );
+    assertEquals( allocator.list.get( 3 ) , null );
+    assertEquals( allocator.list.get( 4 ) , null );
+    assertEquals( allocator.list.get( 5 ).booleanValue() , true );
+  }
+
 }
 

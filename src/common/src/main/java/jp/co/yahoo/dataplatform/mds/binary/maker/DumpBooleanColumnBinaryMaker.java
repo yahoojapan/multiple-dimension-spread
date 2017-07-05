@@ -44,6 +44,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -79,6 +80,23 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new BooleanColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    for( int i = 0 ; i < binary.length ; i++ ){
+      if( binary[i] == (byte)0 ){
+        allocator.setBoolean( i , false );
+      }
+      else if( binary[i] == (byte)1 ){
+        allocator.setBoolean( i , true );
+      }
+      else{
+        allocator.setNull( i );
+      }
+    }
   }
 
   public class DirectBufferBooleanCellManager implements ICellManager {

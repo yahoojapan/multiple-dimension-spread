@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
@@ -35,13 +34,14 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
-
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.LONG_LENGTH;
@@ -94,6 +94,40 @@ public class UniqLongColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new LongColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.
+binaryLength );
+    byte[] decompressBuffer = new byte[decompressSize];
+
+    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+
+    byte[] binary = decompressBuffer;
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binaryLength );
+    int offset = 0;
+
+    int columnIndexBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int columnIndexBinaryStart = offset;
+    offset += columnIndexBinaryLength;
+
+    int dicBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int dicBinaryStart = offset;
+    offset += dicBinaryLength;
+
+    IntBuffer indexIntBuffer = BinaryDump.binaryToIntBuffer( decompressBuffer , columnIndexBinaryStart , columnIndexBinaryLength );
+    List<Long> dicArray = BinaryDump.binaryToLongList( binary , dicBinaryStart , dicBinaryLength );
+    int size = indexIntBuffer.capacity();
+    for( int i = 0 ; i < size ; i++ ){
+      int dicIndex = indexIntBuffer.get();
+      if( dicIndex != 0 ){
+        allocator.setLong( i , dicArray.get( dicIndex ) );
+      }
+    }
   }
 
   public class LongDicManager implements IDicManager{

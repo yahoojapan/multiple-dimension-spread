@@ -32,12 +32,93 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.spread.column.ArrayColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
 public class TestDumpArrayColumnBinaryMaker{
+
+
+  private class TestArrayMemoryAllocator implements IMemoryAllocator{
+
+    public final List<Integer> startList;
+    public final List<Integer> endList;
+
+    public TestArrayMemoryAllocator(){
+      startList = new ArrayList<Integer>();
+      endList = new ArrayList<Integer>();
+      for( int i = 0 ; i < 6 ; i++ ){
+        startList.add(null);
+        endList.add(null);
+      }
+    }
+
+    @Override
+    public void setNull( final int index ) throws IOException{
+    }
+
+    @Override
+    public void setBoolean( final int index , final boolean value ) throws IOException{
+    }
+
+    @Override
+    public void setByte( final int index , final byte value ) throws IOException{
+    }
+
+    @Override
+    public void setShort( final int index , final short value ) throws IOException{
+    }
+
+    @Override
+    public void setInteger( final int index , final int value ) throws IOException{
+    }
+
+    @Override
+    public void setLong( final int index , final long value ) throws IOException{
+    }
+
+    @Override
+    public void setFloat( final int index , final float value ) throws IOException{
+    }
+
+    @Override
+    public void setDouble( final int index , final double value ) throws IOException{
+    }
+
+    @Override
+    public void setBytes( final int index , final byte[] value ) throws IOException{
+    }
+
+    @Override
+    public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final String value ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final char[] value ) throws IOException{
+    }
+
+    @Override
+    public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
+    }
+
+    @Override
+    public void setArrayIndex( final int index , final int start , final int end ) throws IOException{
+      System.out.println( String.format( "index %d , end %d" , start , end ) );
+      startList.set( index , start );
+      endList.set( index , end );
+    }
+
+    @Override
+    public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
+      return new TestArrayMemoryAllocator();
+    }
+  }
 
   @Test
   public void T_toBinary_1() throws IOException{
@@ -72,6 +153,49 @@ public class TestDumpArrayColumnBinaryMaker{
     }
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 1 );
+  }
+
+  @Test
+  public void T_loadInMemoryStorage_1() throws IOException{
+    IColumn column = new ArrayColumn( "array" );
+    List<Object> value = new ArrayList<Object>();
+    value.add( new StringObj( "a" ) );
+    value.add( new StringObj( "b" ) );
+    value.add( new StringObj( "c" ) );
+    column.add( ColumnType.ARRAY , value , 0 );
+    column.add( ColumnType.ARRAY , value , 1 );
+    column.add( ColumnType.ARRAY , value , 2 );
+    column.add( ColumnType.ARRAY , value , 3 );
+    column.add( ColumnType.ARRAY , value , 5 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new DumpArrayColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+
+    assertEquals( columnBinary.columnName , "array" );
+    assertEquals( columnBinary.rowCount , 6 );
+    Assert.assertEquals( columnBinary.columnType , ColumnType.ARRAY );
+
+    TestArrayMemoryAllocator allocator = new TestArrayMemoryAllocator();
+    maker.loadInMemoryStorage( columnBinary , allocator );
+    assertEquals( allocator.startList.size() , 6 );
+    assertEquals( allocator.endList.size() , 6 );
+
+    assertEquals( allocator.startList.get(0).intValue() , 0 );
+    assertEquals( allocator.startList.get(1).intValue() , 3 );
+    assertEquals( allocator.startList.get(2).intValue() , 6 );
+    assertEquals( allocator.startList.get(3).intValue() , 9 );
+    assertEquals( allocator.startList.get(4) , null );
+    assertEquals( allocator.startList.get(5).intValue() , 12 );
+
+    assertEquals( allocator.endList.get(0).intValue() , 3 );
+    assertEquals( allocator.endList.get(1).intValue() , 3 );
+    assertEquals( allocator.endList.get(2).intValue() , 3 );
+    assertEquals( allocator.endList.get(3).intValue() , 3 );
+    assertEquals( allocator.endList.get(4) , null );
+    assertEquals( allocator.endList.get(5).intValue() , 3 );
   }
 
 }

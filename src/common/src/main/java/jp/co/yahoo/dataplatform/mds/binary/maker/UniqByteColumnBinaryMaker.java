@@ -42,6 +42,7 @@ import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.BYTE_LENGTH;
@@ -94,6 +95,39 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ByteColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    byte[] decompressBuffer = new byte[decompressSize];
+
+    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+
+    byte[] binary = decompressBuffer;
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binaryLength );
+    int offset = 0;
+
+    int columnIndexBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int columnIndexBinaryStart = offset;
+    offset += columnIndexBinaryLength;
+
+    int dicBinaryLength = wrapBuffer.getInt( offset );
+    offset += INT_LENGTH;
+    int dicBinaryStart = offset;
+    offset += dicBinaryLength;
+
+    IntBuffer indexIntBuffer = BinaryDump.binaryToIntBuffer( decompressBuffer , columnIndexBinaryStart , columnIndexBinaryLength );
+    List<Byte> dicArray = BinaryDump.binaryToByteList( binary , dicBinaryStart , dicBinaryLength );
+    int size = indexIntBuffer.capacity();
+    for( int i = 0 ; i < size ; i++ ){
+      int dicIndex = indexIntBuffer.get();
+      if( dicIndex != 0 ){
+        allocator.setByte( i , dicArray.get( dicIndex ) );
+      }
+    }
   }
 
   public class ByteDicManager implements IDicManager{

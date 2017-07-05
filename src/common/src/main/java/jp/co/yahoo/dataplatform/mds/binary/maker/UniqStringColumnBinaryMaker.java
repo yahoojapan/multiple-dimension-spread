@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+import jp.co.yahoo.dataplatform.schema.objects.StringObj;
+
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
@@ -36,15 +40,12 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStr
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-import jp.co.yahoo.dataplatform.schema.objects.StringObj;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -113,6 +114,40 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.
+binaryLength );
+    byte[] decompressBuffer = new byte[decompressSize];
+
+    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+
+    byte[] binary = decompressBuffer;
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binaryLength );
+    int offset = 0;
+
+    int columnIndexBinaryLength = wrapBuffer.getInt( offset );
+    offset += PrimitiveByteLength.INT_LENGTH;
+    int columnIndexBinaryStart = offset;
+    offset += columnIndexBinaryLength;
+
+    int dicBinaryLength = wrapBuffer.getInt( offset );
+    offset += PrimitiveByteLength.INT_LENGTH;
+    int dicBinaryStart = offset;
+    offset += dicBinaryLength;
+
+    IntBuffer indexIntBuffer = BinaryDump.binaryToIntBuffer( decompressBuffer , columnIndexBinaryStart , columnIndexBinaryLength );
+    List<String> dicArray = BinaryDump.binaryToStringList( binary , dicBinaryStart , dicBinaryLength );
+    int size = indexIntBuffer.capacity();
+    for( int i = 0 ; i < size ; i++ ){
+      int dicIndex = indexIntBuffer.get();
+      if( dicIndex != 0 ){
+        allocator.setString( i , dicArray.get( dicIndex ) );
+      }
+    }
   }
 
   public class StringDicManager implements IDicManager{

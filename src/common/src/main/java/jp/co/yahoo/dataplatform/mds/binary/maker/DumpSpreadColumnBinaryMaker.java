@@ -29,9 +29,9 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadColumn;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
-
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -62,6 +62,15 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector  ) throws IOException{
     return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new SpreadColumnManager( columnBinary , primitiveObjectConnector ) );
+  }
+
+  @Override
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
+      IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
+      IMemoryAllocator childAllocator = allocator.getChild( childColumnBinary.columnName , childColumnBinary.columnType );
+      maker.loadInMemoryStorage( childColumnBinary , childAllocator );
+    }
   }
 
   public class SpreadColumnManager implements IColumnManager{
