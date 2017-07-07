@@ -51,6 +51,10 @@ public interface IMemoryAllocator{
 
   void setArrayIndex( final int index , final int start , final int length ) throws IOException;
 
+  void setValueCount( final int index ) throws IOException;
+
+  int getValueCount() throws IOException;
+
   IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException;
 
 }

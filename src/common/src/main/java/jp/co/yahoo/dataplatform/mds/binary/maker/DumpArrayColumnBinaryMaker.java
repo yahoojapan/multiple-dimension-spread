@@ -120,6 +120,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
         allocator.setNull(i);
       }
     }
+    allocator.setValueCount( length );
   }
 
   public class ArrayCellManager implements ICellManager{

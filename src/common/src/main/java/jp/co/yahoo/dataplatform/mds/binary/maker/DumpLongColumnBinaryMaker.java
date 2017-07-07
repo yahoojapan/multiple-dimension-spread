@@ -106,6 +106,7 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < columnIndexList.size() ; i++ ){
       allocator.setLong( columnIndexList.get( i ) , dicList.get( i ) );
     }
+    allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
   }
 
   public class LongDicManager implements IDicManager{

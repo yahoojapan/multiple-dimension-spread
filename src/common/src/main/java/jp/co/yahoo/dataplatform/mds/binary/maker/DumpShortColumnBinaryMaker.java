@@ -108,6 +108,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < columnIndexList.size() ; i++ ){
       allocator.setShort( columnIndexList.get( i ) , dicList.get( i ) );
     }
+    allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
   }
 
   public class ShortDicManager implements IDicManager{

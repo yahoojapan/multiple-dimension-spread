@@ -97,6 +97,7 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
         allocator.setNull( i );
       }
     }
+    allocator.setValueCount( binary.length );
   }
 
   public class DirectBufferBooleanCellManager implements ICellManager {

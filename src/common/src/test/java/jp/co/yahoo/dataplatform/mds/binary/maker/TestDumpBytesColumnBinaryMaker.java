@@ -107,6 +107,16 @@ public class TestDumpBytesColumnBinaryMaker {
     }
 
     @Override
+    public void setValueCount( final int index ) throws IOException{
+
+    }
+
+    @Override
+    public int getValueCount() throws IOException{
+      return 0;
+    }
+
+    @Override
     public void setArrayIndex( final int index , final int start , final int end ) throws IOException{
     }
 

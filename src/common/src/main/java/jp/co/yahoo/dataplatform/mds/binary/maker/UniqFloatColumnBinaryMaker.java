@@ -126,6 +126,7 @@ binaryLength );
         allocator.setFloat( i , dicArray.get( dicIndex ) );
       }
     }
+    allocator.setValueCount( size );
   }
 
   public class FloatDicManager implements IDicManager{

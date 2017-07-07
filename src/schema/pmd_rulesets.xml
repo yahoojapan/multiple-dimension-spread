@@ -25,10 +25,4 @@
     <rule ref="rulesets/java/optimizations.xml" >
         <exclude name="LocalVariableCouldBeFinal" />
     </rule>
-
-<!--
-    <rule ref="rulesets/braces.xml" />
-    <rule ref="rulesets/favorites.xml" />
-    <rule ref="rulesets/controversial.xml" />
--->
 </ruleset>

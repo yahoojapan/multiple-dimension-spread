@@ -126,6 +126,7 @@ public class UniqDoubleColumnBinaryMaker implements IColumnBinaryMaker{
         allocator.setDouble( i , dicArray.get( dicIndex ) );
       }
     }
+    allocator.setValueCount( size );
   }
 
   public class DoubleDicManager implements IDicManager{

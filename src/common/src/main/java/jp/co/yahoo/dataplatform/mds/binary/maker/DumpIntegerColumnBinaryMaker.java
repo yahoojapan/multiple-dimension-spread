@@ -107,6 +107,7 @@ public class DumpIntegerColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < columnIndexList.size() ; i++ ){
       allocator.setInteger( columnIndexList.get( i ) , dicList.get( i ) );
     }
+    allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
   }
 
   public class IntegerDicManager implements IDicManager{
