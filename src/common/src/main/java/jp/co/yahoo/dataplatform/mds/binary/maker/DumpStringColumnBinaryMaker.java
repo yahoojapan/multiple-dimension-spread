@@ -116,6 +116,7 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < columnIndexList.size() ; i++ ){
       allocator.setBytes( columnIndexList.get( i ) , dicList.get( i ) );
     }
+    allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
   }
 
   public class StringDicManager implements IDicManager{

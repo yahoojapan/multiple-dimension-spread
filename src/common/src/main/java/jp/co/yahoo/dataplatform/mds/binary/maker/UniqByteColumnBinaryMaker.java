@@ -128,6 +128,7 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
         allocator.setByte( i , dicArray.get( dicIndex ) );
       }
     }
+    allocator.setValueCount( size );
   }
 
   public class ByteDicManager implements IDicManager{

@@ -150,6 +150,7 @@ binaryLength );
         allocator.setBytes( i , linkObj.getLinkBytes() , linkObj.getStart() , linkObj.getLength() );
       }
     }
+    allocator.setValueCount( size );
   }
 
   public class StringDicManager implements IDicManager{

@@ -148,6 +148,7 @@ binaryLength );
         allocator.setString( i , dicArray.get( dicIndex ) );
       }
     }
+    allocator.setValueCount( size );
   }
 
   public class StringDicManager implements IDicManager{

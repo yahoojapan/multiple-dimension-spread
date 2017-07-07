@@ -107,6 +107,7 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < columnIndexList.size() ; i++ ){
       allocator.setFloat( columnIndexList.get( i ) , dicList.get( i ) );
     }
+    allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
   }
 
   public class FloatDicManager implements IDicManager{

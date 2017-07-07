@@ -43,11 +43,16 @@ public class InMemoryStorageLoader implements AutoCloseable{
     if( columnBinaryList == null ){
       return;
     }
+    int maxValueCount = 0;
     for( ColumnBinary columnBinary : columnBinaryList ){
       IColumnBinaryMaker maker = FindColumnBinaryMaker.get( columnBinary.makerClassName );
       IMemoryAllocator childAllocator = allocator.getChild( columnBinary.columnName , columnBinary.columnType );
       maker.loadInMemoryStorage( columnBinary , childAllocator );
+      if( maxValueCount < childAllocator.getValueCount() ){
+        maxValueCount = childAllocator.getValueCount();
+      }
     }
+    allocator.setValueCount( maxValueCount );
   }
 
   @Override
