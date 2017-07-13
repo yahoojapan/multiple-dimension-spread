@@ -23,7 +23,7 @@ MDS has a comprehensive set of unit tests that can take several minutes to run. 
     mvn clean install -DskipTests
 
 ## Getting Started
-* [Java](src/common/README.md)
-* [Hadoop InputFormat](src/hadoop/README.md)
-* [Hive](src/hive/README.md)
-* [Arrow](src/arrow/README.md)
+* [Java](docs/getting_started_java.md)
+* [Hadoop InputFormat](docs/getting_started_hadoop.md)
+* [Hive](docs/getting_started_hive.md)
+* [Arrow](docs/getting_started_arrow.md)
