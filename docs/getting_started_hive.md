@@ -220,3 +220,12 @@ Expand and flatten
 ----------------------------------------------------------------------------------------------
 
 ```
+
+## Benchmark
+Version 2.0.0
+
+Hive on tez
+
+TCP-DS scale 500
+
+![benchmark](images/benchmark_201707.png)
