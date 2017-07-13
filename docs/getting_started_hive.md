@@ -78,7 +78,13 @@ OUTPUTFORMAT
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.io.MDSHiveParserOutputFormat'
 ```
 ## Make complicated data correspond to vectorization
+Supports array expansion
 
+![ArrayExpand](images/expand.png)
+
+Supports flattening Map and Struct types
+
+![Flatten](images/flatten.png)
 
 ### Expand table
 This feature is read only.
@@ -88,5 +94,4 @@ This feature is read only.
 
 ### Expand and Flatten table
 This feature is read only.
-
 
