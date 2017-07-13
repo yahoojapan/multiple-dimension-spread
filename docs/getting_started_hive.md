@@ -77,14 +77,16 @@ STORED AS INPUTFORMAT
 OUTPUTFORMAT
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.io.MDSHiveParserOutputFormat'
 ```
+## Make complicated data correspond to vectorization
 
-## Expand table
+
+### Expand table
 This feature is read only.
 
-## Flatten table
+### Flatten table
 This feature is read only.
 
-## Expand and Flatten table
+### Expand and Flatten table
 This feature is read only.
 
 
