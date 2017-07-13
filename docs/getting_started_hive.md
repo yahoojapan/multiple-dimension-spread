@@ -98,7 +98,7 @@ Array expansion and flattening
 
 ![ExpandAndFlatten](images/expand_and_flatten.png)
 
-Speed up processing with vectorize and A
+Speed up processing with vectorize and pushdown.
 
 ![cpu](images/cpu_cost.png)
 
