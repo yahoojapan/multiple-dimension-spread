@@ -86,6 +86,14 @@ Supports flattening Map and Struct types
 
 ![Flatten](images/flatten.png)
 
+Array expansion and flattening
+
+![ExpandAndFlatten](images/expand_and_flatten.png)
+
+Speed up processing with vectorize and A
+
+![cpu](images/cpu_cost.png)
+
 ### Expand table
 This feature is read only.
 
