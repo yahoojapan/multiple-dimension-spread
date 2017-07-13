@@ -41,6 +41,14 @@ Hive 2.0.X
 |STRUCT|**true**|
 |UNION|**true**|
 
+## Support vectorization
+Supports primitive type only
+
+## Support pushdown
+
+It corresponds to both predicate pushdown and pushdown filter.
+However, as for pushdown filter, column binaryization is pluggable, so it is different whether binary is supported.
+
 ## jars
 - yjava_jp_dataplatform_config.jar
 - yjava_jp_dataplatform_schema_common.jar
