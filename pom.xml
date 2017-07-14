@@ -14,7 +14,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>yahoo.dataplatform.mds</groupId>
+  <groupId>jp.co.yahoo.dataplatform.mds</groupId>
   <artifactId>multiple-dimension-spread</artifactId>
   <version>0.5.1</version>
   <packaging>pom</packaging>
@@ -170,7 +170,7 @@
             <configuration>
               <effort>max</effort>
               <excludeFilterFile>./findbugs_filter.xml</excludeFilterFile>
-              <onlyAnalyze>jp.co.yahoo.dataplatform.mds.*</onlyAnalyze>
+              <onlyAnalyze>jp.co.jp.co.yahoo.dataplatform.mds.*</onlyAnalyze>
             </configuration>
           </plugin>
           <plugin>

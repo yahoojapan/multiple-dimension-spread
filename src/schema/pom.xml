@@ -14,7 +14,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>yahoo.dataplatform.mds</groupId>
+    <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
     <version>0.5.1</version>
     <relativePath>../pom.xml</relativePath>
@@ -26,23 +26,23 @@
 
   <dependencies>
     <dependency>
-      <groupId>yahoo.dataplatform.mds</groupId>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>yahoo.dataplatform.schema</groupId>
+      <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-common</artifactId>
       <version>0.2.0</version>
     </dependency>
     <dependency>
-      <groupId>yahoo.dataplatform.schema</groupId>
+      <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-jackson</artifactId>
       <version>0.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>yahoo.dataplatform.config</groupId>
+      <groupId>jp.co.yahoo.dataplatform.config</groupId>
       <artifactId>dataplatform-common-config</artifactId>
       <version>${configlibVersion}</version>
     </dependency>
