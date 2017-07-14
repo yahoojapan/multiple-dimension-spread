@@ -106,7 +106,8 @@ I want to know how to acquire MapWork.
 [Code](../src/hive/src/main/java/jp/co/yahoo/dataplatform/mds/hadoop/hive/io/HiveReaderSetting.java#L64-L68)
 
 ### Base table
-```CREATE EXTERNAL TABLE mds_t_expand(
+```
+CREATE EXTERNAL TABLE mds_t(
   `unix_timestamp` bigint,
   `f_map` map<string,string>,
   `f_array` array<struct<key1:string>>
