@@ -109,7 +109,7 @@ I want to know how to acquire MapWork.
 ```CREATE EXTERNAL TABLE mds_t_expand(
   `unix_timestamp` bigint,
   `f_map` map<string,string>,
-  `f_array` array<struct<sec:string>>
+  `f_array` array<struct<key1:string>>
 )
 ROW FORMAT SERDE
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
@@ -160,7 +160,7 @@ CREATE EXTERNAL TABLE mds_t_flatten(
   `unix_timestamp` bigint,
   `f_map_key1` string,
   `f_map_key2` string,
-  `f_array` array<struct<sec:string>>
+  `f_array` array<struct<key1:string>>
 )
 ROW FORMAT SERDE
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
