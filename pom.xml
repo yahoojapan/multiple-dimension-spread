@@ -20,6 +20,39 @@
   <packaging>pom</packaging>
 
   <name>Yahoo dataplatform multiple dimension spread</name>
+  <description>Multiple-Dimension-Spread (MDS) is a Schema-less columnar storage format.</description>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>git@github.com:yahoojapan/multiple-dimension-spread.git</connection>
+    <developerConnection>git@github.com:yahoojapan/multiple-dimension-spread.git</developerConnection>
+    <url>https://github.com/yahoojapan/multiple-dimension-spread</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <organization>
+    <name>Yahoo Japan Corporation</name>
+    <url>https://www.yahoo.co.jp/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>shoe116</id>
+      <name>Shu Suzuki</name>
+      <organization>Yahoo Japan Corporation</organization>
+    </developer>
+    <developer>
+      <id>koijima</id>
+      <name>Koji Ijima</name>
+      <organization>Yahoo Japan Corporation</organization>
+    </developer>
+  </developers>
 
   <properties>
     <configlibVersion>1.0.0</configlibVersion>

@@ -23,6 +23,39 @@
   <artifactId>multiple-dimension-spread-arrow</artifactId>
   <packaging>jar</packaging>
   <name>multiple dimension spread arrow</name>
+  <description>Supporting Apache Arrow by Multiple-Dimension-Spread</description>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>git@github.com:yahoojapan/multiple-dimension-spread.git</connection>
+    <developerConnection>git@github.com:yahoojapan/multiple-dimension-spread.git</developerConnection>
+    <url>https://github.com/yahoojapan/multiple-dimension-spread</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <organization>
+    <name>Yahoo Japan Corporation</name>
+    <url>https://www.yahoo.co.jp/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>shoe116</id>
+      <name>Shu Suzuki</name>
+      <organization>Yahoo Japan Corporation</organization>
+    </developer>
+    <developer>
+      <id>koijima</id>
+      <name>Koji Ijima</name>
+      <organization>Yahoo Japan Corporation</organization>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
