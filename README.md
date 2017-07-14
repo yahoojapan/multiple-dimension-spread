@@ -1,5 +1,7 @@
-# columnar_nested_file
-カラムナーのファイルフォーマット
+# MDS(Multiple Dimesion Spread)
+MDS is a Schema-less columnar storage format.
+
+Provide flexible representation like JSON and efficient reading similar to other columnar storage formats.
 
 ## Requirements
 
@@ -20,4 +22,8 @@ MDS has a comprehensive set of unit tests that can take several minutes to run. 
 
     mvn clean install -DskipTests
 
-
+## Getting Started
+* [Java](docs/getting_started_java.md)
+* [Hadoop InputFormat](docs/getting_started_hadoop.md)
+* [Hive](docs/getting_started_hive.md)
+* [Arrow](docs/getting_started_arrow.md)
