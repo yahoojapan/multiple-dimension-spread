@@ -135,10 +135,7 @@ This feature is read only.
 CREATE EXTERNAL TABLE mds_t_expand(
   `unix_timestamp` bigint,
   `f_map` map<string,string>,
-<<<<<<< HEAD
   `f_expand_array` struct<key1:string>
-=======
->>>>>>> 78c4279d994ad54ca5df8a6637985978674568cd
 )
 ROW FORMAT SERDE
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
