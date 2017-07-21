@@ -52,7 +52,6 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
 
   private boolean isEnd;
   private IExpressionIndex currentIndexList;
-  private boolean isPartitionSetting;
   private int currentIndex;
   private int indexSize;
   private int readSpreadCount;
@@ -126,10 +125,7 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
   @Override
   public boolean next( final NullWritable key, final VectorizedRowBatch outputBatch ) throws IOException {
     outputBatch.reset();
-    if( ! isPartitionSetting ){
-      setting.setPartitionValues( outputBatch );
-      isPartitionSetting = true;
-    }
+    setting.setPartitionValues( outputBatch );
 
     if( indexSize <= currentIndex ){
       if( ! currentReader.hasNext() ){
