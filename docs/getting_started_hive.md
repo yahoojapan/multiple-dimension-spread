@@ -105,6 +105,29 @@ I want to know how to acquire MapWork.
 
 [Code](../src/hive/src/main/java/jp/co/yahoo/dataplatform/mds/hadoop/hive/io/HiveReaderSetting.java#L64-L68)
 
+### Base table
+```
+CREATE EXTERNAL TABLE mds_t(
+  `unix_timestamp` bigint,
+  `f_map` map<string,string>,
+  `f_array` array<struct<key1:string>>
+)
+ROW FORMAT SERDE
+  'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
+STORED AS INPUTFORMAT
+  'jp.co.yahoo.dataplatform.mds.hadoop.hive.io.MDSHiveLineInputFormat'
+OUTPUTFORMAT
+  'jp.co.yahoo.dataplatform.mds.hadoop.hive.io.MDSHiveParserOutputFormat'
+LOCATION '/tmp/mds_t'
+TBLPROPERTIES (
+  'mds.expand' = '{
+    "base" : {
+      "node" : "f_array" ,  "link_name" : "f_expand_array" 
+    }
+  }'
+);
+```
+
 ### Expand table
 This feature is read only.
 
@@ -112,7 +135,7 @@ This feature is read only.
 CREATE EXTERNAL TABLE mds_t_expand(
   `unix_timestamp` bigint,
   `f_map` map<string,string>,
-  `f_expand_array` struct<sec:string>
+  `f_expand_array` struct<key1:string>
 )
 ROW FORMAT SERDE
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
@@ -138,7 +161,7 @@ CREATE EXTERNAL TABLE mds_t_flatten(
   `unix_timestamp` bigint,
   `f_map_key1` string,
   `f_map_key2` string,
-  `f_array` array<struct<sec:string>>
+  `f_array` array<struct<key1:string>>
 )
 ROW FORMAT SERDE
   'jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSSerde'
