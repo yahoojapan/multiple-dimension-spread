@@ -22,6 +22,7 @@ public enum FilterType {
   NOT_NULL,
   NULL,
   STRING,
+  STRING_COMPARE,
   NUMBER,
   BOOLEAN,
 

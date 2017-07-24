@@ -17,11 +17,12 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
-public class NullFilter implements INullFilter {
+public enum StringCompareFilterType {
 
-  @Override
-  public FilterType getFilterType(){
-    return FilterType.NULL;
-  }
+  RANGE,
+  LT,
+  LE,
+  GT,
+  GE
 
 }

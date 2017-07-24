@@ -17,11 +17,12 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
-public class NullFilter implements INullFilter {
+public interface IStringCompareFilter extends IFilter{
 
-  @Override
-  public FilterType getFilterType(){
-    return FilterType.NULL;
-  }
+  IStringComparator getStringComparator();
+
+  StringCompareFilterType getStringCompareFilterType();
+
+  FilterType getFilterType();
 
 }
