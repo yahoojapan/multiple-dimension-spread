@@ -17,11 +17,42 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
-public class NullFilter implements INullFilter {
+public class GeStringCompareFilter implements IStringCompareFilter{
+
+  private final String str;
+
+  public GeStringCompareFilter( final String str ){
+    this.str = str;
+  }
+
+  @Override
+  public IStringComparator getStringComparator(){
+    return new GeStringComparator( str );
+  }
+
+  @Override
+  public StringCompareFilterType getStringCompareFilterType(){
+    return StringCompareFilterType.GT;
+  }
 
   @Override
   public FilterType getFilterType(){
-    return FilterType.NULL;
+    return FilterType.STRING_COMPARE;
+  }
+
+  private class GeStringComparator implements IStringComparator{
+
+    private final String str;
+
+    public GeStringComparator( final String str ){
+      this.str = str;
+    }
+
+    @Override
+    public boolean isFilterString( final String target ){
+      return 0 <= str.compareTo( target ); 
+    }
+
   }
 
 }
