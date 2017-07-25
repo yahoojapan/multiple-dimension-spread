@@ -36,12 +36,13 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialNumberCellIndex;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.LONG_LENGTH;
@@ -193,6 +194,7 @@ binaryLength );
 
       column = new PrimitiveColumn( ColumnType.LONG , columnBinary.columnName );
       column.setCellManager( new BufferDirectDictionaryLinkCellManager( ColumnType.LONG , dicManager , indexIntBuffer ) );
+      column.setIndex( new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , dicManager , indexIntBuffer ) );
 
       isCreate = true;
     }
