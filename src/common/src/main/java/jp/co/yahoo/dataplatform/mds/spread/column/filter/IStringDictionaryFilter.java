@@ -17,14 +17,10 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
-public enum FilterType {
+import java.util.Set;
 
-  NOT_NULL,
-  NULL,
-  STRING,
-  STRING_COMPARE,
-  STRING_DICTIONARY,
-  NUMBER,
-  BOOLEAN,
+public interface IStringDictionaryFilter extends IFilter{
+
+  Set<String> getDictionary();
 
 }
