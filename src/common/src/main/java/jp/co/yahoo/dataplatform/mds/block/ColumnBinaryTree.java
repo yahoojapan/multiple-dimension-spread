@@ -148,8 +148,9 @@ public class ColumnBinaryTree{
           childColumnBinary.setColumnFilter( columnNameNode.getChild( childName ) );
           isAppend = true;
         }
-        else if( ColumnTypeFactory.getColumnTypeFromName( childName ) != ColumnType.UNKNOWN ){
-          childColumnBinary.setColumnFilter( columnNameNode.getChild( childName ) );
+        // array column childName is "ARRAY"
+        else if( ColumnTypeFactory.getColumnTypeFromName( childName ) == ColumnType.ARRAY ){
+          childColumnBinary.setColumnFilter( columnNameNode );
           isAppend = true;
         }
         else{
