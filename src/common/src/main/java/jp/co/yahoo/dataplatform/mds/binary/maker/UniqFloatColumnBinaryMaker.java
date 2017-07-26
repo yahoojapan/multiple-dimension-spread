@@ -34,6 +34,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
+import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialNumberCellIndex;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
@@ -191,6 +192,7 @@ binaryLength );
 
       column = new PrimitiveColumn( ColumnType.FLOAT , columnBinary.columnName );
       column.setCellManager( new BufferDirectDictionaryLinkCellManager( ColumnType.FLOAT , dicManager , indexIntBuffer ) );
+      column.setIndex( new BufferDirectSequentialNumberCellIndex( ColumnType.FLOAT , dicManager , indexIntBuffer ) );
 
       isCreate = true;
     }

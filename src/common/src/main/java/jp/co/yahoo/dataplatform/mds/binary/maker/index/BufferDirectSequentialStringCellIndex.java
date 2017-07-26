@@ -30,6 +30,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringCompareFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringComparator;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringDictionaryFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
 public class BufferDirectSequentialStringCellIndex implements ICellIndex{
@@ -65,7 +66,11 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
       case STRING_COMPARE:
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
-          return toColumnList( compareString( comparator ) );
+        return toColumnList( compareString( comparator ) );
+      case STRING_DICTIONARY:
+        IStringDictionaryFilter stringDictionaryFilter = (IStringDictionaryFilter)filter;
+        Set<String> dictionary = stringDictionaryFilter.getDictionary();
+        return toColumnList( dictionaryString( dictionary ) );
       default:
         return null;
     }
@@ -84,6 +89,17 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
       }
     }
     return result;
+  }
+
+  private Set<Integer> dictionaryString( final Set<String> dictionary ) throws IOException{
+    Set<Integer> matchDicList = new HashSet<Integer>();
+    for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+      if( dictionary.contains( dicManager.get( i ).getString() ) ){
+        matchDicList.add( Integer.valueOf( i ) );
+      }
+    }
+
+    return matchDicList;
   }
 
   private Set<Integer> compareString( final IStringComparator comparator ) throws IOException{

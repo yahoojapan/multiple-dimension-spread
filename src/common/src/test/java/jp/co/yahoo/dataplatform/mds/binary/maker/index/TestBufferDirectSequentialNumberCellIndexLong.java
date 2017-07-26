@@ -31,13 +31,14 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertNull;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
+import jp.co.yahoo.dataplatform.mds.spread.column.*;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
-public class TestBufferDirectSequentialStringCellIndex{
+public class TestBufferDirectSequentialNumberCellIndexLong{
 
   private class TestDicManager implements IDicManager {
 
@@ -60,24 +61,19 @@ public class TestBufferDirectSequentialStringCellIndex{
   }
 
   @Test
-  public void T_newInstance_1() throws IOException{
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( null , null );
-  }
-
-  @Test
-  public void T_filter_1() throws IOException{
+  public void T_long_filter_1() throws IOException{
     List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
     IntBuffer buffer = IntBuffer.allocate( 100 );
     for( int i = 0 ; i < 100 ; i++ ){
       buffer.put( i % 5 );
     }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    IFilter filter = new PerfectMatchStringFilter( "abc" );
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.EQUAL , new LongObj( 1000 ) );
 
     List<Integer> result = index.filter( filter );
     assertEquals( result.size() , 20 );
@@ -87,19 +83,66 @@ public class TestBufferDirectSequentialStringCellIndex{
   }
 
   @Test
-  public void T_filter_2() throws IOException{
+  public void T_long_filter_2() throws IOException{
     List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
     IntBuffer buffer = IntBuffer.allocate( 100 );
     for( int i = 0 ; i < 100 ; i++ ){
       buffer.put( i % 5 );
     }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    IFilter filter = new PartialMatchStringFilter( "b" );
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.NOT_EQUAL , new LongObj( 1000 ) );
+
+    List<Integer> result = index.filter( filter );
+    assertEquals( result.size() , 80 );
+    for( int i = 0,n=0 ; n < 100 ; i+=4,n+=5 ){
+      assertEquals( result.get(i).intValue() , n + 1 );
+      assertEquals( result.get(i+1).intValue() , n + 2 );
+      assertEquals( result.get(i+2).intValue() , n + 3 );
+      assertEquals( result.get(i+3).intValue() , n + 4 );
+    }
+  }
+
+  @Test
+  public void T_long_filter_3() throws IOException{
+    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
+    IntBuffer buffer = IntBuffer.allocate( 100 );
+    for( int i = 0 ; i < 100 ; i++ ){
+      buffer.put( i % 5 );
+    }
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.LT , new LongObj( 2000 ) );
+
+    List<Integer> result = index.filter( filter );
+    assertEquals( result.size() , 20 );
+    for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
+      assertEquals( result.get(i).intValue() , n );
+    }
+  }
+
+  @Test
+  public void T_long_filter_4() throws IOException{
+    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
+    IntBuffer buffer = IntBuffer.allocate( 100 );
+    for( int i = 0 ; i < 100 ; i++ ){
+      buffer.put( i % 5 );
+    }
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.LE , new LongObj( 2000 ) );
 
     List<Integer> result = index.filter( filter );
     assertEquals( result.size() , 40 );
@@ -110,63 +153,19 @@ public class TestBufferDirectSequentialStringCellIndex{
   }
 
   @Test
-  public void T_filter_3() throws IOException{
+  public void T_long_filter_5() throws IOException{
     List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
     IntBuffer buffer = IntBuffer.allocate( 100 );
     for( int i = 0 ; i < 100 ; i++ ){
       buffer.put( i % 5 );
     }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    IFilter filter = new ForwardMatchStringFilter( "bc" );
-
-    List<Integer> result = index.filter( filter );
-    assertEquals( result.size() , 20 );
-    for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n+1 );
-    }
-  }
-
-  @Test
-  public void T_filter_4() throws IOException{
-    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
-    IntBuffer buffer = IntBuffer.allocate( 100 );
-    for( int i = 0 ; i < 100 ; i++ ){
-      buffer.put( i % 5 );
-    }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    IFilter filter = new BackwardMatchStringFilter( "bc" );
-
-    List<Integer> result = index.filter( filter );
-    assertEquals( result.size() , 20 );
-    for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
-    }
-  }
-
-  @Test
-  public void T_filter_5() throws IOException{
-    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
-    IntBuffer buffer = IntBuffer.allocate( 100 );
-    for( int i = 0 ; i < 100 ; i++ ){
-      buffer.put( i % 5 );
-    }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    IFilter filter = new RegexpMatchStringFilter( "e.g" );
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.GT , new LongObj( 4000 ) );
 
     List<Integer> result = index.filter( filter );
     assertEquals( result.size() , 20 );
@@ -176,45 +175,25 @@ public class TestBufferDirectSequentialStringCellIndex{
   }
 
   @Test
-  public void T_filter_6() throws IOException{
+  public void T_long_filter_6() throws IOException{
     List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
+    dic.add( new LongObj( 1000 ) );
+    dic.add( new LongObj( 2000 ) );
+    dic.add( new LongObj( 3000 ) );
+    dic.add( new LongObj( 4000 ) );
+    dic.add( new LongObj( 5000 ) );
     IntBuffer buffer = IntBuffer.allocate( 100 );
     for( int i = 0 ; i < 100 ; i++ ){
       buffer.put( i % 5 );
     }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    List<Integer> result = index.filter( new NullFilter() );
-    assertEquals( result , null );
-  }
-
-  @Test
-  public void T_filter_7() throws IOException{
-    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new StringObj( "abc" ) );
-    dic.add( new StringObj( "bcd" ) );
-    dic.add( new StringObj( "cde" ) );
-    dic.add( new StringObj( "def" ) );
-    dic.add( new StringObj( "efg" ) );
-    IntBuffer buffer = IntBuffer.allocate( 100 );
-    for( int i = 0 ; i < 100 ; i++ ){
-      buffer.put( i % 5 );
-    }
-    ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    Set<String> filterDic = new HashSet<String>();
-    filterDic.add( "abc" );
-    filterDic.add( "bcd" );
-    IFilter filter = new StringDictionaryFilter( filterDic );
+    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.LONG , new TestDicManager( dic ) , buffer );
+    IFilter filter = new NumberFilter( NumberFilterType.GE , new LongObj( 4000 ) );
 
     List<Integer> result = index.filter( filter );
     assertEquals( result.size() , 40 );
     for( int i = 0,n=0 ; n < 100 ; i+=2,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
-      assertEquals( result.get(i+1).intValue() , n+1 );
+      assertEquals( result.get(i).intValue() , n+3 );
+      assertEquals( result.get(i+1).intValue() , n+4 );
     }
   }
 

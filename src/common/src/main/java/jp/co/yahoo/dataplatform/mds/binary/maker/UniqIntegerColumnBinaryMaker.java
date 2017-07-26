@@ -42,6 +42,7 @@ import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
+import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialNumberCellIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class UniqIntegerColumnBinaryMaker implements IColumnBinaryMaker{
@@ -191,6 +192,7 @@ binaryLength );
 
       column = new PrimitiveColumn( ColumnType.INTEGER , columnBinary.columnName );
       column.setCellManager( new BufferDirectDictionaryLinkCellManager( ColumnType.INTEGER , dicManager , indexIntBuffer ) );
+      column.setIndex( new BufferDirectSequentialNumberCellIndex( ColumnType.SHORT , dicManager , indexIntBuffer ) );
 
       isCreate = true;
     }
