@@ -20,6 +20,7 @@ package jp.co.yahoo.dataplatform.mds.spread.flatten;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public class FlattenColumn{
 
@@ -39,7 +40,7 @@ public class FlattenColumn{
     return targetColumnNameArray;
   }
 
-  public IColumn getColumn(final Spread spread ){
+  public IColumn getColumn( final Spread spread ){
     IColumn currentColumn = null;
     for( String nodeName : targetColumnNameArray ){
       if( currentColumn == null ){
@@ -54,6 +55,14 @@ public class FlattenColumn{
     }
     currentColumn.setColumnName( linkName );
     return currentColumn;
+  }
+
+  public void flattenIndexNode( final BlockIndexNode rootNode ){
+    BlockIndexNode currentNode = rootNode;
+    for( String nodeName : targetColumnNameArray ){
+      currentNode = currentNode.getChildNode( nodeName );
+    }
+    rootNode.putChildNode( linkName , currentNode );
   }
 
 }

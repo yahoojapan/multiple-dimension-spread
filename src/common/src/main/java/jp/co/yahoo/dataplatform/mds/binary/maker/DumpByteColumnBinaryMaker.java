@@ -42,6 +42,7 @@ import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
@@ -109,6 +110,11 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
       allocator.setByte( columnIndexList.get( i ) , dicList.get( i ) );
     }
     allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class ByteDicManager implements IDicManager{

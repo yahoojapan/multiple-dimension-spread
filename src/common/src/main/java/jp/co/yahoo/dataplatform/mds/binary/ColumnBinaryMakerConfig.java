@@ -63,7 +63,7 @@ public class ColumnBinaryMakerConfig{
     longMakerClass = FindColumnBinaryMaker.get( UniqLongColumnBinaryMaker.class.getName() );
     shortMakerClass = FindColumnBinaryMaker.get( UniqShortColumnBinaryMaker.class.getName() );
 
-    stringMakerClass = FindColumnBinaryMaker.get( UniqStringToUTF8BytesColumnBinaryMaker.class.getName() );
+    stringMakerClass = FindColumnBinaryMaker.get( RangeIndexStringToUTF8BytesColumnBinaryMaker.class.getName() );
     bytesMakerClass = FindColumnBinaryMaker.get( DumpBytesColumnBinaryMaker.class.getName() );
   }
 

@@ -28,6 +28,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.NullColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ArrayCell;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public class ExpandNode {
 
@@ -89,6 +90,20 @@ public class ExpandNode {
     expandSpread.setOriginalSpread( spread , rootIndexArray );
 
     return expandSpread;
+  }
+
+  public void setIndexNode( final BlockIndexNode rootNode ) throws IOException{
+    setIndexNode( rootNode , rootNode );
+  }
+
+  public void setIndexNode( final BlockIndexNode rootNode , final BlockIndexNode parentNode ){
+    BlockIndexNode currentNode = parentNode.getChildNode( columnName );
+    if( childNode != null ){
+      childNode.setIndexNode( rootNode , currentNode );
+    }
+    if( isArray ){
+      rootNode.putChildNode( linkColumnName , currentNode );
+    }
   }
 
   public int[] set( final Spread original , final ExpandSpread expandSpread ) throws IOException{

@@ -15,31 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.flatten;
+package jp.co.yahoo.dataplatform.mds.binary.blockindex;
 
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
-public class NotFlattenFunction implements IFlattenFunction{
+public interface IBlockIndex{
 
-  @Override
-  public boolean isFlatten(){
-    return false;
-  }
+  BlockIndexType getBlockIndexType();
 
-  @Override
-  public Spread flatten( final Spread spread ){
-    return spread;
-  }
+  boolean merge( final IBlockIndex blockIndex );
 
-  @Override
-  public String[] getFlattenColumnName( final String linkColumnName ){
-    return new String[0];
-  }
+  int getBinarySize();
 
-  @Override
-  public void flattenIndexNode( final BlockIndexNode rootNode ){
+  byte[] toBinary();
 
-  }
+  void setFromBinary( final byte[] buffer , final int start , final int length );
+
+  boolean canBlockSkip( final IFilter filter );
 
 }

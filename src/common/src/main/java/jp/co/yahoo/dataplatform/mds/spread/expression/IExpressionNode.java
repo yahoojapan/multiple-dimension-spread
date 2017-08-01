@@ -23,6 +23,8 @@ import java.util.List;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+
 public interface IExpressionNode {
 
   void addChildNode( final IExpressionNode node );
@@ -30,5 +32,7 @@ public interface IExpressionNode {
   List<Integer> exec( final Spread spread ) throws IOException;
 
   List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException;
+
+  boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException;
 
 }

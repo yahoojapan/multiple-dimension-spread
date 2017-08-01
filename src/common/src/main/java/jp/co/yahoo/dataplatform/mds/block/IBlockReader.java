@@ -22,10 +22,11 @@ import java.io.InputStream;
 
 import java.util.List;
 
-import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.config.Configuration;
 
+import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
 
 public interface IBlockReader{
@@ -33,6 +34,8 @@ public interface IBlockReader{
   void setup( final Configuration config ) throws IOException;
 
   void setBlockSize( final int blockSize );
+
+  void setBlockSkipIndex( final IExpressionNode blockSkipIndex );
 
   void setStream( final InputStream in , final int blockSize ) throws IOException;
 

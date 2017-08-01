@@ -54,8 +54,8 @@ public class PredicateBlockMaker implements IBlockMaker{
   private ByteArrayData metaBuffer;
   private int blockSize;
   private ColumnBinaryTree columnTree;
-  private byte[] headerBytes;
-  private int bufferSize;
+  protected byte[] headerBytes;
+  protected int bufferSize;
 
   @Override
   public void setup( final int blockSize , final Configuration config ) throws IOException{

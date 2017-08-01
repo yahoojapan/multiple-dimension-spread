@@ -19,6 +19,7 @@ package jp.co.yahoo.dataplatform.mds.spread.expression;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public class StringExtractNode implements IExtractNode{
 
@@ -51,6 +52,15 @@ public class StringExtractNode implements IExtractNode{
       return childColumnNode.get( currentColumn );
     }
     return currentColumn;
+  }
+
+  @Override
+  public BlockIndexNode get( final BlockIndexNode indexNode ){
+    BlockIndexNode currentIndexNode = indexNode.getChildNode( columnName );
+    if( childColumnNode != null ){
+      return childColumnNode.get( currentIndexNode );
+    }
+    return currentIndexNode;
   }
 
   @Override

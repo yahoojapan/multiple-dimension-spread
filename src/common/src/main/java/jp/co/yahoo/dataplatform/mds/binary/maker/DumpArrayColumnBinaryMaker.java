@@ -44,6 +44,7 @@ import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
@@ -121,6 +122,11 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       }
     }
     allocator.setValueCount( length );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class ArrayCellManager implements ICellManager{

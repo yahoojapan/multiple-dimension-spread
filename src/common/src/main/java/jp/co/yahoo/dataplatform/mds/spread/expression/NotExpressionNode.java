@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+
 public class NotExpressionNode implements IExpressionNode {
 
   private IExpressionNode childNode;
@@ -86,6 +88,11 @@ public class NotExpressionNode implements IExpressionNode {
     else{
       return createReverseList( childCollection , parentList );
     }
+  }
+
+  @Override
+  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+    return false;
   }
 
   private List<Integer> createNewReverseList( final List<Integer> childCollection , final int spreadSize ){

@@ -37,6 +37,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 
@@ -152,6 +153,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
       }
     }
     allocator.setValueCount( maxValueCount );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class UnionColumnManager implements IColumnManager{

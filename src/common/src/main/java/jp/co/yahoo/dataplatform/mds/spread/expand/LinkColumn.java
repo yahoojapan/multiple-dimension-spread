@@ -19,6 +19,7 @@ package jp.co.yahoo.dataplatform.mds.spread.expand;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public class LinkColumn{
 
@@ -66,6 +67,14 @@ public class LinkColumn{
     else{
       expandSpread.addExpandLeafColumn( linkName , linkTargetColumn.getColumn(0) );
     }
+  }
+
+  public void createLinkIndexNode( final BlockIndexNode rootNode ){
+    BlockIndexNode currentNode = rootNode;
+    for( String nodeName : nodeNameArray ){
+      currentNode = currentNode.getChildNode( nodeName );
+    }
+    rootNode.putChildNode( linkName , currentNode );
   }
 
 }

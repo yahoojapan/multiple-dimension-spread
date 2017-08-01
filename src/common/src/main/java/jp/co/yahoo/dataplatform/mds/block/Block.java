@@ -36,7 +36,7 @@ public class Block{
     return columnBinaryTree.getChildSize();
   }
 
-  public List<ColumnBinary> get(final int index ){
+  public List<ColumnBinary> get( final int index ){
     if( columnBinaryTree == null ){
       return null;
     }

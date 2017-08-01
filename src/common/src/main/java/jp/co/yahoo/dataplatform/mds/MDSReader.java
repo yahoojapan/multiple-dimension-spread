@@ -31,6 +31,7 @@ import java.util.HashMap;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.config.FindClass;
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -46,6 +47,7 @@ public class MDSReader implements AutoCloseable{
   private final List<ReadBlockOffset> readTargetList = new ArrayList<ReadBlockOffset>();
   private final SummaryStats readStats = new SummaryStats();
   private IBlockReader currentBlockReader;
+  private IExpressionNode blockSkipIndex;
 
   private InputStream in;
   private int blockSize;
@@ -101,6 +103,10 @@ public class MDSReader implements AutoCloseable{
     return new FileHeaderMeta( wrapBuffer.getInt( 0 ) , blockReaderClass , ( MAGIC.length + PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.INT_LENGTH + classNameSize ) );
   }
 
+  public void setBlockSkipIndex( final IExpressionNode blockSkipIndex ){
+    this.blockSkipIndex = blockSkipIndex;
+  }
+
   public void setNewStream( final InputStream in , final long dataSize , final Configuration config ) throws IOException{
     setNewStream( in , dataSize , config , 0 , dataSize );
   }
@@ -120,6 +126,7 @@ public class MDSReader implements AutoCloseable{
 
     currentBlockReader = blockReaderMap.get( meta.className );
     currentBlockReader.setup( config );
+    currentBlockReader.setBlockSkipIndex( blockSkipIndex );
 
     blockSize = meta.blockSize;
 
@@ -159,12 +166,15 @@ public class MDSReader implements AutoCloseable{
   public Spread next() throws IOException{
     if( ! currentBlockReader.hasNext() ){
       if( readTargetList.isEmpty() ){
-        return null;
+        return new Spread();
       }
       ReadBlockOffset readOffset = readTargetList.remove(0);
       inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
       currentBlockReader.setStream( in , readOffset.length );
       inReadOffset += readOffset.length;
+      if( ! currentBlockReader.hasNext() ){
+        return next();
+      }
     }
     return currentBlockReader.next();
   }
@@ -172,12 +182,15 @@ public class MDSReader implements AutoCloseable{
   public List<ColumnBinary> nextRaw() throws IOException{
     if( ! currentBlockReader.hasNext() ){
       if( readTargetList.isEmpty() ){
-        return null;
+        return new ArrayList<ColumnBinary>();
       }
       ReadBlockOffset readOffset = readTargetList.remove(0);
       inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
       currentBlockReader.setStream( in , readOffset.length );
       inReadOffset += readOffset.length;
+      if( ! currentBlockReader.hasNext() ){
+        return nextRaw();
+      }
     }
     return currentBlockReader.nextRaw();
   }
@@ -211,6 +224,5 @@ public class MDSReader implements AutoCloseable{
     readTargetList.clear();
     currentBlockReader.close();
   }
-
 
 }

@@ -93,9 +93,9 @@ public class ColumnBinary{
 
   public int getMetaSize() throws IOException{
     return 
-      ( makerClassName.length() * CHAR_LENGTH )
+      ( ColumnBinaryMakerNameShortCut.getShortCutName( makerClassName ).length() * CHAR_LENGTH )
       + INT_LENGTH
-      + ( compressorClassName.length() * CHAR_LENGTH )
+      + ( CompressorNameShortCut.getShortCutName( compressorClassName ).length() * CHAR_LENGTH )
       + INT_LENGTH
       + ( columnName.length() * CHAR_LENGTH )
       + INT_LENGTH
@@ -159,12 +159,14 @@ public class ColumnBinary{
     int metaBinaryLength = wrapBuffer.getInt( offset );
     offset += INT_LENGTH;
 
-    return new ColumnBinary( metaClassName , metaCompressorClassName , metaColumnName , metaColumnType , metaRowCount , metaRowData , metaLogicalData , metaCardinality , dataBuffer , metaBinaryStart , metaBinaryLength , childList );
+    return new ColumnBinary( ColumnBinaryMakerNameShortCut.getClassName( metaClassName ) , CompressorNameShortCut.getClassName( metaCompressorClassName ) , metaColumnName , metaColumnType , metaRowCount , metaRowData , metaLogicalData , metaCardinality , dataBuffer , metaBinaryStart , metaBinaryLength , childList );
   }
 
   public byte[] toMetaBinary() throws IOException{
-    int classNameLength = makerClassName.length() * 2;
-    int compressorClassNameLength = compressorClassName.length() * 2;
+    String shortCutClassName = ColumnBinaryMakerNameShortCut.getShortCutName( makerClassName );
+    String shortCutCompressorClassName = CompressorNameShortCut.getShortCutName( compressorClassName );
+    int classNameLength = shortCutClassName.length() * 2;
+    int compressorClassNameLength = shortCutCompressorClassName.length() * 2;
     int columnNameLength = columnName.length() * 2;
     byte columnTypeByte = ColumnTypeFactory.getColumnTypeByte( columnType );
 
@@ -176,13 +178,13 @@ public class ColumnBinary{
     wrapBuffer.putInt( offset , classNameLength );
     offset += INT_LENGTH;
     viewCharBuffer.position( offset / CHAR_LENGTH );
-    viewCharBuffer.put( makerClassName.toCharArray() );
+    viewCharBuffer.put( shortCutClassName.toCharArray() );
     offset += classNameLength;
 
     wrapBuffer.putInt( offset , compressorClassNameLength );
     offset += INT_LENGTH;
     viewCharBuffer.position( offset / CHAR_LENGTH );
-    viewCharBuffer.put( compressorClassName.toCharArray() );
+    viewCharBuffer.put( shortCutCompressorClassName.toCharArray() );
     offset += compressorClassNameLength;
 
     wrapBuffer.putInt( offset , columnNameLength );

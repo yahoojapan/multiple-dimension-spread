@@ -44,7 +44,7 @@ public class TestColumnBinaryMakerConfig{
       { ColumnType.INTEGER , UniqIntegerColumnBinaryMaker.class.getName() },
       { ColumnType.LONG , UniqLongColumnBinaryMaker.class.getName() },
       { ColumnType.SHORT , UniqShortColumnBinaryMaker.class.getName() },
-      { ColumnType.STRING , UniqStringToUTF8BytesColumnBinaryMaker.class.getName() },
+      { ColumnType.STRING , RangeIndexStringToUTF8BytesColumnBinaryMaker.class.getName() },
       { ColumnType.NULL , UnsupportedColumnBinaryMaker.class.getName() },
       { ColumnType.EMPTY_ARRAY , UnsupportedColumnBinaryMaker.class.getName() },
       { ColumnType.EMPTY_SPREAD , UnsupportedColumnBinaryMaker.class.getName() },

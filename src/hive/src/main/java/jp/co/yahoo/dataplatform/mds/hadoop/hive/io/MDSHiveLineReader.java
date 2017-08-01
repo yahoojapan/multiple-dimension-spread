@@ -55,6 +55,7 @@ public class MDSHiveLineReader implements RecordReader<NullWritable, ColumnAndIn
     this.spreadCounter = spreadCounter;
     reader = new MDSReader();
     node = setting.getExpressionNode();
+    reader.setBlockSkipIndex( node );
     reader.setNewStream( in , dataLength , setting.getReaderConfig() , start , length );
     nextReader();
   }

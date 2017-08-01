@@ -15,31 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.flatten;
+package jp.co.yahoo.dataplatform.mds.binary.blockindex;
 
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+public enum BlockIndexType{
 
-public class NotFlattenFunction implements IFlattenFunction{
+  UNSUPPORTED,
 
-  @Override
-  public boolean isFlatten(){
-    return false;
-  }
-
-  @Override
-  public Spread flatten( final Spread spread ){
-    return spread;
-  }
-
-  @Override
-  public String[] getFlattenColumnName( final String linkColumnName ){
-    return new String[0];
-  }
-
-  @Override
-  public void flattenIndexNode( final BlockIndexNode rootNode ){
-
-  }
+  RANGE_STRING,
 
 }

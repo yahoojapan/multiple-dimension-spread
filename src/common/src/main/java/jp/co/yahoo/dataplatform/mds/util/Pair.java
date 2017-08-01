@@ -15,31 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.flatten;
+package jp.co.yahoo.dataplatform.mds.util;
 
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import java.util.Map;
+import java.util.HashMap;
 
-public class NotFlattenFunction implements IFlattenFunction{
+public class Pair{
 
-  @Override
-  public boolean isFlatten(){
-    return false;
+  private final Map<String,String> m1 = new HashMap<String,String>();
+  private final Map<String,String> m2 = new HashMap<String,String>();
+
+  public void set( final String p1 , final String p2 ){
+    m1.put( p1 , p2 );
+    m2.put( p2 , p1 );
   }
 
-  @Override
-  public Spread flatten( final Spread spread ){
-    return spread;
+  public String getPair1( final String p2 ){
+    return m2.get( p2 );
   }
 
-  @Override
-  public String[] getFlattenColumnName( final String linkColumnName ){
-    return new String[0];
-  }
-
-  @Override
-  public void flattenIndexNode( final BlockIndexNode rootNode ){
-
+  public String getPair2( final String p1 ){
+    return m1.get( p1 );
   }
 
 }

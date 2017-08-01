@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.util.List;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public interface IExpandFunction{
 
   String[] getExpandLinkColumnName( final String linkName );
 
-  Spread expand(final Spread spread ) throws IOException;
+  Spread expand( final Spread spread ) throws IOException;
+
+  void expandIndexNode( final BlockIndexNode rootNode ) throws IOException;
 
   List<String[]> getExpandColumnName();
 

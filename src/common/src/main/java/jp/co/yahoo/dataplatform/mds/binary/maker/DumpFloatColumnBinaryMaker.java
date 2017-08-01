@@ -43,6 +43,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.SortedIntegerConverter;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
@@ -108,6 +109,11 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
       allocator.setFloat( columnIndexList.get( i ) , dicList.get( i ) );
     }
     allocator.setValueCount( columnIndexList.get( columnIndexList.size() - 1 ) );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class FloatDicManager implements IDicManager{

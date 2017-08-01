@@ -23,12 +23,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
 
 public class NotExpandFunction implements IExpandFunction{
 
   @Override
-  public Spread expand(final Spread spread ) throws IOException{
+  public Spread expand( final Spread spread ) throws IOException{
     return spread;
+  }
+
+  @Override
+  public void expandIndexNode( final BlockIndexNode rootNode ) throws IOException{
   }
 
   @Override

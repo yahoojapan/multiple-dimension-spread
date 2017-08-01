@@ -15,31 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.flatten;
+package jp.co.yahoo.dataplatform.mds.binary.blockindex;
 
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import java.io.IOException;
 
-public class NotFlattenFunction implements IFlattenFunction{
+import jp.co.yahoo.dataplatform.config.FindClass;
 
-  @Override
-  public boolean isFlatten(){
-    return false;
-  }
+public final class FindBlockIndex{
 
-  @Override
-  public Spread flatten( final Spread spread ){
-    return spread;
-  }
+  private FindBlockIndex(){}
 
-  @Override
-  public String[] getFlattenColumnName( final String linkColumnName ){
-    return new String[0];
-  }
-
-  @Override
-  public void flattenIndexNode( final BlockIndexNode rootNode ){
-
+  public static IBlockIndex get( final String target ) throws IOException{
+    if( target == null || target.isEmpty() ){
+      throw new IOException( "IBlockIndex class name is null or empty." );
+    }
+    Object obj = FindClass.getObject( target );
+    if( ! ( obj instanceof IBlockIndex ) ){
+      throw new IOException( "Invalid IBlockIndex class : " + target );
+    }
+    return (IBlockIndex)obj;
   }
 
 }

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+
 public class ExpandColumnLink{
 
   private final List<LinkColumn> linkColumnList = new ArrayList<LinkColumn>();
@@ -40,6 +42,12 @@ public class ExpandColumnLink{
   public void createLink( final ExpandSpread expandSpread ){
     for( LinkColumn linkColumn : linkColumnList ){
       linkColumn.createLink( expandSpread );
+    }
+  }
+
+  public void createLinkIndexNode( final BlockIndexNode rootNode ){
+    for( LinkColumn linkColumn : linkColumnList ){
+      linkColumn.createLinkIndexNode( rootNode );
     }
   }
 
