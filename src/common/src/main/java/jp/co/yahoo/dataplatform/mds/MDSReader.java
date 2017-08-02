@@ -144,13 +144,8 @@ public class MDSReader implements AutoCloseable{
     if( readTargetList.isEmpty() ){
       return;
     }
-/*
-    ReadBlockOffset readOffset = readTargetList.remove(0);
-    inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
-*/
     currentBlockReader.setBlockSize( blockSize );
     setNextBlock();
-//    inReadOffset += readOffset.length;
   }
 
   public boolean hasNext() throws IOException{
