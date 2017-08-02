@@ -137,6 +137,11 @@ public class StringRangeBlockIndex implements IBlockIndex{
     }
   }
 
+  @Override
+  public IBlockIndex getNewInstance(){
+    return new StringRangeBlockIndex();
+  }
+
   public String getMin(){
     return min;
   }

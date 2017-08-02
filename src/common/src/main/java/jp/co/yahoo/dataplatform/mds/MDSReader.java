@@ -144,12 +144,13 @@ public class MDSReader implements AutoCloseable{
     if( readTargetList.isEmpty() ){
       return;
     }
+/*
     ReadBlockOffset readOffset = readTargetList.remove(0);
     inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
-
+*/
     currentBlockReader.setBlockSize( blockSize );
-    currentBlockReader.setStream( in , readOffset.length );
-    inReadOffset += readOffset.length;
+    setNextBlock();
+//    inReadOffset += readOffset.length;
   }
 
   public boolean hasNext() throws IOException{
@@ -162,35 +163,29 @@ public class MDSReader implements AutoCloseable{
     return false;
   }
 
-
-  public Spread next() throws IOException{
-    if( ! currentBlockReader.hasNext() ){
+  private boolean setNextBlock() throws IOException{
+    while( ! currentBlockReader.hasNext() ){
       if( readTargetList.isEmpty() ){
-        return new Spread();
+        return false;
       }
       ReadBlockOffset readOffset = readTargetList.remove(0);
       inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
       currentBlockReader.setStream( in , readOffset.length );
       inReadOffset += readOffset.length;
-      if( ! currentBlockReader.hasNext() ){
-        return next();
-      }
+    }
+    return true;
+  }
+
+  public Spread next() throws IOException{
+    if( ! setNextBlock() ){
+      return new Spread();
     }
     return currentBlockReader.next();
   }
 
   public List<ColumnBinary> nextRaw() throws IOException{
-    if( ! currentBlockReader.hasNext() ){
-      if( readTargetList.isEmpty() ){
-        return new ArrayList<ColumnBinary>();
-      }
-      ReadBlockOffset readOffset = readTargetList.remove(0);
-      inReadOffset += InputStreamUtils.skip( in , readOffset.start - inReadOffset );
-      currentBlockReader.setStream( in , readOffset.length );
-      inReadOffset += readOffset.length;
-      if( ! currentBlockReader.hasNext() ){
-        return nextRaw();
-      }
+    if( ! setNextBlock() ){
+      return new ArrayList<ColumnBinary>();
     }
     return currentBlockReader.nextRaw();
   }

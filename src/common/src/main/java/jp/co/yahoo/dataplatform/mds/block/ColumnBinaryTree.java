@@ -154,7 +154,7 @@ public class ColumnBinaryTree{
           isAppend = true;
         }
         else{
-          ColumnNameNode childColumnNameNode = new ColumnNameNode( childName );
+          ColumnNameNode childColumnNameNode = new ColumnNameNode( childName , true );
           childColumnNameNode.setNeedAllChild( false );
           childColumnBinary.setColumnFilter( childColumnNameNode );
           isAppend = false;
@@ -179,7 +179,7 @@ public class ColumnBinaryTree{
         offset += PrimitiveByteLength.INT_LENGTH;
         int metaBinaryLength = byteBuffer.getInt( offset );
         offset += PrimitiveByteLength.INT_LENGTH;
-        if( metaBinaryLength == 0 ){
+        if( columnNameNode.isDisable() || metaBinaryLength == 0 ){
           currentColumnBinaryList.add( null );
         }
         else{

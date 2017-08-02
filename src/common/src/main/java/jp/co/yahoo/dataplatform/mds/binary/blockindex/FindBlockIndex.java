@@ -19,13 +19,23 @@ package jp.co.yahoo.dataplatform.mds.binary.blockindex;
 
 import java.io.IOException;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import jp.co.yahoo.dataplatform.config.FindClass;
 
 public final class FindBlockIndex{
 
+  private static final Map<String,IBlockIndex> CACHE = new HashMap<String,IBlockIndex>();
+
   private FindBlockIndex(){}
 
   public static IBlockIndex get( final String target ) throws IOException{
+    IBlockIndex cacheResult = CACHE.get( target );
+    if( cacheResult != null ){
+      return cacheResult.getNewInstance();
+    }
+
     if( target == null || target.isEmpty() ){
       throw new IOException( "IBlockIndex class name is null or empty." );
     }
@@ -33,7 +43,8 @@ public final class FindBlockIndex{
     if( ! ( obj instanceof IBlockIndex ) ){
       throw new IOException( "Invalid IBlockIndex class : " + target );
     }
-    return (IBlockIndex)obj;
+    CACHE.put( target , (IBlockIndex)obj );
+    return ( (IBlockIndex)obj ).getNewInstance();
   }
 
 }

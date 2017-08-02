@@ -52,4 +52,9 @@ public class UnsupportedBlockIndex implements IBlockIndex{
     return false;
   }
 
+  @Override
+  public IBlockIndex getNewInstance(){
+    return INSTANCE;
+  }
+
 }

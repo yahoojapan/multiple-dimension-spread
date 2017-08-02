@@ -33,4 +33,6 @@ public interface IBlockIndex{
 
   boolean canBlockSkip( final IFilter filter );
 
+  IBlockIndex getNewInstance();
+
 }
