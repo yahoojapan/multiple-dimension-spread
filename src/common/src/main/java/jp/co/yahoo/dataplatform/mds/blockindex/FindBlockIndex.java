@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.binary.blockindex;
+package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 

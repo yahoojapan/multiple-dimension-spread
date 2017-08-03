@@ -27,7 +27,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.config.Configuration;
 
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
@@ -36,7 +36,9 @@ import jp.co.yahoo.dataplatform.schema.parser.JacksonMessageReader;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.CompressorNameShortCut;
+import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.maker.MakerCache;
@@ -46,6 +48,19 @@ import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LEN
 public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
 
   private BlockIndexNode blockIndexNode = new BlockIndexNode();
+  private byte[] compressorClassNameBytes;
+
+  public BlockSkipPredicateBlockMaker() throws IOException{
+    super();
+    compressor = new DefaultCompressor();
+    compressorClassNameBytes = CompressorNameShortCut.getShortCutName( compressor.getClass().getName() ).getBytes( "UTF-8" );
+  }
+
+  @Override
+  public void setup( final int blockSize , final Configuration config ) throws IOException{
+    super.setup( blockSize , config );
+    compressor = FindCompressor.get( config.get( "block.maker.compress.class" , "jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor" ) );
+  }
 
   @Override
   public void appendHeader( final byte[] headerBytes ){
@@ -75,7 +90,7 @@ public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
   @Override
   public int size(){
     try{
-      return super.size() + blockIndexNode.getBinarySize() + 4;
+      return super.size() + 4 + compressorClassNameBytes.length + blockIndexNode.getBinarySize() + 4;
     }catch( IOException e ){
       throw new RuntimeException( e );
     }
@@ -83,10 +98,13 @@ public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
 
   @Override
   public byte[] create( final int dataSize ) throws IOException{
-    byte[] blockIndexBinary = new byte[blockIndexNode.getBinarySize()+4];
+    byte[] blockIndexBinary = new byte[4 + ( compressor.getClass().getName().length() * 2 ) + blockIndexNode.getBinarySize() + 4];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( blockIndexBinary );
-    wrapBuffer.putInt( blockIndexBinary.length - 4 );
-    blockIndexNode.toBinary( blockIndexBinary , 4 );
+    wrapBuffer.putInt( compressorClassNameBytes.length );
+    wrapBuffer.put( compressorClassNameBytes );
+    int metaLength = 4 + compressorClassNameBytes.length + 4;
+    wrapBuffer.putInt( blockIndexBinary.length - metaLength );
+    blockIndexNode.toBinary( blockIndexBinary , metaLength );
     appendHeader( blockIndexBinary );
     blockIndexNode.clear();
     return super.create( dataSize );

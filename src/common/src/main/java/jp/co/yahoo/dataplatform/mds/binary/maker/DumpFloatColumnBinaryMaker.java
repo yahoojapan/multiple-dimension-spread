@@ -43,7 +43,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.SortedIntegerConverter;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{

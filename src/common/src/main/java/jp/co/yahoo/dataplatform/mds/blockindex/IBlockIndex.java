@@ -15,46 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.binary.blockindex;
+package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
-public class UnsupportedBlockIndex implements IBlockIndex{
+public interface IBlockIndex{
 
-  public static final IBlockIndex INSTANCE = new UnsupportedBlockIndex();
+  BlockIndexType getBlockIndexType();
 
-  @Override
-  public BlockIndexType getBlockIndexType(){
-    return BlockIndexType.UNSUPPORTED;
-  }
+  boolean merge( final IBlockIndex blockIndex );
 
-  @Override
-  public boolean merge( final IBlockIndex blockIndex ){
-    return false;
-  }
+  int getBinarySize();
 
-  @Override
-  public int getBinarySize(){
-    return 0;
-  }
+  byte[] toBinary();
 
-  @Override
-  public byte[] toBinary(){
-    return new byte[0];
-  }
+  void setFromBinary( final byte[] buffer , final int start , final int length );
 
-  @Override
-  public void setFromBinary( final byte[] buffer , final int start , final int length ){
-  }
+  boolean canBlockSkip( final IFilter filter );
 
-  @Override
-  public boolean canBlockSkip( final IFilter filter ){
-    return false;
-  }
-
-  @Override
-  public IBlockIndex getNewInstance(){
-    return INSTANCE;
-  }
+  IBlockIndex getNewInstance();
 
 }

@@ -24,7 +24,7 @@ import java.util.List;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class ExecuterNode implements IExpressionNode{
 

@@ -44,7 +44,7 @@ import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 

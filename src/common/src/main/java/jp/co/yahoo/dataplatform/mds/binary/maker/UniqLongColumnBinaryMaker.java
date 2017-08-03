@@ -43,7 +43,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialNumberCellIndex;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.LONG_LENGTH;

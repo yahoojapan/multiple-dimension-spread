@@ -27,6 +27,7 @@ import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
 import jp.co.yahoo.dataplatform.mds.stats.ColumnStats;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
+import jp.co.yahoo.dataplatform.mds.compressor.CompressorNameShortCut;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.CHAR_LENGTH;

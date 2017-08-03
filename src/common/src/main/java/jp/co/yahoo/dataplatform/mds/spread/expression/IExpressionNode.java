@@ -23,7 +23,7 @@ import java.util.List;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public interface IExpressionNode {
 

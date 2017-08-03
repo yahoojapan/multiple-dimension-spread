@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class ExpandColumnLink{
 

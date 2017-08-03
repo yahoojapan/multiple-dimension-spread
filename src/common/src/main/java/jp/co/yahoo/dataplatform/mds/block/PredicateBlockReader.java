@@ -47,7 +47,6 @@ import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
 public class PredicateBlockReader implements IBlockReader{
 
   private final Block block;
-  private final ICompressor compressor = new GzipCompressor();
   private final ColumnBinaryTree columnBinaryTree = new ColumnBinaryTree();
   private final List<Integer> spreadSizeList = new ArrayList<Integer>();
   private final SummaryStats readSummaryStats = new SummaryStats();
@@ -61,6 +60,7 @@ public class PredicateBlockReader implements IBlockReader{
   private byte[] metaBytes;
   private int readCount;
 
+  protected ICompressor compressor = new GzipCompressor();
   protected IExpandFunction expandFunction;
   protected IFlattenFunction flattenFunction;
 

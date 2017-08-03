@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import jp.co.yahoo.dataplatform.mds.util.CollectionUtils;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.binary.blockindex.BlockIndexNode;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class AndExpressionNode implements IExpressionNode {
 
