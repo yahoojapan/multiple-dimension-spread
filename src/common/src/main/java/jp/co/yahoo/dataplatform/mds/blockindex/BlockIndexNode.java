@@ -23,8 +23,6 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
-
 public class BlockIndexNode{
 
   private final Map<String,BlockIndexNode> childContainer;

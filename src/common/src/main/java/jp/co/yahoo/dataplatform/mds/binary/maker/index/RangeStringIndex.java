@@ -18,14 +18,11 @@
 package jp.co.yahoo.dataplatform.mds.binary.maker.index;
 
 import java.io.IOException;
-import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.HashSet;
 
-import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringCompareFilter;

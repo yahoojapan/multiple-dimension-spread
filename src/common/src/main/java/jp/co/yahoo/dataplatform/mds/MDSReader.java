@@ -45,7 +45,6 @@ public class MDSReader implements AutoCloseable{
 
   private final Map<String,IBlockReader> blockReaderMap = new HashMap<String,IBlockReader>();
   private final List<ReadBlockOffset> readTargetList = new ArrayList<ReadBlockOffset>();
-  private final SummaryStats readStats = new SummaryStats();
   private IBlockReader currentBlockReader;
   private IExpressionNode blockSkipIndex;
 

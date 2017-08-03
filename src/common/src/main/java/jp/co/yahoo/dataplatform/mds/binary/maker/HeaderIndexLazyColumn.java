@@ -21,17 +21,9 @@ import java.io.IOException;
 
 import java.util.List;
 
-import jp.co.yahoo.dataplatform.schema.design.IField;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-
-import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
-import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
-import jp.co.yahoo.dataplatform.mds.spread.column.NullColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
-import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 
 public class HeaderIndexLazyColumn extends LazyColumn{
 

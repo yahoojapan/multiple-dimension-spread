@@ -21,31 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.binary.maker.DefaultPrimitiveObjectConnector;
-import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.config.Configuration;
 
-import jp.co.yahoo.dataplatform.mds.spread.flatten.IFlattenFunction;
-import jp.co.yahoo.dataplatform.mds.spread.flatten.FlattenFunctionFactory;
-import jp.co.yahoo.dataplatform.mds.spread.expand.IExpandFunction;
-import jp.co.yahoo.dataplatform.mds.spread.expand.ExpandFunctionFactory;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
-import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.CompressorNameShortCut;
-import jp.co.yahoo.dataplatform.mds.binary.maker.IPrimitiveObjectConnector;
-import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
-import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
 
 public class BlockSkipPredicateBlockReader extends PredicateBlockReader{
 

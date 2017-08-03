@@ -35,9 +35,7 @@ import jp.co.yahoo.dataplatform.mds.binary.IBytesLink;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.blockindex.IBlockIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
-import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexType;
 import jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex;
 import jp.co.yahoo.dataplatform.mds.binary.maker.cache.ByteBufferCache;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStringCellIndex;
@@ -177,7 +175,6 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker implements IColumnBina
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = columnBinary.binaryStart;
     int minLength = wrapBuffer.getInt( offset );
     offset += PrimitiveByteLength.INT_LENGTH;
