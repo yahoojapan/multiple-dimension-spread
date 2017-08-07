@@ -19,10 +19,16 @@ package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
 public class RangeStringCompareFilter implements IStringCompareFilter{
 
+  private final boolean invert;
   private final IStringCompareFilter minFilter;
   private final IStringCompareFilter maxFilter;
 
   public RangeStringCompareFilter( final String min , final boolean minHasEqual , final String max , final boolean maxHasEqual ){
+    this( min , minHasEqual , max , maxHasEqual , false );
+  }
+
+  public RangeStringCompareFilter( final String min , final boolean minHasEqual , final String max , final boolean maxHasEqual , final boolean invert ){
+    this.invert = invert;
     if( minHasEqual ){
       minFilter = new GtStringCompareFilter( min );
     }
@@ -39,7 +45,12 @@ public class RangeStringCompareFilter implements IStringCompareFilter{
 
   @Override
   public IStringComparator getStringComparator(){
-    return new RangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() );
+    if( invert ){
+      return new InvertRangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() );
+    }
+    else{
+      return new RangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() );
+    }
   }
 
   @Override
@@ -71,6 +82,26 @@ public class RangeStringCompareFilter implements IStringCompareFilter{
         return true;
       }
       return false;
+    }
+
+  }
+
+  private class InvertRangeStringComparator implements IStringComparator{
+
+    private final IStringComparator min;
+    private final IStringComparator max;
+
+    public InvertRangeStringComparator( final IStringComparator min , final IStringComparator max ){
+      this.min = min;
+      this.max = max;
+    }
+
+    @Override
+    public boolean isFilterString( final String target ){
+      if( min.isFilterString( target ) && max.isFilterString( target ) ){
+        return false;
+      }
+      return true;
     }
 
   }

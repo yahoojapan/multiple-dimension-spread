@@ -45,22 +45,28 @@ import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.LtStringCompareFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.LeStringCompareFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.GtStringCompareFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.GeStringCompareFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilterType;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.StringCompareFilterType;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 
-public class EqualsHiveExpr implements IHiveExprNode{
+public class CompareHiveExpr implements IHiveExprNode{
 
+  private final StringCompareFilterType stringCompareType;
+  private final NumberFilterType numberCompareType;
   private final List<ExprNodeDesc> nodeDescList;
 
-  public EqualsHiveExpr( final List<ExprNodeDesc> nodeDescList ){
+  public CompareHiveExpr( final List<ExprNodeDesc> nodeDescList , final StringCompareFilterType stringCompareType , final NumberFilterType numberCompareType ){
     this.nodeDescList = nodeDescList;
+    this.stringCompareType = stringCompareType;
+    this.numberCompareType = numberCompareType;
   }
 
-  public static IExpressionNode getEqualsExecuter(final ExprNodeConstantDesc constDesc , final IExtractNode targetColumn ){
+  public static IExpressionNode getCompareExecuter(final ExprNodeConstantDesc constDesc , final IExtractNode targetColumn , final StringCompareFilterType stringCompareType , final NumberFilterType numberCompareType ){
     ObjectInspector objectInspector = constDesc.getWritableObjectInspector();
     if( objectInspector.getCategory() != ObjectInspector.Category.PRIMITIVE ){
       return null;
@@ -69,52 +75,52 @@ public class EqualsHiveExpr implements IHiveExprNode{
     IFilter filter = null;
     switch( primitiveObjectInspector.getPrimitiveCategory() ){
       case STRING:
-        filter = new PerfectMatchStringFilter( ( (WritableConstantStringObjectInspector)primitiveObjectInspector ).getWritableConstantValue().toString() );
-        break;
-      case BINARY:
-        filter = null;
-        break;
-      case BOOLEAN:
-        boolean booleanObj = ( (WritableConstantBooleanObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new BooleanFilter( booleanObj );
+        switch( stringCompareType ){
+          case LT:
+            filter = new LtStringCompareFilter( ( (WritableConstantStringObjectInspector)primitiveObjectInspector ).getWritableConstantValue().toString() );
+            break;
+          case LE:
+            filter = new LeStringCompareFilter( ( (WritableConstantStringObjectInspector)primitiveObjectInspector ).getWritableConstantValue().toString() );
+            break;
+          case GT:
+            filter = new GtStringCompareFilter( ( (WritableConstantStringObjectInspector)primitiveObjectInspector ).getWritableConstantValue().toString() );
+            break;
+          case GE:
+            filter = new GeStringCompareFilter( ( (WritableConstantStringObjectInspector)primitiveObjectInspector ).getWritableConstantValue().toString() );
+            break;
+          default:
+            filter = null;
+            break;
+        }
         break;
       case BYTE:
         byte byteObj = ( (WritableConstantByteObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new ByteObj( byteObj ) );
+        filter = new NumberFilter( numberCompareType , new ByteObj( byteObj ) );
         break;
       case SHORT:
         short shortObj = ( (WritableConstantShortObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new ShortObj( shortObj ) );
+        filter = new NumberFilter( numberCompareType , new ShortObj( shortObj ) );
         break;
       case INT:
         int intObj = ( (WritableConstantIntObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( intObj ) );
+        filter = new NumberFilter( numberCompareType , new IntegerObj( intObj ) );
         break;
       case LONG:
         long longObj = ( (WritableConstantLongObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new LongObj( longObj ) );
+        filter = new NumberFilter( numberCompareType , new LongObj( longObj ) );
         break;
       case FLOAT:
         float floatObj = ( (WritableConstantFloatObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new FloatObj( floatObj ) );
+        filter = new NumberFilter( numberCompareType , new FloatObj( floatObj ) );
         break;
       case DOUBLE:
         double doubleObj = ( (WritableConstantDoubleObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
-        filter = new NumberFilter( NumberFilterType.EQUAL , new DoubleObj( doubleObj ) );
+        filter = new NumberFilter( numberCompareType , new DoubleObj( doubleObj ) );
         break;
       case DATE:
       case DECIMAL:
       case TIMESTAMP:
         filter = null;
-        break;
-      case VOID:
-        Object voidObj = ( (WritableVoidObjectInspector)primitiveObjectInspector ).getWritableConstantValue();
-        if( voidObj == null ){
-          filter = new NullFilter();
-        }
-        else{
-          filter = null;
-        }
         break;
       default:
         filter = null;
@@ -124,6 +130,36 @@ public class EqualsHiveExpr implements IHiveExprNode{
       return null;
     }
     return new ExecuterNode( targetColumn , filter );
+  }
+
+  public static StringCompareFilterType getReverseStringType( final StringCompareFilterType type ){
+    switch( type ){
+      case LT:
+        return StringCompareFilterType.GT;
+      case LE:
+        return StringCompareFilterType.GE;
+      case GT:
+        return StringCompareFilterType.LT;
+      case GE:
+        return StringCompareFilterType.LE;
+      default:
+        throw new RuntimeException( "Unknown string compare type." );
+    }
+  }
+
+  public static NumberFilterType getReverseNumberType( final NumberFilterType type ){
+    switch( type ){
+      case LT:
+        return NumberFilterType.GT;
+      case LE:
+        return NumberFilterType.GE;
+      case GT:
+        return NumberFilterType.LT;
+      case GE:
+        return NumberFilterType.LE;
+      default:
+        throw new RuntimeException( "Unknown number compare type." );
+    }
   }
 
   @Override
@@ -141,14 +177,20 @@ public class EqualsHiveExpr implements IHiveExprNode{
 
     ExprNodeDesc columnDesc;
     ExprNodeConstantDesc constantDesc;
+    StringCompareFilterType strType;
+    NumberFilterType numberType;
 
     if( exprNode1 instanceof ExprNodeConstantDesc ){
       columnDesc = exprNode2;
       constantDesc = (ExprNodeConstantDesc)exprNode1;
+      strType = getReverseStringType( stringCompareType );
+      numberType = getReverseNumberType( numberCompareType );
     } 
     else if( exprNode2 instanceof ExprNodeConstantDesc ){
       columnDesc = exprNode1;
       constantDesc = (ExprNodeConstantDesc)exprNode2;
+      strType = stringCompareType;
+      numberType = numberCompareType;
     }
     else{
       return null;
@@ -159,7 +201,7 @@ public class EqualsHiveExpr implements IHiveExprNode{
       return null;
     }
 
-    return getEqualsExecuter( constantDesc , extractNode );
+    return getCompareExecuter( constantDesc , extractNode , strType , numberType );
   }
 
 }

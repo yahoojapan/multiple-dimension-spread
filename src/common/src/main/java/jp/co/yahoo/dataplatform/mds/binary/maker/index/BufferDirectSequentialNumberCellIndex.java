@@ -26,9 +26,11 @@ import java.util.Set;
 import java.util.HashSet;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
+import jp.co.yahoo.dataplatform.mds.util.NumberUtils;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberRangeFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
 public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
@@ -86,6 +88,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           default:
             return null;
         }
+      case NUMBER_RANGE:
+        NumberRangeFilter numberRangeFilter = (NumberRangeFilter)filter;
+        return toColumnList( comparator.getRange( dicManager , dicIndexIntBuffer , numberRangeFilter ) );
       default:
         return null;
     }
@@ -123,6 +128,8 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException;
 
+    Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException;
+
   }
 
   public class NullComparator implements IComparator{
@@ -154,6 +161,11 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
+      return null;
+    }
+
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       return null;
     }
 
@@ -269,6 +281,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       return matchDicList;
     }
 
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      long min;
+      long max;
+      try{
+        min = numberRangeFilter.getMinObject().getLong();
+        max = numberRangeFilter.getMaxObject().getLong();
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        long target = dicManager.get( i ).getLong();
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
+      return matchDicList;
+    }
+
   }
 
   public class IntegerComparator implements IComparator{
@@ -378,6 +413,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
         }
       }
 
+      return matchDicList;
+    }
+
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      int min;
+      int max;
+      try{
+        min = numberRangeFilter.getMinObject().getInt();
+        max = numberRangeFilter.getMaxObject().getInt();
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        int target = dicManager.get( i ).getInt();
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
       return matchDicList;
     }
 
@@ -493,6 +551,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       return matchDicList;
     }
 
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      short min;
+      short max;
+      try{
+        min = numberRangeFilter.getMinObject().getShort();
+        max = numberRangeFilter.getMaxObject().getShort();
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        short target = dicManager.get( i ).getShort();
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
+      return matchDicList;
+    }
+
   }
 
   public class ByteComparator implements IComparator{
@@ -602,6 +683,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
         }
       }
 
+      return matchDicList;
+    }
+
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      byte min;
+      byte max;
+      try{
+        min = numberRangeFilter.getMinObject().getByte();
+        max = numberRangeFilter.getMaxObject().getByte();
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        byte target = dicManager.get( i ).getByte();
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
       return matchDicList;
     }
 
@@ -717,6 +821,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       return matchDicList;
     }
 
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      Float min;
+      Float max;
+      try{
+        min = Float.valueOf( numberRangeFilter.getMinObject().getFloat() );
+        max = Float.valueOf( numberRangeFilter.getMaxObject().getFloat() );
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        Float target = Float.valueOf( dicManager.get( i ).getFloat() );
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
+      return matchDicList;
+    }
+
   }
 
   public class DoubleComparator implements IComparator{
@@ -826,6 +953,29 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
         }
       }
 
+      return matchDicList;
+    }
+
+    @Override
+    public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
+      Set<Integer> matchDicList = new HashSet<Integer>();
+      boolean invert = numberRangeFilter.isInvert();
+      Double min;
+      Double max;
+      try{
+        min = Double.valueOf( numberRangeFilter.getMinObject().getDouble() );
+        max = Double.valueOf( numberRangeFilter.getMaxObject().getDouble() );
+      }catch( NumberFormatException e ){
+        return null;
+      }
+      boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+      boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
+        Double target = Double.valueOf( dicManager.get( i ).getDouble() );
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+          matchDicList.add( Integer.valueOf( i ) );
+        }
+      }
       return matchDicList;
     }
 

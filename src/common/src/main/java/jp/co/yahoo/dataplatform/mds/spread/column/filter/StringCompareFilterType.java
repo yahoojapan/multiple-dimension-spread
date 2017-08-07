@@ -19,6 +19,7 @@ package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
 public enum StringCompareFilterType {
 
+  REVERSE_RANGE,
   RANGE,
   LT,
   LE,

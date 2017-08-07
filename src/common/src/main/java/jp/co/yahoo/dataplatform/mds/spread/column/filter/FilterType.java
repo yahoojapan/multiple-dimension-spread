@@ -25,6 +25,7 @@ public enum FilterType {
   STRING_COMPARE,
   STRING_DICTIONARY,
   NUMBER,
+  NUMBER_RANGE,
   BOOLEAN,
 
 }
