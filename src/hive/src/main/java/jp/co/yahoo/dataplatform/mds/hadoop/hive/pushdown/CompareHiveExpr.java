@@ -25,9 +25,8 @@ import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableVoidObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantStringObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantByteObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantShortObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantIntObjectInspector;

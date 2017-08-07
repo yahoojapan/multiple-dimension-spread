@@ -19,23 +19,12 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.pushdown;
 
 import java.util.List;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableVoidObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBooleanObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantStringObjectInspector;
-
-import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.OrExpressionNode;
 
 public class InHiveExpr implements IHiveExprNode{

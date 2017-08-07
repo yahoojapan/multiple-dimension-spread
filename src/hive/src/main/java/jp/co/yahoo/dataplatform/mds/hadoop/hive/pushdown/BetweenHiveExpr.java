@@ -25,7 +25,6 @@ import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableVoidObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantStringObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantByteObjectInspector;
@@ -46,16 +45,9 @@ import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberRangeFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilterType;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.RangeStringCompareFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
-import jp.co.yahoo.dataplatform.mds.spread.expression.AndExpressionNode;
-import jp.co.yahoo.dataplatform.mds.spread.expression.OrExpressionNode;
 
 public class BetweenHiveExpr implements IHiveExprNode{
 
