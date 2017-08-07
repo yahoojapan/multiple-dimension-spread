@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class FlattenFunction implements IFlattenFunction{
 
@@ -80,6 +81,20 @@ public class FlattenFunction implements IFlattenFunction{
     }
     else{
       return filterRead( spread );
+    }
+  }
+
+  @Override
+  public void flattenIndexNode( final BlockIndexNode rootNode ){
+    if( filterColumnList.isEmpty() ){
+      for( FlattenColumn flattenColumn : flattenColumnList ){
+        flattenColumn.flattenIndexNode( rootNode );
+      }
+    }
+    else{
+      for( String linkName : filterColumnList ){
+        flattenColumnMap.get( linkName ).flattenIndexNode( rootNode );
+      }
     }
   }
 

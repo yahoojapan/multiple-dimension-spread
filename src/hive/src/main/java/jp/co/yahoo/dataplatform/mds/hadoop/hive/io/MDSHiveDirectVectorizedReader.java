@@ -59,9 +59,10 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
   public MDSHiveDirectVectorizedReader( final InputStream in , final long dataLength , final long start , final long length , final IVectorizedReaderSetting setting , final IJobReporter reporter ) throws IOException{
     this.setting = setting;
     this.reporter = reporter;
+    node = setting.getExpressionNode();
+    currentReader.setBlockSkipIndex( node );
     currentReader.setNewStream( in ,  dataLength , setting.getReaderConfig(), start , length );
     assignors = setting.getAssignors();
-    node = setting.getExpressionNode();
     needColumnIds = setting.getNeedColumnIds();
     columnNames = setting.getColumnNames();
   }

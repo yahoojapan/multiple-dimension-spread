@@ -19,9 +19,6 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.pushdown;
 
 import java.util.List;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
-import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import org.apache.hadoop.hive.ql.plan.ExprNodeDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeConstantDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
@@ -31,11 +28,29 @@ import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableVoidObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBooleanObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantStringObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantByteObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantShortObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantIntObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantLongObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantFloatObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantDoubleObjectInspector;
+
+import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
+import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
+import jp.co.yahoo.dataplatform.schema.objects.IntegerObj;
+import jp.co.yahoo.dataplatform.schema.objects.LongObj;
+import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
+import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilterType;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 
 public class EqualsHiveExpr implements IHiveExprNode{
 
@@ -64,11 +79,29 @@ public class EqualsHiveExpr implements IHiveExprNode{
         filter = new BooleanFilter( booleanObj );
         break;
       case BYTE:
-      case DOUBLE:
-      case FLOAT:
-      case INT:
-      case LONG:
+        byte byteObj = ( (WritableConstantByteObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new ByteObj( byteObj ) );
+        break;
       case SHORT:
+        short shortObj = ( (WritableConstantShortObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new ShortObj( shortObj ) );
+        break;
+      case INT:
+        int intObj = ( (WritableConstantIntObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( intObj ) );
+        break;
+      case LONG:
+        long longObj = ( (WritableConstantLongObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new LongObj( longObj ) );
+        break;
+      case FLOAT:
+        float floatObj = ( (WritableConstantFloatObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new FloatObj( floatObj ) );
+        break;
+      case DOUBLE:
+        double doubleObj = ( (WritableConstantDoubleObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
+        filter = new NumberFilter( NumberFilterType.EQUAL , new DoubleObj( doubleObj ) );
+        break;
       case DATE:
       case DECIMAL:
       case TIMESTAMP:

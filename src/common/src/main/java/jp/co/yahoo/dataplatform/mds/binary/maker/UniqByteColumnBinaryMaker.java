@@ -43,6 +43,7 @@ import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialNumberCellIndex;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
@@ -130,6 +131,11 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
       }
     }
     allocator.setValueCount( size );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class ByteDicManager implements IDicManager{

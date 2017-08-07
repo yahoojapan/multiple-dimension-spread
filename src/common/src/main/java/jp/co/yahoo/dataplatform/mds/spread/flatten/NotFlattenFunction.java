@@ -18,6 +18,7 @@
 package jp.co.yahoo.dataplatform.mds.spread.flatten;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class NotFlattenFunction implements IFlattenFunction{
 
@@ -34,6 +35,11 @@ public class NotFlattenFunction implements IFlattenFunction{
   @Override
   public String[] getFlattenColumnName( final String linkColumnName ){
     return new String[0];
+  }
+
+  @Override
+  public void flattenIndexNode( final BlockIndexNode rootNode ){
+
   }
 
 }

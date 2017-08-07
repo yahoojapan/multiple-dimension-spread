@@ -45,7 +45,6 @@ public class PredicateBlockMaker implements IBlockMaker{
 
   private static final int META_BUFFER_SIZE = 1024 * 1024 * 1;
 
-  private final ICompressor compressor = new GzipCompressor();
   private final MakerCache makerCache = new MakerCache();
   private final List<Integer> spreadSizeList = new ArrayList<Integer>();
 
@@ -54,8 +53,10 @@ public class PredicateBlockMaker implements IBlockMaker{
   private ByteArrayData metaBuffer;
   private int blockSize;
   private ColumnBinaryTree columnTree;
-  private byte[] headerBytes;
-  private int bufferSize;
+
+  protected ICompressor compressor = new GzipCompressor();
+  protected byte[] headerBytes;
+  protected int bufferSize;
 
   @Override
   public void setup( final int blockSize , final Configuration config ) throws IOException{

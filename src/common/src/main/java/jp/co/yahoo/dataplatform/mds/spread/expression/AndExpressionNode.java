@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import jp.co.yahoo.dataplatform.mds.util.CollectionUtils;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class AndExpressionNode implements IExpressionNode {
 
@@ -84,6 +85,17 @@ public class AndExpressionNode implements IExpressionNode {
     }
 
     return intersection;
+  }
+
+  @Override
+  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+    for( IExpressionNode node : childNode ){
+      if( node.canBlockSkip( indexNode ) ){
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }

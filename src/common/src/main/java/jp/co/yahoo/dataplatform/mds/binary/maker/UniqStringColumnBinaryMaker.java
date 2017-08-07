@@ -37,6 +37,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.cache.ByteBufferCache;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStringCellIndex;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
@@ -149,6 +150,11 @@ binaryLength );
       }
     }
     allocator.setValueCount( size );
+  }
+
+  @Override
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+    parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 
   public class StringDicManager implements IDicManager{

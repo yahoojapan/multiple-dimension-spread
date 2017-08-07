@@ -29,7 +29,16 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotEqual;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNull;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotNull;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFIndex;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFIn;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFBetween;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqualOrLessThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPLessThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqualOrGreaterThan;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPGreaterThan;
 import org.apache.hadoop.hive.ql.udf.UDFLike;
+
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilterType;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.StringCompareFilterType;
 
 public final class HiveExprFactory {
 
@@ -49,11 +58,29 @@ public final class HiveExprFactory {
     else if( udf instanceof GenericUDFOPNotNull ){
       return new NotNullHiveExpr( childNodeDesc );
     }
+    else if( udf instanceof GenericUDFIn ){
+      return new InHiveExpr( childNodeDesc );
+    }
+    else if( udf instanceof GenericUDFBetween ){
+      return new BetweenHiveExpr( childNodeDesc );
+    }
     else if( udf instanceof GenericUDFOPNull ){
       return new NullHiveExpr( childNodeDesc );
     }
     else if( udf instanceof GenericUDFIndex ){
       return new BooleanHiveExpr( exprNodeDesc , (GenericUDFIndex)udf );
+    }
+    else if( udf instanceof GenericUDFOPEqualOrLessThan ){
+      return new CompareHiveExpr( childNodeDesc , StringCompareFilterType.LE , NumberFilterType.LE );
+    }
+    else if( udf instanceof GenericUDFOPLessThan ){
+      return new CompareHiveExpr( childNodeDesc , StringCompareFilterType.LT , NumberFilterType.LT );
+    }
+    else if( udf instanceof GenericUDFOPEqualOrGreaterThan ){
+      return new CompareHiveExpr( childNodeDesc , StringCompareFilterType.GE , NumberFilterType.GE );
+    }
+    else if( udf instanceof GenericUDFOPGreaterThan ){
+      return new CompareHiveExpr( childNodeDesc , StringCompareFilterType.GT , NumberFilterType.GT );
     }
 
     return new UnsupportHiveExpr();

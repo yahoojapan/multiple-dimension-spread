@@ -24,11 +24,18 @@ public class ColumnNameNode{
 
   public final String currentNodeName;
   public final Map<String,ColumnNameNode> childNodeMap;
+  public boolean isDisableFlag;
   public boolean needChild;
 
   public ColumnNameNode( final String currentNodeName ){
     this.currentNodeName = currentNodeName;
     childNodeMap = new HashMap<String,ColumnNameNode>();
+  }
+
+  public ColumnNameNode( final String currentNodeName , final boolean isDisableFlag ){
+    this.currentNodeName = currentNodeName;
+    childNodeMap = new HashMap<String,ColumnNameNode>();
+    this.isDisableFlag = isDisableFlag;
   }
 
   public void addChild( final ColumnNameNode childNode ){
@@ -61,6 +68,10 @@ public class ColumnNameNode{
 
   public int getChildSize(){
     return childNodeMap.size();
+  }
+
+  public boolean isDisable(){
+    return isDisableFlag;
   }
 
   @Override

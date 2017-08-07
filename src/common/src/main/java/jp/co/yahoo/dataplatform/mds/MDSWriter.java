@@ -27,7 +27,7 @@ import java.util.List;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.block.FindBlockMaker;
 import jp.co.yahoo.dataplatform.mds.block.IBlockMaker;
-import jp.co.yahoo.dataplatform.mds.block.PredicateBlockMaker;
+import jp.co.yahoo.dataplatform.mds.block.BlockSkipPredicateBlockMaker;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.config.Configuration;
@@ -42,9 +42,9 @@ public class MDSWriter implements AutoCloseable{
   public MDSWriter( final OutputStream out , final Configuration config ) throws IOException{
     this.out = out;
 
-    int blockSize = config.getInt( "block.size" , 1024 * 1024 * 128 );
+    int blockSize = config.getInt( "block.size" , 1024 * 1024 * 64 );
 
-    blockMaker = FindBlockMaker.get( config.get( "block.maker.class" , PredicateBlockMaker.class.getName() ) );
+    blockMaker = FindBlockMaker.get( config.get( "block.maker.class" , BlockSkipPredicateBlockMaker.class.getName() ) );
     blockMaker.setup( blockSize , config );
     String blockMakerClassName = blockMaker.getReaderClassName();
     int classNameLength = blockMakerClassName.length() * PrimitiveByteLength.CHAR_LENGTH;

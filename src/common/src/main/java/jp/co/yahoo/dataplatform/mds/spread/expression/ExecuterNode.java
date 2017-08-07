@@ -24,6 +24,7 @@ import java.util.List;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class ExecuterNode implements IExpressionNode{
 
@@ -48,6 +49,12 @@ public class ExecuterNode implements IExpressionNode{
   public List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException{
     IColumn column = columnExtractNode.get( spread );
     return column.filter( filter );
+  }
+
+  @Override
+  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+    BlockIndexNode currentNode = columnExtractNode.get( indexNode );
+    return currentNode.getBlockIndex().canBlockSkip( filter );
   }
 
 }

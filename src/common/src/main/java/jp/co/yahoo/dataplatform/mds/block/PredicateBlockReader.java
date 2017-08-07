@@ -36,6 +36,7 @@ import jp.co.yahoo.dataplatform.mds.spread.flatten.IFlattenFunction;
 import jp.co.yahoo.dataplatform.mds.spread.flatten.FlattenFunctionFactory;
 import jp.co.yahoo.dataplatform.mds.spread.expand.IExpandFunction;
 import jp.co.yahoo.dataplatform.mds.spread.expand.ExpandFunctionFactory;
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IPrimitiveObjectConnector;
@@ -46,21 +47,22 @@ import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
 public class PredicateBlockReader implements IBlockReader{
 
   private final Block block;
-  private final ICompressor compressor = new GzipCompressor();
   private final ColumnBinaryTree columnBinaryTree = new ColumnBinaryTree();
   private final List<Integer> spreadSizeList = new ArrayList<Integer>();
   private final SummaryStats readSummaryStats = new SummaryStats();
 
   private IPrimitiveObjectConnector primitiveObjectConnector;
 
-  private IExpandFunction expandFunction;
-  private IFlattenFunction flattenFunction;
   private ColumnNameNode columnFilterNode;
   private byte[] buffer;
   private byte[] metaBinary;
 
   private byte[] metaBytes;
   private int readCount;
+
+  protected ICompressor compressor = new GzipCompressor();
+  protected IExpandFunction expandFunction;
+  protected IFlattenFunction flattenFunction;
 
   public PredicateBlockReader(){
     block = new Block();
@@ -133,6 +135,11 @@ public class PredicateBlockReader implements IBlockReader{
     if( buffer.length < blockSize ){
       buffer = new byte[blockSize];
     }
+  }
+
+  @Override
+  public void setBlockSkipIndex( final IExpressionNode blockSkipIndex ){
+
   }
 
   @Override
@@ -268,6 +275,13 @@ public class PredicateBlockReader implements IBlockReader{
 
   @Override
   public void close() throws IOException{
+  }
+
+  public void clear(){
+    spreadSizeList.clear();
+    columnBinaryTree.clear();
+    readCount = 0;
+    block.setColumnBinaryTree( null );
   }
 
 }

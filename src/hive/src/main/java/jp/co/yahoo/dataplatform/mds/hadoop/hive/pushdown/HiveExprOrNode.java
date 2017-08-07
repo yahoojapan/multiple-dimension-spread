@@ -75,7 +75,7 @@ public class HiveExprOrNode implements IHiveExprNode{
     for( IHiveExprNode childHiveExprNode : childNodeList ){
       IExpressionNode childNode = childHiveExprNode.getPushDownFilterNode();
       if( childNode == null ){
-        return null;
+        return new OrExpressionNode();
       }
       result.addChildNode( childNode );
     }

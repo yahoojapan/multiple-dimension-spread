@@ -18,13 +18,16 @@
 package jp.co.yahoo.dataplatform.mds.spread.flatten;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public interface IFlattenFunction{
 
   boolean isFlatten();
 
-  Spread flatten(final Spread spread );
+  Spread flatten( final Spread spread );
 
   String[] getFlattenColumnName( final String linkColumnName );
+
+  void flattenIndexNode( final BlockIndexNode rootNode );
 
 }

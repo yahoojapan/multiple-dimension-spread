@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.util.CollectionUtils;
 
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
+
 public class OrExpressionNode implements IExpressionNode {
 
   private final List<IExpressionNode> childNode = new ArrayList<IExpressionNode>();
@@ -84,6 +86,20 @@ public class OrExpressionNode implements IExpressionNode {
     }
 
     return union;
+  }
+
+  @Override
+  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+    if( childNode.isEmpty() ){
+      return false;
+    }
+    for( IExpressionNode node : childNode ){
+      if( ! node.canBlockSkip( indexNode ) ){
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }

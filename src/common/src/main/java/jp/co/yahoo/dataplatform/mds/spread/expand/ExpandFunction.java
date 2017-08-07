@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 public class ExpandFunction implements IExpandFunction{
 
@@ -57,6 +58,12 @@ public class ExpandFunction implements IExpandFunction{
     ExpandSpread expandSpread = expandNode.get( spread );
     expandColumnLink.createLink( expandSpread );
     return expandSpread;
+  }
+
+  @Override
+  public void expandIndexNode( final BlockIndexNode rootNode ) throws IOException{
+    expandNode.setIndexNode( rootNode );
+    expandColumnLink.createLinkIndexNode( rootNode );
   }
 
   @Override
