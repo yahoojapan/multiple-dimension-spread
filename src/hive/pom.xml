@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -76,12 +76,12 @@
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-common</artifactId>
-      <version>0.2.0</version>
+      <version>0.2.11-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-orc</artifactId>
-      <version>0.2.0</version>
+      <version>0.2.11-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.config</groupId>
@@ -94,7 +94,4 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <build>
-    <finalName>yjava_dataplatform_mds_hive</finalName>
-  </build>
 </project>
