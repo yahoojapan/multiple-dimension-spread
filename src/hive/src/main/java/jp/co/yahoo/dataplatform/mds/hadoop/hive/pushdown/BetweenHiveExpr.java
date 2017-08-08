@@ -66,7 +66,7 @@ public class BetweenHiveExpr implements IHiveExprNode{
       case STRING:
         String minStr =  ( (WritableConstantStringObjectInspector)minPrimitiveObjectInspector ).getWritableConstantValue().toString();
         String maxStr =  ( (WritableConstantStringObjectInspector)maxPrimitiveObjectInspector ).getWritableConstantValue().toString();
-        IFilter filter = new RangeStringCompareFilter( maxStr , true , minStr , true , invert );
+        IFilter filter = new RangeStringCompareFilter( minStr , true , maxStr , true , invert );
         return new ExecuterNode( targetColumn , filter );
       case BYTE:
         return getNumberRangeExecuter( invert , new ByteObj( ( (WritableConstantByteObjectInspector)minPrimitiveObjectInspector ).getWritableConstantValue().get() ) , new ByteObj( ( (WritableConstantByteObjectInspector)maxPrimitiveObjectInspector ).getWritableConstantValue().get() ) , targetColumn );

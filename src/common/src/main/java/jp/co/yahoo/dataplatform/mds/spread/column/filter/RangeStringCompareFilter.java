@@ -30,27 +30,22 @@ public class RangeStringCompareFilter implements IStringCompareFilter{
   public RangeStringCompareFilter( final String min , final boolean minHasEqual , final String max , final boolean maxHasEqual , final boolean invert ){
     this.invert = invert;
     if( minHasEqual ){
-      minFilter = new GtStringCompareFilter( min );
-    }
-    else{
       minFilter = new GeStringCompareFilter( min );
     }
+    else{
+      minFilter = new GtStringCompareFilter( min );
+    }
     if( maxHasEqual ){
-      maxFilter = new LtStringCompareFilter( max );
+      maxFilter = new LeStringCompareFilter( max );
     }
     else{
-      maxFilter = new LeStringCompareFilter( max );
+      maxFilter = new LtStringCompareFilter( max );
     }
   }
 
   @Override
   public IStringComparator getStringComparator(){
-    if( invert ){
-      return new InvertRangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() );
-    }
-    else{
-      return new RangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() );
-    }
+    return new RangeStringComparator( minFilter.getStringComparator() , maxFilter.getStringComparator() , invert );
   }
 
   @Override
@@ -65,43 +60,38 @@ public class RangeStringCompareFilter implements IStringCompareFilter{
 
   private class RangeStringComparator implements IStringComparator{
 
-    private final IStringComparator min;
-    private final IStringComparator max;
+    private final IStringComparator minComparator;
+    private final IStringComparator maxComparator;
+    private final boolean filter;
+    private final boolean through;
 
-    public RangeStringComparator( final IStringComparator min , final IStringComparator max ){
-      this.min = min;
-      this.max = max;
+    public RangeStringComparator( final IStringComparator minComparator , final IStringComparator maxComparator , final boolean invert ){
+      this.minComparator = minComparator;
+      this.maxComparator = maxComparator;
+      if( invert ){
+        filter = false;
+        through = true;
+      }
+      else{
+        filter = true;
+        through = false;
+      }
     }
 
     @Override
     public boolean isFilterString( final String target ){
-      if( min.isFilterString( target ) ){
-        return true;
+      if( minComparator.isFilterString( target ) || maxComparator.isFilterString( target ) ){
+        return filter;
       }
-      if( max.isFilterString( target ) ){
+      return through;
+    }
+
+    @Override
+    public boolean isOutOfRange( final String min , final String max ){
+      if( minComparator.isFilterString( max ) || maxComparator.isFilterString( min ) ){
         return true;
       }
       return false;
-    }
-
-  }
-
-  private class InvertRangeStringComparator implements IStringComparator{
-
-    private final IStringComparator min;
-    private final IStringComparator max;
-
-    public InvertRangeStringComparator( final IStringComparator min , final IStringComparator max ){
-      this.min = min;
-      this.max = max;
-    }
-
-    @Override
-    public boolean isFilterString( final String target ){
-      if( min.isFilterString( target ) && max.isFilterString( target ) ){
-        return false;
-      }
-      return true;
     }
 
   }

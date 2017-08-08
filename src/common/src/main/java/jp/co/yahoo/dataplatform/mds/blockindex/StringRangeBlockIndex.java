@@ -119,7 +119,7 @@ public class StringRangeBlockIndex implements IBlockIndex{
       case STRING_COMPARE:
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
-        if( comparator.isFilterString( min ) && comparator.isFilterString( max ) ){
+        if( comparator.isOutOfRange( min , max ) ){
           return true;
         }
         return false;

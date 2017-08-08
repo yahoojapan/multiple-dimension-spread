@@ -21,4 +21,6 @@ public interface IStringComparator{
 
   boolean isFilterString( final String target );
 
+  boolean isOutOfRange( final String min , final String max );
+
 }

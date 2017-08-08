@@ -89,6 +89,9 @@ public class AndExpressionNode implements IExpressionNode {
 
   @Override
   public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+    if( childNode.isEmpty() ){
+      return false;
+    }
     for( IExpressionNode node : childNode ){
       if( node.canBlockSkip( indexNode ) ){
         return true;

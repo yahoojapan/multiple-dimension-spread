@@ -32,7 +32,7 @@ public class GeStringCompareFilter implements IStringCompareFilter{
 
   @Override
   public StringCompareFilterType getStringCompareFilterType(){
-    return StringCompareFilterType.GT;
+    return StringCompareFilterType.GE;
   }
 
   @Override
@@ -50,7 +50,15 @@ public class GeStringCompareFilter implements IStringCompareFilter{
 
     @Override
     public boolean isFilterString( final String target ){
-      return 0 <= str.compareTo( target ); 
+      return 0 < str.compareTo( target ); 
+    }
+
+    @Override
+    public boolean isOutOfRange( final String min , final String max ){
+      if( isFilterString( min ) && isFilterString( max ) ){
+        return true;
+      }
+      return false;
     }
 
   }

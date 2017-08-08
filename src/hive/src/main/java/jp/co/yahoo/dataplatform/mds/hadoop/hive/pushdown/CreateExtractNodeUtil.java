@@ -53,6 +53,9 @@ public final class CreateExtractNodeUtil{
 
   public static IExtractNode getExtractNodeFromGenericFunc( final ExprNodeGenericFuncDesc target ){
     GenericUDF udf = target.getGenericUDF();
+    if( ! ( udf instanceof GenericUDFIndex ) ){
+      return null;
+    }
     return getExtractNodeFromGenericIndex( target , (GenericUDFIndex)udf );
   }
 
