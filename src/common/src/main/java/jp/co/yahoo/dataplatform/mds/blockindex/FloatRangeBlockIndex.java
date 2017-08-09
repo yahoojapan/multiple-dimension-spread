@@ -140,25 +140,25 @@ public class FloatRangeBlockIndex implements IBlockIndex{
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
-          if( ( min.compareTo( setMin ) < 0 && 0 < max.compareTo( setMax ) ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
             return true;
           }
           return false;
         }
         else if( minHasEquals ){
-          if( ( min.compareTo( setMin ) < 0 && 0 <= max.compareTo( setMax ) ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
             return true;
           }
           return false;
         }
         else if( maxHasEquals ){
-          if( ( min.compareTo( setMin ) <= 0 && 0 < max.compareTo( setMax ) ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
             return true;
           }
           return false;
         }
         else{
-          if( ( min.compareTo( setMin ) <= 0 && 0 <= max.compareTo( setMax ) ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
             return true;
           }
           return false;

@@ -140,25 +140,25 @@ public class ByteRangeBlockIndex implements IBlockIndex{
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
-          if( ( min < setMin && setMax < max ) != invert ){
+          if( ( setMax < min || max < setMin ) != invert ){
             return true;
           }
           return false;
         }
         else if( minHasEquals ){
-          if( ( min < setMin && setMax <= max ) != invert ){
+          if( ( setMax < min || max <= setMin ) != invert ){
             return true;
           }
           return false;
         }
         else if( maxHasEquals ){
-          if( ( min <= setMin && setMax < max ) != invert ){
+          if( ( setMax <= min || max < setMin ) != invert ){
             return true;
           }
           return false;
         }
         else{
-          if( ( min <= setMin && setMax <= max ) != invert ){
+          if( ( setMax <= min || max <= setMin ) != invert ){
             return true;
           }
           return false;

@@ -92,25 +92,25 @@ public class RangeIntegerIndex implements ICellIndex{
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
-          if( ( min < setMin && setMax < max ) != invert ){
+          if( ( setMax < min || max < setMin ) != invert ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( minHasEquals ){
-          if( ( min < setMin && setMax <= max ) != invert ){
+          if( ( setMax < min || max <= setMin ) != invert ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( maxHasEquals ){
-          if( ( min <= setMin && setMax < max ) != invert ){
+          if( ( setMax <= min || max < setMin ) != invert ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else{
-          if( ( min <= setMin && setMax <= max ) != invert ){
+          if( ( setMax <= min || max <= setMin ) != invert ){
             return new ArrayList<Integer>();
           }
           return null;
