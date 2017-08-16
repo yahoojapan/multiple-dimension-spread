@@ -41,9 +41,16 @@ public class MDSHiveLineInputFormat extends FileInputFormat<NullWritable,ColumnA
   private static final Logger LOG = LoggerFactory.getLogger( MDSHiveLineInputFormat.class );
   private final SpreadCounter spreadCounter = new SpreadCounter();
 
+/*
   public MDSHiveLineInputFormat(){
     super();
+  }
+*/
+
+  @Override
+  public InputSplit[] getSplits( final JobConf job , final int numSplits ) throws IOException{
     super.setMinSplitSize( MIN_SPLIT_BLOCK_SIZE );
+    return super.getSplits( job , numSplits );
   }
 
   @Override

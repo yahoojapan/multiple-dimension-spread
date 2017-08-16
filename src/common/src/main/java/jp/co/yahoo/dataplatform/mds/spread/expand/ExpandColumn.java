@@ -84,6 +84,11 @@ public class ExpandColumn implements IColumn{
   }
 
   @Override
+  public ICellManager getCellManager(){
+    return null;
+  }
+
+  @Override
   public void setCellManager( final ICellManager cellManager ){
     throw new UnsupportedOperationException( "Expand column is read only." );
   }

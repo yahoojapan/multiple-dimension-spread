@@ -82,6 +82,11 @@ public class LazyColumn implements IColumn{
   }
 
   @Override
+  public ICellManager getCellManager(){
+    return columnManager.get().getCellManager();
+  }
+
+  @Override
   public void setCellManager( final ICellManager cellManager ){
     columnManager.get().setCellManager( cellManager );
   }

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
-import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
+import jp.co.yahoo.dataplatform.mds.spread.column.IDictionaryCellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
@@ -35,7 +35,7 @@ import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
-public class BufferDirectDictionaryLinkCellManager implements ICellManager {
+public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellManager {
 
   private final ColumnType columnType;
   private final IDicManager dicManager;
@@ -138,4 +138,33 @@ public class BufferDirectDictionaryLinkCellManager implements ICellManager {
     }
     return result;
   }
+
+  @Override
+  public int[] getIndexArray( final IExpressionIndex indexList ) throws IOException{
+    int[] result = new int[indexList.size()];
+    for( int i = 0 ; i < indexList.size() && i < indexSize ; i++ ){
+      result[i] = dicIndexIntBuffer.get( indexList.get(i) );
+    }
+    return result;
+  }
+
+  @Override
+  public int[] getIndexArray() throws IOException{
+    int[] result = new int[indexSize];
+    for( int i = 0 ; i < indexSize ; i++ ){
+      result[i] = dicIndexIntBuffer.get( i );
+    }
+    return result;
+  }
+
+  @Override
+  public PrimitiveObject[] getDictionary() throws IOException{
+    PrimitiveObject[] result = new PrimitiveObject[dicManager.getDicSize()];
+    result[0] = null;
+    for( int i = 1 ; i < result.length ; i++ ){
+      result[i] = dicManager.get(i);
+    }
+    return result;
+  }
+
 }

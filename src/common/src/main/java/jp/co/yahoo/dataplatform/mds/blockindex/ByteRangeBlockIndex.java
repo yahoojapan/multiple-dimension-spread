@@ -99,7 +99,7 @@ public class ByteRangeBlockIndex implements IBlockIndex{
         }
         switch( numberFilter.getNumberFilterType() ){
           case EQUAL:
-            if( setNumber < min || max < setNumber  ){
+            if( setNumber < min || max < setNumber ){
               return true;
             }
             return false;

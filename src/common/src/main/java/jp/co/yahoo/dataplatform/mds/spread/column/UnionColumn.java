@@ -107,6 +107,11 @@ public class UnionColumn implements IColumn {
   }
 
   @Override
+  public ICellManager getCellManager(){
+    return cellManager;
+  }
+
+  @Override
   public void setCellManager( final ICellManager cellManager ){
     this.cellManager = cellManager;
   }

@@ -44,6 +44,8 @@ public interface IColumn{
 
   void addCell( final ColumnType type , final ICell obj , final int index ) throws IOException;
 
+  ICellManager getCellManager();
+
   void setCellManager( final ICellManager cellManager );
 
   ICell get( final int index );
