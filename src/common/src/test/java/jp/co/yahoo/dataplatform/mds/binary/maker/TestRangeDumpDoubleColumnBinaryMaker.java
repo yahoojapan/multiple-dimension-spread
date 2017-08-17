@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
@@ -31,23 +30,24 @@ import static org.testng.Assert.assertNull;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import org.testng.annotations.Test;
 
-import jp.co.yahoo.dataplatform.schema.objects.StringObj;
+import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
-public class TestDumpStringColumnBinaryMaker {
+public class TestRangeDumpDoubleColumnBinaryMaker {
 
-  private class TestStringMemoryAllocator implements IMemoryAllocator{
+  private class TestDoubleMemoryAllocator implements IMemoryAllocator{
 
-    public final List<String> list;
-
-    public TestStringMemoryAllocator(){
-      list = new ArrayList<String>();
+    public final List<Double> list;
+ 
+    public TestDoubleMemoryAllocator(){
+      list = new ArrayList<Double>();
       for( int i = 0 ; i < 6 ; i++ ){
         list.add( null );
       }
@@ -83,16 +83,15 @@ public class TestDumpStringColumnBinaryMaker {
 
     @Override
     public void setDouble( final int index , final double value ) throws IOException{
+      list.set( index , value );
     }
 
     @Override
     public void setBytes( final int index , final byte[] value ) throws IOException{
-      list.set( index , new String( value , "UTF-8" ) );
     }
 
     @Override
     public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
-      list.set( index , new String( value , start , length , "UTF-8" ) );
     }
 
     @Override
@@ -129,26 +128,55 @@ public class TestDumpStringColumnBinaryMaker {
 
   @Test
   public void T_toBinary_1() throws IOException{
-    IColumn column = new PrimitiveColumn( ColumnType.STRING , "STRING" );
-    column.add( ColumnType.STRING , new StringObj( "a" ) , 0 );
-    column.add( ColumnType.STRING , new StringObj( "b" ) , 1 );
+    IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "DOUBLE" );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.1 ) , 0 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.2 ) , 1 );
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new DumpStringColumnBinaryMaker();
+    IColumnBinaryMaker maker = new RangeDumpDoubleColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
 
-    assertEquals( columnBinary.columnName , "STRING" );
+    assertEquals( columnBinary.columnName , "DOUBLE" );
     assertEquals( columnBinary.rowCount , 2 );
-    assertEquals( columnBinary.columnType , ColumnType.STRING );
+    assertEquals( columnBinary.columnType , ColumnType.DOUBLE );
 
     IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
-    assertEquals( "a" , ( (PrimitiveObject)( decodeColumn.get(0).getRow() ) ).getString() );
-    assertEquals( "b" , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getString() );
+    assertEquals( (double)0.1 , ( (PrimitiveObject)( decodeColumn.get(0).getRow() ) ).getDouble() );
+    assertEquals( (double)0.2 , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getDouble() );
+
+    assertEquals( decodeColumn.getColumnKeys().size() , 0 );
+    assertEquals( decodeColumn.getColumnSize() , 0 );
+  }
+
+  @Test
+  public void T_toBinary_2() throws IOException{
+    IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "DOUBLE" );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.1 ) , 0 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.2 ) , 1 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.5 ) , 5 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new RangeDumpDoubleColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+
+    assertEquals( columnBinary.columnName , "DOUBLE" );
+    assertEquals( columnBinary.rowCount , 3 );
+    assertEquals( columnBinary.columnType , ColumnType.DOUBLE );
+
+    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    assertEquals( decodeColumn.getColumnKeys().size() , 0 );
+    assertEquals( decodeColumn.getColumnSize() , 0 );
+
+    assertEquals( (double)0.1 , ( (PrimitiveObject)( decodeColumn.get(0).getRow() ) ).getDouble() );
+    assertEquals( (double)0.2 , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getDouble() );
+    assertEquals( (double)0.5 , ( (PrimitiveObject)( decodeColumn.get(5).getRow() ) ).getDouble() );
 
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
@@ -156,30 +184,51 @@ public class TestDumpStringColumnBinaryMaker {
 
   @Test
   public void T_loadInMemoryStorage_1() throws IOException{
-    IColumn column = new PrimitiveColumn( ColumnType.STRING , "STRING" );
-    column.add( ColumnType.STRING , new StringObj( "a" ) , 0 );
-    column.add( ColumnType.STRING , new StringObj( "b" ) , 1 );
-    column.add( ColumnType.STRING , new StringObj( "c" ) , 5 );
+    IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "DOUBLE" );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.1 ) , 0 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.2 ) , 1 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.5 ) , 5 );
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new DumpStringColumnBinaryMaker();
+    IColumnBinaryMaker maker = new RangeDumpDoubleColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
 
-    assertEquals( columnBinary.columnName , "STRING" );
+    assertEquals( columnBinary.columnName , "DOUBLE" );
     assertEquals( columnBinary.rowCount , 3 );
-    assertEquals( columnBinary.columnType , ColumnType.STRING );
+    assertEquals( columnBinary.columnType , ColumnType.DOUBLE );
 
-    TestStringMemoryAllocator allocator = new TestStringMemoryAllocator();
+    TestDoubleMemoryAllocator allocator = new TestDoubleMemoryAllocator();
     maker.loadInMemoryStorage( columnBinary , allocator );
+    assertEquals( (double)0.1 , allocator.list.get(0).doubleValue() );
+    assertEquals( (double)0.2 , allocator.list.get(1).doubleValue() );
+    assertEquals( null , allocator.list.get(2) );
+    assertEquals( null , allocator.list.get(3) );
+    assertEquals( null , allocator.list.get(4) );
+    assertEquals( (double)0.5 , allocator.list.get(5).doubleValue() );
+  }
 
-    assertEquals( allocator.list.get(0) , "a" );
-    assertEquals( allocator.list.get(1) , "b" );
-    assertEquals( allocator.list.get(2) , null );
-    assertEquals( allocator.list.get(3) , null );
-    assertEquals( allocator.list.get(4) , null );
-    assertEquals( allocator.list.get(5) , "c" );
+  @Test
+  public void T_loadInMemoryStorage_2() throws IOException{
+    IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "DOUBLE" );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.1 ) , 0 );
+    column.add( ColumnType.DOUBLE , new DoubleObj( (double)0.2 ) , 1 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new RangeDumpDoubleColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+
+    assertEquals( columnBinary.columnName , "DOUBLE" );
+    assertEquals( columnBinary.rowCount , 2 );
+    assertEquals( columnBinary.columnType , ColumnType.DOUBLE );
+
+    TestDoubleMemoryAllocator allocator = new TestDoubleMemoryAllocator();
+    maker.loadInMemoryStorage( columnBinary , allocator );
+    assertEquals( (double)0.1 , allocator.list.get(0).doubleValue() );
+    assertEquals( (double)0.2 , allocator.list.get(1).doubleValue() );
   }
 
 }

@@ -20,6 +20,8 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
+import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     List<Integer> columnList = new ArrayList<Integer>();
-    List<Long> byteList = new ArrayList<Long>();
+    List<Long> objList = new ArrayList<Long>();
     int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
@@ -64,21 +66,25 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
       }
       rowCount++;
       PrimitiveCell byteCell = (PrimitiveCell) cell;
-      byteList.add( Long.valueOf( byteCell.getRow().getLong() ) );
+      objList.add( Long.valueOf( byteCell.getRow().getLong() ) );
       columnList.add( Integer.valueOf( i ) );
     }
+    byte[] binaryRaw = convertBinary( columnList , objList , currentConfig );
+    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.LONG , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.LONG_LENGTH , -1 , binary , 0 , binary.length , null );
+  }
+
+  public byte[] convertBinary( final List<Integer> columnList , final List<Long> objList , ColumnBinaryMakerConfig currentConfig ) throws IOException{
     byte[] columnBinaryRaw = BinaryUtil.toLengthBytesBinary( SortedIntegerConverter.getBinary( columnList ) );
-    byte[] dicRawBinary = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpLong( byteList ) );
+    byte[] dicRawBinary = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpLong( objList ) );
 
     byte[] binaryRaw = new byte[ columnBinaryRaw.length + dicRawBinary.length ];
     int offset = 0;
     System.arraycopy( columnBinaryRaw , 0 , binaryRaw , offset , columnBinaryRaw.length );
     offset += columnBinaryRaw.length;
     System.arraycopy( dicRawBinary , 0 , binaryRaw , offset , dicRawBinary.length );
-    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
-    
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.LONG , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.LONG_LENGTH , -1 , binary , 0 , binary.length , null );
+    return binaryRaw;
   }
 
   @Override
@@ -88,8 +94,12 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    loadInMemoryStorage( columnBinary , columnBinary.binaryStart , columnBinary.binaryLength , allocator );
+  }
+
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-    byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    byte[] binary = compressor.decompress( columnBinary.binary , start , length );
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
     int offset = 0;
     int columnBinaryLength = wrapBuffer.getInt( offset );
@@ -117,57 +127,52 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class LongDicManager implements IDicManager{
 
-    private final ICompressor compressor;
     private final IPrimitiveObjectConnector primitiveObjectConnector;
-    private final byte[] dicBinary;
-    private final int dicStart;
+    private final LongBuffer dicBuffer;
     private final int dicLength;
 
-    private boolean isSet;
-    private List<PrimitiveObject> dicList;
-
-    public LongDicManager( final ICompressor compressor , final IPrimitiveObjectConnector primitiveObjectConnector , final byte[] dicBinary , final int dicStart , final int dicLength ){
-      this.compressor = compressor;
+    public LongDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final LongBuffer dicBuffer ){
       this.primitiveObjectConnector = primitiveObjectConnector;
-      this.dicBinary = dicBinary;
-      this.dicStart = dicStart;
-      this.dicLength = dicLength;
-    }
-
-    private void decompress() throws IOException{
-      if( isSet ){
-        return;
-      }
-      dicList = new ArrayList<PrimitiveObject>();
-      for( Long data : BinaryDump.binaryToLongList( dicBinary , dicStart , dicLength ) ){
-        dicList.add( primitiveObjectConnector.convert( PrimitiveType.LONG , new LongObj( data.longValue() ) ) );
-      }
-      isSet = true;
+      this.dicBuffer = dicBuffer;
+      dicLength = dicBuffer.capacity();
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      decompress();
-      return dicList.get( index );
+      if( index <= 0 || dicLength < index ){
+        return null;
+      }
+      return primitiveObjectConnector.convert( PrimitiveType.LONG , new LongObj( dicBuffer.get( index - 1 ) ) );
     }
 
     @Override
     public int getDicSize() throws IOException{
-      decompress();
-      return dicList.size();
+      return dicLength;
     }
+
   }
 
   public class LongColumnManager implements IColumnManager{
 
     private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
+    private final int binaryStart;
+    private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
     public LongColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
       this.columnBinary = columnBinary;
       this.primitiveObjectConnector = primitiveObjectConnector;
+      this.binaryStart = columnBinary.binaryStart;
+      this.binaryLength = columnBinary.binaryLength;
+    }
+
+    public LongColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+      this.columnBinary = columnBinary;
+      this.primitiveObjectConnector = primitiveObjectConnector;
+      this.binaryStart = binaryStart;
+      this.binaryLength = binaryLength;
     }
 
     private void create() throws IOException{
@@ -175,7 +180,7 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
         return;
       }
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-      byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+      byte[] binary = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
       int offset = 0;
       int columnBinaryLength = wrapBuffer.getInt( offset );
@@ -189,13 +194,21 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
       offset += dicBinaryLength;
 
       List<Integer> columnIndexList = SortedIntegerConverter.getIntegerList( binary , columnBinaryStart , columnBinaryLength );
-      column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
-      IDicManager dicManager = new LongDicManager( compressor , primitiveObjectConnector , binary , dicBinaryStart , dicBinaryLength );
-      int dicIndex = 0;
+      IDicManager dicManager = new LongDicManager( primitiveObjectConnector ,  ByteBuffer.wrap( binary , dicBinaryStart , dicBinaryLength ).asLongBuffer() );
+      IntBuffer indexIntBuffer = IntBuffer.allocate( columnIndexList.get( columnIndexList.size() - 1 ).intValue() + 1 );
+      int currentIndex = 0;
+      int dicIndex = 1;
       for( Integer index : columnIndexList ){
-        column.addCell( columnBinary.columnType , new LazyCell( ColumnType.LONG , dicManager , dicIndex ) , index );
+        if( currentIndex != index.intValue() ){
+          currentIndex = index.intValue();
+          indexIntBuffer.position( currentIndex );
+        }
+        indexIntBuffer.put( dicIndex );
+        currentIndex++;
         dicIndex++;
       }
+      column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
+      column.setCellManager( new BufferDirectDictionaryLinkCellManager( ColumnType.LONG , dicManager , indexIntBuffer ) );
 
       isCreate = true;
     }
@@ -219,6 +232,7 @@ public class DumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     public int getColumnSize(){
       return 0;
     }
+
   }
 
 }

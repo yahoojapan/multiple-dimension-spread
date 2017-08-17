@@ -53,6 +53,13 @@ public final class ColumnBinaryMakerNameShortCut{
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexLongColumnBinaryMaker"              , "R4" );
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexFloatColumnBinaryMaker"             , "R5" );
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexDoubleColumnBinaryMaker"            , "R6" );
+
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker"  , "RD0" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpLongColumnBinaryMaker"    , "RD1" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpIntegerColumnBinaryMaker" , "RD2" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpShortColumnBinaryMaker"   , "RD3" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpByteColumnBinaryMaker"    , "RD4" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker"   , "RD5" );
   }
 
   private ColumnBinaryMakerNameShortCut(){}

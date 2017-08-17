@@ -143,9 +143,15 @@ public final class SortedIntegerConverter{
   }
 
   private static List<Integer> decompressInteger1( final byte[] buffer , final int start , final int length ){
-    List<Integer> result = new ArrayList<Integer>();
+    List<Integer> result = new ArrayList<Integer>( length * 8 );
     int offset = start+1;
     int shiftBit = getBitNumber( CompressBit.COMPRESS_1 );
+    int shiftBit2 = shiftBit * 2;
+    int shiftBit3 = shiftBit * 3;
+    int shiftBit4 = shiftBit * 4;
+    int shiftBit5 = shiftBit * 5;
+    int shiftBit6 = shiftBit * 6;
+    int shiftBit7 = shiftBit * 7;
     while( offset < ( start + length ) ){
       int diffIndex = readInt( buffer , offset , 4 );
       offset += 4;
@@ -155,12 +161,12 @@ public final class SortedIntegerConverter{
         int compressInt = buffer[offset] & 255;
         int diff1 = compressInt & 1;
         int diff2 = ( compressInt >>> shiftBit ) & 1;
-        int diff3 = ( compressInt >>> ( shiftBit * 2 ) ) & 1;
-        int diff4 = ( compressInt >>> ( shiftBit * 3 ) ) & 1;
-        int diff5 = ( compressInt >>> ( shiftBit * 4 ) ) & 1;
-        int diff6 = ( compressInt >>> ( shiftBit * 5 ) ) & 1;
-        int diff7 = ( compressInt >>> ( shiftBit * 6 ) ) & 1;
-        int diff8 = ( compressInt >>> ( shiftBit * 7 ) ) & 1;
+        int diff3 = ( compressInt >>> ( shiftBit2 ) ) & 1;
+        int diff4 = ( compressInt >>> ( shiftBit3 ) ) & 1;
+        int diff5 = ( compressInt >>> ( shiftBit4 ) ) & 1;
+        int diff6 = ( compressInt >>> ( shiftBit5 ) ) & 1;
+        int diff7 = ( compressInt >>> ( shiftBit6 ) ) & 1;
+        int diff8 = ( compressInt >>> ( shiftBit7 ) ) & 1;
         diffIndex += diff1;
         result.add( diffIndex );
         if( i + 1 < size ){
