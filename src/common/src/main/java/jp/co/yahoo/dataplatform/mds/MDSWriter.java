@@ -81,5 +81,7 @@ public class MDSWriter implements AutoCloseable{
     out.close();
   }
 
-
+  public IBlockMaker getBlockMaker() {
+    return blockMaker;
+  }
 }
