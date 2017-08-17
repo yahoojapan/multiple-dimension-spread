@@ -37,10 +37,7 @@ import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.binary.SortedIntegerConverter;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeByteIndex;
@@ -150,7 +147,6 @@ public class RangeDumpByteColumnBinaryMaker extends DumpByteColumnBinaryMaker{
 
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
-    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     wrapBuffer.position( PrimitiveByteLength.BYTE_LENGTH * 2 );
     int type = wrapBuffer.getInt();
@@ -158,6 +154,7 @@ public class RangeDumpByteColumnBinaryMaker extends DumpByteColumnBinaryMaker{
       loadInMemoryStorage( columnBinary , columnBinary.binaryStart + HEADER_SIZE , columnBinary.binaryLength - HEADER_SIZE , allocator );
       return;
     }
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
     byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart + HEADER_SIZE , columnBinary.binaryLength - HEADER_SIZE );
     wrapBuffer = wrapBuffer.wrap( binary );
     for( int i = 0 ; i < columnBinary.rowCount ; i++ ){

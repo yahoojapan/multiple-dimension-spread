@@ -20,9 +20,6 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 import java.io.IOException;
 
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-
-import java.util.Set;
 
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 

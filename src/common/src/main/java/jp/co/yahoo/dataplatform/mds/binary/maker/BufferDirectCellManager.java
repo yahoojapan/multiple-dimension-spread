@@ -19,7 +19,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
