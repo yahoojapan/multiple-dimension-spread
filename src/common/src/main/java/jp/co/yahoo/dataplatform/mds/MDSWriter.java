@@ -67,11 +67,15 @@ public class MDSWriter implements AutoCloseable{
 
   public void append( final Spread spread ) throws IOException{
     List<ColumnBinary> binaryList = blockMaker.convertRow( spread );
+    appendRow(binaryList, spread.size());
+  }
+
+  public void appendRow( final List<ColumnBinary> binaryList, int spreadSize ) throws IOException {
     if( ! blockMaker.canAppend( binaryList ) ){
       byte[] block = blockMaker.createFixedBlock();
       out.write( block , 0 , block.length );
     }
-    blockMaker.append( spread.size() , binaryList );
+    blockMaker.append( spreadSize , binaryList );
   }
 
   public void close() throws IOException{
@@ -81,5 +85,7 @@ public class MDSWriter implements AutoCloseable{
     out.close();
   }
 
-
+  public IBlockMaker getBlockMaker() {
+    return blockMaker;
+  }
 }
