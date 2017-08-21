@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
@@ -215,6 +216,39 @@ public class ExpandColumn implements IColumn{
       result[index] = originalResult[originalArrayIndex];
     }
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    List<Integer> originalIndexList = new ArrayList<Integer>();
+    int maxIndex = -1;
+    for( int i = start ; i < ( start + length ) ; i++ ){
+      int target = indexList.get( i );
+      if( maxIndex < columnIndexArray[target] ){
+        originalIndexList.add( columnIndexArray[target] );
+        maxIndex = columnIndexArray[target];
+      }
+    }
+    PrimitiveObject[] originalResult = original.getPrimitiveObjectArray( new FilterdExpressionIndex( originalIndexList ) , 0 , originalIndexList.size() );
+    maxIndex = -1;
+    int originalArrayIndex = -1;
+    for( int i = start,index = 0  ; i < ( start + length ) ; i++,index++ ){
+      int target = indexList.get( i );
+      if( maxIndex < columnIndexArray[target] ){
+        originalArrayIndex++;
+        maxIndex = columnIndexArray[target];
+      }
+      try{
+        if( originalResult[originalArrayIndex] == null ){
+          allocator.setNull( index );
+        }
+        else{
+          allocator.setPrimitiveObject( index , originalResult[originalArrayIndex] );
+        }
+      }catch( IOException e ){
+        throw new RuntimeException( e );
+      }
+    }
   }
 
 }

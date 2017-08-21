@@ -23,14 +23,15 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
-import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
@@ -119,6 +120,35 @@ public class BufferDirectCellManager implements ICellManager {
       }
     }
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    int loopEnd = ( start + length );
+    if( indexList.size() < loopEnd ){
+      loopEnd = indexList.size();
+    }
+    try{
+      int index = 0;
+      for( int i = start ; i < loopEnd ; i++,index++ ){
+        int targetIndex = indexList.get( i );
+        if( indexSize <= targetIndex ){
+          break;
+        }
+        PrimitiveObject obj = dicManager.get( targetIndex );
+        if( obj == null ){
+          allocator.setNull( index );
+        }
+        else{
+          allocator.setPrimitiveObject( index , obj );
+        }
+      }
+      for( int i = index ; i < length ; i++ ){
+        allocator.setNull( i );
+      }
+    }catch( IOException e ){
+      throw new UncheckedIOException( e );
+    }
   }
 
 }

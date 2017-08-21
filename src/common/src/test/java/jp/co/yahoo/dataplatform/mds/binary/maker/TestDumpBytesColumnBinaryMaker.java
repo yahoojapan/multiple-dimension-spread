@@ -18,6 +18,7 @@
 package jp.co.yahoo.dataplatform.mds.binary.maker;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -92,6 +93,10 @@ public class TestDumpBytesColumnBinaryMaker {
 
     @Override
     public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+      byte[] buffer = new byte[length];
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer );
+      wrapBuffer.put( value , start , length );
+      list.set( index , buffer );
     }
 
     @Override

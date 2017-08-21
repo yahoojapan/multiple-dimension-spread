@@ -32,6 +32,7 @@ import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
@@ -189,6 +190,11 @@ public class SpreadColumn implements IColumn{
   public PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length ){
     PrimitiveObject[] result = new PrimitiveObject[length];
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    return;
   }
 
   @Override

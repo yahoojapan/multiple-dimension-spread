@@ -56,23 +56,23 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    List<Integer> columnList = new ArrayList<Integer>();
-    List<Double> objList = new ArrayList<Double>();
-    boolean hasNull = false;
+    ByteBuffer nullFlagBuffer = ByteBuffer.allocate( column.size() );
+    ByteBuffer floatBuffer = ByteBuffer.allocate( column.size() * PrimitiveByteLength.DOUBLE_LENGTH );
     int rowCount = 0;
+    boolean hasNull = false;
     Double min = Double.MAX_VALUE;
     Double max = Double.MIN_VALUE;
-    for( int i = 0 ; i < column.size() ; i++ ){
+    for( int i = 0 , n = 0 ; i < column.size() ; i++ , n += PrimitiveByteLength.DOUBLE_LENGTH ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
         hasNull = true;
+        nullFlagBuffer.put( i , (byte)1 );
         continue;
       }
       rowCount++;
       PrimitiveCell byteCell = (PrimitiveCell) cell;
       Double target = Double.valueOf( byteCell.getRow().getDouble() );
-      objList.add( target );
-      columnList.add( Integer.valueOf( i ) );
+      floatBuffer.putDouble( n , target );
       if( 0 < min.compareTo( target ) ){
         min = Double.valueOf( target );
       }
@@ -84,7 +84,7 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
     byte[] binary;
     int rawLength;
     if( hasNull ){
-      byte[] binaryRaw = convertBinary( columnList , objList , currentConfig );
+      byte[] binaryRaw = convertBinary( nullFlagBuffer , floatBuffer , currentConfig );
       byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
       rawLength = binaryRaw.length;
       
@@ -96,16 +96,12 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      byte[] binaryRaw = new byte[ HEADER_SIZE + ( PrimitiveByteLength.DOUBLE_LENGTH * rowCount ) ];
-      ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryRaw );
-      for( int i = 0 ; i < rowCount ; i++ ){
-        wrapBuffer.putDouble( objList.get(i) );
-      }
+      byte[] binaryRaw = floatBuffer.array();
       rawLength = binaryRaw.length;
       byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
       binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
-      wrapBuffer = ByteBuffer.wrap( binary );
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
       wrapBuffer.putDouble( min );
       wrapBuffer.putDouble( max );
       wrapBuffer.putInt( 1 );

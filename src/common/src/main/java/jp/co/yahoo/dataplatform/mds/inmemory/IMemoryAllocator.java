@@ -19,42 +19,82 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public interface IMemoryAllocator{
 
-  void setNull( final int index ) throws IOException;
+  default void setNull( final int index ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setBoolean( final int index , final boolean value ) throws IOException;
+  default void setBoolean( final int index , final boolean value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setByte( final int index , final byte value ) throws IOException; 
+  default void setByte( final int index , final byte value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setShort( final int index , final short value ) throws IOException;
+  default void setShort( final int index , final short value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setInteger( final int index , final int value ) throws IOException;
+  default void setInteger( final int index , final int value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setLong( final int index , final long value ) throws IOException;
+  default void setLong( final int index , final long value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setFloat( final int index , final float value ) throws IOException;
+  default void setFloat( final int index , final float value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setDouble( final int index , final double value ) throws IOException;
+  default void setDouble( final int index , final double value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setBytes( final int index , final byte[] value ) throws IOException;
+  default void setBytes( final int index , final byte[] value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException;
+  default void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setString( final int index , final String value ) throws IOException;
+  default void setString( final int index , final String value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setString( final int index , final char[] value ) throws IOException;
+  default void setString( final int index , final char[] value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setString( final int index , final char[] value , final int start , final int length ) throws IOException;
+  default void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setArrayIndex( final int index , final int start , final int length ) throws IOException;
+  default void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  void setValueCount( final int index ) throws IOException;
+  default void setArrayIndex( final int index , final int start , final int length ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  int getValueCount() throws IOException;
+  default void setValueCount( final int index ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
-  IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException;
+  default int getValueCount() throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
+
+  default IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
+    throw new UnsupportedOperationException( "Unsuppored this method." );
+  }
 
 }

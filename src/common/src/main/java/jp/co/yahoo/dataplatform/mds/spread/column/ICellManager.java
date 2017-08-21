@@ -21,9 +21,10 @@ import java.io.IOException;
 
 import java.util.List;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 
@@ -44,5 +45,7 @@ public interface ICellManager{
   List<Integer> filter( final IFilter filter ) throws IOException;
 
   PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length );
+
+  void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator );
 
 }

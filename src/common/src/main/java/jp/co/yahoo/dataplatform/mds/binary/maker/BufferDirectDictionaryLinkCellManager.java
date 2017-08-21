@@ -24,6 +24,7 @@ import java.nio.IntBuffer;
 import java.util.List;
 import java.util.ArrayList;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IDictionaryCellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
@@ -137,6 +138,39 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
       }
     }
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    int loopEnd = ( start + length );
+    if( indexList.size() < loopEnd ){
+      loopEnd = indexList.size();
+    }
+    int index = 0;
+    for( int i = start ; i < loopEnd ; i++,index++ ){
+      int targetIndex = indexList.get( i );
+      if( indexSize <= targetIndex ){
+        break;
+      }
+      int dicIndex = dicIndexIntBuffer.get( targetIndex );
+      try{
+        if( dicIndex != 0 ){
+          allocator.setPrimitiveObject( index , dicManager.get( dicIndex ) );
+        }
+        else{
+          allocator.setNull( index );
+        }
+      }catch( IOException e ){
+        throw new UncheckedIOException( e );
+      }
+    }
+    for( int i = index ; i < length ; i++ ){
+      try{
+        allocator.setNull( i );
+      }catch( IOException e ){
+        throw new UncheckedIOException( e );
+      }
+    }
   }
 
   @Override

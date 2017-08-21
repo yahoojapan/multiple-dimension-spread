@@ -23,6 +23,10 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import jp.co.yahoo.dataplatform.schema.objects.BooleanObj;
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
+
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -34,10 +38,8 @@ import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
-import jp.co.yahoo.dataplatform.schema.objects.BooleanObj;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -48,6 +50,9 @@ import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
+
+  private static final BooleanObj TRUE = new BooleanObj( true );
+  private static final BooleanObj FALSE = new BooleanObj( false );
 
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
@@ -201,6 +206,35 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
       return result;
     }
 
+    @Override
+    public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+      int index = 0;
+      for( int i = start ; i < buffer.length && i < ( start + length ); i++,index++ ){
+        int targetIndex = indexList.get(i);
+        int cellIndex = buffer[targetIndex];
+        try{
+          if( cellIndex == Byte.MAX_VALUE ){
+            allocator.setNull( index );
+          }
+          else if( cellIndex == (byte)1 ){
+            allocator.setPrimitiveObject( index , TRUE );
+          }
+          else{
+            allocator.setPrimitiveObject( index , FALSE );
+          }
+        }catch( IOException e ){
+          throw new RuntimeException( e );
+        }
+      }
+      for( int i = index ; i < length ; i++ ){
+        try{
+          allocator.setNull( i );
+        }catch( IOException e ){
+          throw new RuntimeException( e );
+        }
+      }
+    }
+
   }
 
   public class BooleanColumnManager implements IColumnManager{
@@ -223,8 +257,8 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
       byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
 
-      PrimitiveObject trueObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , new BooleanObj( true ) );
-      PrimitiveObject falseObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , new BooleanObj( false ) );
+      PrimitiveObject trueObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , TRUE );
+      PrimitiveObject falseObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , FALSE );
 
       column = new PrimitiveColumn( ColumnType.BOOLEAN , columnBinary.columnName );
       column.setCellManager( new DirectBufferBooleanCellManager( binary , trueObject , falseObject ) );

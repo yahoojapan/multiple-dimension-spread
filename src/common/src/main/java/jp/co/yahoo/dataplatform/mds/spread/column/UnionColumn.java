@@ -29,6 +29,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
@@ -185,6 +186,11 @@ public class UnionColumn implements IColumn {
   @Override
   public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
     return cellManager.getPrimitiveObjectArray( indexList , start , length );
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    cellManager.getPrimitiveObjectArray( indexList , start , length );
   }
 
   @Override
