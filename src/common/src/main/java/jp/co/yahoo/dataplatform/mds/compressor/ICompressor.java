@@ -18,6 +18,7 @@
 package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface ICompressor{
 
@@ -28,5 +29,7 @@ public interface ICompressor{
   byte[] decompress( final byte[] data , final int start , final int length ) throws IOException;
 
   int decompressAndSet( final byte[] data , final int start , final int length , final byte[] buffer ) throws IOException;
+
+  InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException;
 
 }

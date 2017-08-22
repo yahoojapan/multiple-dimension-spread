@@ -18,6 +18,8 @@
 package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 public class DefaultCompressor implements ICompressor{
 
@@ -44,6 +46,11 @@ public class DefaultCompressor implements ICompressor{
   public int decompressAndSet( final byte[] data , final int start , final int length , final byte[] buffer ) throws IOException{
     System.arraycopy( data , start , buffer , 0 , length );
     return length;
+  }
+
+  @Override
+  public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
+    return new ByteArrayInputStream( data , start , length );
   }
 
 }
