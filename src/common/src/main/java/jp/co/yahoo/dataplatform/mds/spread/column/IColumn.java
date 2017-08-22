@@ -25,6 +25,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 
@@ -43,6 +44,8 @@ public interface IColumn{
   int add( final ColumnType type , final Object obj , final int index ) throws IOException;
 
   void addCell( final ColumnType type , final ICell obj , final int index ) throws IOException;
+
+  ICellManager getCellManager();
 
   void setCellManager( final ICellManager cellManager );
 
@@ -73,5 +76,7 @@ public interface IColumn{
   List<Integer> filter( final IFilter filter ) throws IOException;
 
   PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length );
+
+  void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator );
 
 }

@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
@@ -82,6 +83,11 @@ public class PrimitiveColumn implements IColumn{
   @Override
   public void addCell( final ColumnType type , final ICell cell , final int index ) throws IOException{
     cellManager.add( cell , index );
+  }
+
+  @Override
+  public ICellManager getCellManager(){
+    return cellManager;
   }
 
   @Override
@@ -157,6 +163,11 @@ public class PrimitiveColumn implements IColumn{
   @Override
   public PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length ){
     return cellManager.getPrimitiveObjectArray( indexList , start , length );
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    cellManager.setPrimitiveObjectArray( indexList , start , length , allocator );
   }
 
   @Override

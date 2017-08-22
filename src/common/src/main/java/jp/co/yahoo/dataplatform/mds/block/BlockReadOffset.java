@@ -22,10 +22,12 @@ public class BlockReadOffset implements Comparable<BlockReadOffset>{
 
   public final int start;
   public final int length;
+  public final byte[] buffer;
 
-  public BlockReadOffset( final int start , final int length ){
+  public BlockReadOffset( final int start , final int length , final byte[] buffer ){
     this.start = start;
     this.length = length;
+    this.buffer = buffer;
   }
 
   @Override

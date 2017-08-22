@@ -92,6 +92,7 @@ public class TestDumpStringColumnBinaryMaker {
 
     @Override
     public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+      list.set( index , new String( value , start , length , "UTF-8" ) );
     }
 
     @Override

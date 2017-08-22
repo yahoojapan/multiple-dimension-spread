@@ -212,6 +212,11 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       return new PrimitiveObject[length];
     }
 
+    @Override
+    public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+      return;
+    }
+
   }
 
   public class ArrayColumnManager implements IColumnManager{

@@ -24,6 +24,7 @@ import java.util.List;
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
@@ -79,6 +80,11 @@ public class LazyColumn implements IColumn{
   @Override
   public void addCell( final ColumnType type , final ICell cell , final int index ) throws IOException{
     columnManager.get().addCell( type , cell , index );
+  }
+
+  @Override
+  public ICellManager getCellManager(){
+    return columnManager.get().getCellManager();
   }
 
   @Override
@@ -154,6 +160,11 @@ public class LazyColumn implements IColumn{
   @Override
   public PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length ){
     return columnManager.get().getPrimitiveObjectArray( indexList , start , length );
+  }
+
+  @Override
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    columnManager.get().setPrimitiveObjectArray( indexList , start , length , allocator );
   }
 
   @Override

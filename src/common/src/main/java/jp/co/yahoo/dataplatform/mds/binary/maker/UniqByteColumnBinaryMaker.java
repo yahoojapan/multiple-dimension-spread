@@ -101,11 +101,15 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
+    loadInMemoryStorage( columnBinary , allocator , columnBinary.binaryStart , columnBinary.binaryLength );
+  }
+
+  public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator , final int start , final int length ) throws IOException{
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+    int decompressSize = compressor.getDecompressSize( columnBinary.binary , start , length );
     byte[] decompressBuffer = new byte[decompressSize];
 
-    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+    int binaryLength = compressor.decompressAndSet( columnBinary.binary , start , length , decompressBuffer );
 
     byte[] binary = decompressBuffer;
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binaryLength );
@@ -163,23 +167,34 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
 
     private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
+    private final int binaryStart;
+    private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
     public ByteColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
       this.columnBinary = columnBinary;
       this.primitiveObjectConnector = primitiveObjectConnector;
+      this.binaryStart = columnBinary.binaryStart;
+      this.binaryLength = columnBinary.binaryLength;
+    }
+
+    public ByteColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+      this.columnBinary = columnBinary;
+      this.primitiveObjectConnector = primitiveObjectConnector;
+      this.binaryStart = binaryStart;
+      this.binaryLength = binaryLength;
     }
 
     private void create() throws IOException{
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-      int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+      int decompressSize = compressor.getDecompressSize( columnBinary.binary , binaryStart , binaryLength );
       byte[] decompressBuffer = new byte[decompressSize];
 
-      int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+      int decompressLength = compressor.decompressAndSet( columnBinary.binary , binaryStart , binaryLength , decompressBuffer );
 
       byte[] binary = decompressBuffer;
-      ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binaryLength );
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , decompressLength );
       int offset = 0;
 
       int columnIndexBinaryLength = wrapBuffer.getInt( offset );

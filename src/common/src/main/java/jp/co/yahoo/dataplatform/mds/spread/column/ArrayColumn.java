@@ -26,6 +26,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
@@ -122,6 +123,11 @@ public class ArrayColumn implements IColumn{
   }
 
   @Override
+  public ICellManager getCellManager(){
+    return cellManager;
+  }
+
+  @Override
   public void setCellManager( final ICellManager cellManager ){
     this.cellManager = cellManager;
   }
@@ -203,6 +209,11 @@ public class ArrayColumn implements IColumn{
   public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
     PrimitiveObject[] result = new PrimitiveObject[length];
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    return;
   }
 
   @Override

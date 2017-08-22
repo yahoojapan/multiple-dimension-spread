@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import java.util.stream.IntStream;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
@@ -75,6 +76,11 @@ public final class NullColumn implements IColumn {
 
   @Override
   public void addCell( final ColumnType type , final ICell cell , final int index ) throws IOException{
+  }
+
+  @Override
+  public ICellManager getCellManager(){
+    return null;
   }
 
   @Override
@@ -149,6 +155,11 @@ public final class NullColumn implements IColumn {
   public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
     PrimitiveObject[] result = new PrimitiveObject[length];
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+    return;
   }
 
   @Override

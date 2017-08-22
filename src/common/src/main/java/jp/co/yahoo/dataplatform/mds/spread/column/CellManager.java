@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
@@ -180,6 +181,23 @@ public class CellManager implements ICellManager{
       }
     }
     return result;
+  }
+
+  @Override
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) {
+    for( int i = 0,index = start ; i < length ; i++,index++ ){
+      Object obj = get( index , NullCell.getInstance() ).getRow();
+      try{
+        if( obj instanceof PrimitiveObject ){
+          allocator.setPrimitiveObject( i , (PrimitiveObject)obj );
+        }
+        else{
+          allocator.setNull( i );
+        }
+      }catch( IOException e ){
+        throw new RuntimeException( e );
+      }
+    }
   }
 
 }

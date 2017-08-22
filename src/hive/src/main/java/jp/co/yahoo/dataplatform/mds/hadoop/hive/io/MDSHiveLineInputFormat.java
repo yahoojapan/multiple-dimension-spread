@@ -37,8 +37,21 @@ import org.apache.hadoop.hive.ql.exec.vector.VectorizedInputFormatInterface;
 
 public class MDSHiveLineInputFormat extends FileInputFormat<NullWritable,ColumnAndIndex> implements VectorizedInputFormatInterface{
 
+  private static final long MIN_SPLIT_BLOCK_SIZE = 1024 * 1024 * 512;
   private static final Logger LOG = LoggerFactory.getLogger( MDSHiveLineInputFormat.class );
   private final SpreadCounter spreadCounter = new SpreadCounter();
+
+/*
+  public MDSHiveLineInputFormat(){
+    super();
+  }
+*/
+
+  @Override
+  public InputSplit[] getSplits( final JobConf job , final int numSplits ) throws IOException{
+    super.setMinSplitSize( MIN_SPLIT_BLOCK_SIZE );
+    return super.getSplits( job , numSplits );
+  }
 
   @Override
   public RecordReader<NullWritable,ColumnAndIndex> getRecordReader( final InputSplit split, final JobConf job, final Reporter reporter ) throws IOException {

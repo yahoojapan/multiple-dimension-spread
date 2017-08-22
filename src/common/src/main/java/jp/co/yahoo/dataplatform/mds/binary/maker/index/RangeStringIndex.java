@@ -65,7 +65,7 @@ public class RangeStringIndex implements ICellIndex{
       case STRING_COMPARE:
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
-        if( comparator.isFilterString( min ) && comparator.isFilterString( max ) ){
+        if( comparator.isOutOfRange( min , max ) ){
           return new ArrayList<Integer>();
         }
         return null;

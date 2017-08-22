@@ -83,31 +83,31 @@ public final class NumberUtils{
 
   public static boolean range( final Float min , final boolean minHasEquals , final Float max , final boolean maxHasEquals , final Float target ){
     if( minHasEquals && maxHasEquals ){
-      return ( 0 <= min.compareTo( target ) && max.compareTo( target ) <= 0 );
+      return ( min.compareTo( target ) <= 0 && 0 <= max.compareTo( target ) );
     }
     else if( minHasEquals ){
-      return ( 0 <= min.compareTo( target ) && max.compareTo( target ) < 0 );
+      return ( min.compareTo( target ) <= 0 && 0 < max.compareTo( target ) );
     }
     else if( maxHasEquals ){
-      return ( 0 < min.compareTo( target ) && max.compareTo( target ) <= 0 );
+      return ( min.compareTo( target ) < 0 && 0 <= max.compareTo( target ) );
     }
     else{
-      return ( 0 < min.compareTo( target ) && max.compareTo( target ) < 0 );
+      return ( min.compareTo( target ) < 0 && 0 < max.compareTo( target ) );
     }
   }
 
   public static boolean range( final Double min , final boolean minHasEquals , final Double max , final boolean maxHasEquals , final Double target ){
     if( minHasEquals && maxHasEquals ){
-      return ( 0 <= min.compareTo( target ) && max.compareTo( target ) <= 0 );
+      return ( min.compareTo( target ) <= 0 && 0 <= max.compareTo( target ) );
     }
     else if( minHasEquals ){
-      return ( 0 <= min.compareTo( target ) && max.compareTo( target ) < 0 );
+      return ( min.compareTo( target ) <= 0 && 0 < max.compareTo( target ) );
     }
     else if( maxHasEquals ){
-      return ( 0 < min.compareTo( target ) && max.compareTo( target ) <= 0 );
+      return ( min.compareTo( target ) < 0 && 0 <= max.compareTo( target ) );
     }
     else{
-      return ( 0 < min.compareTo( target ) && max.compareTo( target ) < 0 );
+      return ( min.compareTo( target ) < 0 && 0 < max.compareTo( target ) );
     }
   }
 

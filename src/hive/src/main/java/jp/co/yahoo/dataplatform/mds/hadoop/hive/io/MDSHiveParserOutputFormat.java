@@ -44,7 +44,7 @@ public class MDSHiveParserOutputFormat extends FileOutputFormat<NullWritable,Par
   @Override
   public org.apache.hadoop.hive.ql.exec.FileSinkOperator.RecordWriter getHiveRecordWriter( final JobConf job , final Path outputPath , final Class<? extends Writable> valueClass , final boolean isCompressed , final Properties tableProperties , final Progressable progress ) throws IOException {
     FileSystem fs =   outputPath.getFileSystem( job );
-    long dfsBlockSize = Math.max( fs.getDefaultBlockSize(  outputPath ), 1024 * 1024 * 32 );
+    long dfsBlockSize = Math.max( fs.getDefaultBlockSize( outputPath ) , 1024 * 1024 * 256 );
     OutputStream out = fs.create(  outputPath , true , 4096 , fs.getDefaultReplication( outputPath ) , dfsBlockSize );
 
     Configuration config = new Configuration();

@@ -40,8 +40,8 @@ public class MDSRecordWriter implements AutoCloseable{
   public MDSRecordWriter( final OutputStream out , final Configuration config ) throws IOException{
     fileWriter = new MDSWriter( out , config );
     currentSpread = new Spread();
-    spreadSize = config.getInt( "spread.size" , 1024 * 1024 * 128 );
-    maxRows = config.getInt( "record.writer.max.rows" , 1000000 );
+    spreadSize = config.getInt( "spread.size" , 1024 * 1024 * 64 );
+    maxRows = config.getInt( "record.writer.max.rows" , 100000 );
   }
 
   public void addRow( final Map<String,Object> row ) throws IOException{

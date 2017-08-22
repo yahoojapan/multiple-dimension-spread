@@ -54,10 +54,6 @@ public class PredicateBlockReader implements IBlockReader{
   private IPrimitiveObjectConnector primitiveObjectConnector;
 
   private ColumnNameNode columnFilterNode;
-  private byte[] buffer;
-  private byte[] metaBinary;
-
-  private byte[] metaBytes;
   private int readCount;
 
   protected ICompressor compressor = new GzipCompressor();
@@ -66,8 +62,6 @@ public class PredicateBlockReader implements IBlockReader{
 
   public PredicateBlockReader(){
     block = new Block();
-    buffer = new byte[0];
-    metaBytes = new byte[1024*1024*16];
   }
 
   private String[] mergeLinkColumnName( final String[] original , final String[] merge ){
@@ -132,14 +126,10 @@ public class PredicateBlockReader implements IBlockReader{
 
   @Override
   public void setBlockSize( final int blockSize ){
-    if( buffer.length < blockSize ){
-      buffer = new byte[blockSize];
-    }
   }
 
   @Override
   public void setBlockSkipIndex( final IExpressionNode blockSkipIndex ){
-
   }
 
   @Override
@@ -147,9 +137,6 @@ public class PredicateBlockReader implements IBlockReader{
     spreadSizeList.clear();
     columnBinaryTree.clear();
     columnBinaryTree.setColumnFilter( columnFilterNode );
-    if( buffer.length < blockSize ){
-      buffer = new byte[blockSize];
-    }
 
     byte[] spreadSizeLengthBytes = new byte[PrimitiveByteLength.INT_LENGTH];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( spreadSizeLengthBytes );
@@ -168,56 +155,29 @@ public class PredicateBlockReader implements IBlockReader{
     InputStreamUtils.read( in , lengthBytes , 0 , PrimitiveByteLength.INT_LENGTH );
 
     int metaLength = wrapBuffer.getInt( 0 );
-    if( metaBytes.length < metaLength ){
-      metaBytes = new byte[metaLength];
-    }
+    byte[] metaBytes = new byte[metaLength];
 
     InputStreamUtils.read( in , metaBytes , 0 , metaLength );
 
     int decompressSize = compressor.getDecompressSize( metaBytes , 0 , metaLength );
-    if( metaBinary == null || metaBinary.length < decompressSize ){
-      metaBinary = new byte[decompressSize];
-    }
+    byte[] metaBinary = new byte[decompressSize];
     int binaryLength = compressor.decompressAndSet(  metaBytes , 0 , metaLength , metaBinary );
-    columnBinaryTree.toColumnBinaryTree( metaBinary , 0 , buffer );
+    columnBinaryTree.toColumnBinaryTree( metaBinary , 0 );
 
     block.setColumnBinaryTree( columnBinaryTree );
 
     int dataBufferLength = blockSize - metaLength - PrimitiveByteLength.INT_LENGTH - PrimitiveByteLength.INT_LENGTH - PrimitiveByteLength.INT_LENGTH * spreadSizeLength;
-    if( columnFilterNode.isChildEmpty() ){
-      InputStreamUtils.read( in , buffer , 0 , dataBufferLength );
-    }
-    else{
-      List<BlockReadOffset> readOffsetList = columnBinaryTree.getBlockReadOffset();
-      List<BlockReadOffset> margeList = new ArrayList<BlockReadOffset>();
-      int currentStart = 0;
-      int totalLength = 0;
-      Collections.sort( readOffsetList );
-      for( BlockReadOffset blockReadOffset : readOffsetList ){
-        if( ( currentStart + totalLength ) == blockReadOffset.start ){
-          totalLength += blockReadOffset.length;
-        }
-        else{
-          if( totalLength != 0 ){
-            margeList.add( new BlockReadOffset( currentStart , totalLength ) );
-          }
-          currentStart = blockReadOffset.start;
-          totalLength = blockReadOffset.length;
-        }
-      }
-      if( totalLength != 0 ){
-        margeList.add( new BlockReadOffset( currentStart , totalLength ) );
-      }
+    List<BlockReadOffset> readOffsetList = columnBinaryTree.getBlockReadOffset();
+    Collections.sort( readOffsetList );
 
-      int inOffset = 0;
-      for( BlockReadOffset blockReadOffset : margeList ){
-        inOffset += InputStreamUtils.skip( in , blockReadOffset.start - inOffset );
-        inOffset = blockReadOffset.start;
-        inOffset += InputStreamUtils.read( in , buffer , inOffset , blockReadOffset.length );
-      }
-      if( inOffset < dataBufferLength ){
-        inOffset += InputStreamUtils.skip( in , dataBufferLength - inOffset );
-      }
+    int inOffset = 0;
+    for( BlockReadOffset blockReadOffset : readOffsetList ){
+      inOffset += InputStreamUtils.skip( in , blockReadOffset.start - inOffset );
+      inOffset = blockReadOffset.start;
+      inOffset += InputStreamUtils.read( in , blockReadOffset.buffer , 0 , blockReadOffset.length );
+    }
+    if( inOffset < dataBufferLength ){
+      inOffset += InputStreamUtils.skip( in , dataBufferLength - inOffset );
     }
 
     readCount = 0;

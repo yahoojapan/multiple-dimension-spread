@@ -50,7 +50,15 @@ public class LeStringCompareFilter implements IStringCompareFilter{
 
     @Override
     public boolean isFilterString( final String target ){
-      return str.compareTo( target ) <= 0;
+      return str.compareTo( target ) < 0;
+    }
+
+    @Override
+    public boolean isOutOfRange( final String min , final String max ){
+      if( isFilterString( min ) && isFilterString( max ) ){
+        return true;
+      }
+      return false;
     }
 
   }

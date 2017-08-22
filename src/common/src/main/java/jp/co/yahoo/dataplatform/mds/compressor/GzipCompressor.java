@@ -19,6 +19,7 @@ package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 
@@ -62,7 +63,7 @@ public class GzipCompressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    GZIPInputStream in = new GZIPInputStream( bIn );
+    GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     byte[] retVal = new byte[dataLength];
     InputStreamUtils.read( in , retVal , 0 , dataLength );
@@ -76,12 +77,19 @@ public class GzipCompressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    GZIPInputStream in = new GZIPInputStream( bIn );
+    GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     InputStreamUtils.read( in , buffer , 0 , dataLength );
 
     return dataLength;
   }
 
+  @Override
+  public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
+    int dataLength = wrapBuffer.getInt();
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    return new GZIPInputStream( bIn , 1024 * 256 );
+  }
 
 }
