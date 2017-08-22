@@ -62,7 +62,7 @@ public class GzipCompressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    GZIPInputStream in = new GZIPInputStream( bIn );
+    GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     byte[] retVal = new byte[dataLength];
     InputStreamUtils.read( in , retVal , 0 , dataLength );
@@ -76,7 +76,7 @@ public class GzipCompressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    GZIPInputStream in = new GZIPInputStream( bIn );
+    GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     InputStreamUtils.read( in , buffer , 0 , dataLength );
 
