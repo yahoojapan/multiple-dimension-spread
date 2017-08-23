@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.binary.UTF8BytesLinkObj;
@@ -203,7 +204,7 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
       PrimitiveObject[] dicArray = new PrimitiveObject[columnBinary.cardinality];
       for( int i = 0 ; i < columnBinary.cardinality ; i++ ){
         int byteArrayLength = wrapBuffer.getInt();
-        dicArray[i] = new UTF8BytesLinkObj( decompressBuffer , wrapBuffer.position() , byteArrayLength );
+        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.STRING , new UTF8BytesLinkObj( decompressBuffer , wrapBuffer.position() , byteArrayLength ) );
         wrapBuffer.position( wrapBuffer.position() + byteArrayLength );
       }
 
