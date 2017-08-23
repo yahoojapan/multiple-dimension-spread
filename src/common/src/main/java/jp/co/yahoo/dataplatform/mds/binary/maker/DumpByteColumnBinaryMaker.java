@@ -20,8 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -39,8 +37,6 @@ import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -55,35 +51,32 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    ByteBuffer nullFlagBuffer = ByteBuffer.allocate( column.size() );
-    ByteBuffer byteBuffer = ByteBuffer.allocate( column.size() * PrimitiveByteLength.BYTE_LENGTH );
+    byte[] binaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() + ( column.size() * PrimitiveByteLength.BYTE_LENGTH ) ];
+    ByteBuffer lengthBuffer = ByteBuffer.wrap( binaryRaw );
+    lengthBuffer.putInt( column.size() );
+    lengthBuffer.putInt( column.size() * PrimitiveByteLength.BYTE_LENGTH );
+
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
+    ByteBuffer byteBuffer = ByteBuffer.wrap( binaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.BYTE_LENGTH ) );
+
     int rowCount = 0;
-    for( int i = 0 , n = 0 ; i < column.size() ; i++ , n += PrimitiveByteLength.BYTE_LENGTH ){
+    for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
-        nullFlagBuffer.put( i , (byte)1 );
-        continue;
+        nullFlagBuffer.put( (byte)1 );
+        byteBuffer.put( (byte)0 );
       }
-      rowCount++;
-      PrimitiveCell byteCell = (PrimitiveCell) cell;
-      byteBuffer.put( n , byteCell.getRow().getByte() );
+      else{
+        rowCount++;
+        PrimitiveCell byteCell = (PrimitiveCell) cell;
+        nullFlagBuffer.put( (byte)0 );
+        byteBuffer.put( byteCell.getRow().getByte() );
+      }
     }
-    byte[] binaryRaw = convertBinary( nullFlagBuffer , byteBuffer , currentConfig );
+
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BYTE , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.BYTE_LENGTH , -1 , binary , 0 , binary.length , null );
-  }
-
-  public byte[] convertBinary( final ByteBuffer nullFlagBuffer , final ByteBuffer byteBuffer , final ColumnBinaryMakerConfig currentConfig ) throws IOException{
-    int binaryLength = ( PrimitiveByteLength.INT_LENGTH * 2 ) + nullFlagBuffer.capacity() + byteBuffer.capacity();
-    byte[] binaryRaw = new byte[binaryLength];
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryRaw );
-    wrapBuffer.putInt( nullFlagBuffer.capacity() );
-    wrapBuffer.putInt( byteBuffer.capacity() );
-    wrapBuffer.put( nullFlagBuffer );
-    wrapBuffer.put( byteBuffer );
-
-    return binaryRaw;
   }
 
   @Override
@@ -108,9 +101,8 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
     ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binary , nullFlagBinaryStart , nullFlagBinaryLength );
     ByteBuffer byteBuffer = ByteBuffer.wrap( binary , byteBinaryStart , byteBinaryLength );
     for( int i = 0 ; i < nullFlagBinaryLength ; i++ ){
-      byte obj = byteBuffer.get();
       if( nullFlagBuffer.get() == (byte)0 ){
-        allocator.setByte( i , obj );
+        allocator.setByte( i , byteBuffer.get( i + byteBinaryStart ) );
       }
     }
     allocator.setValueCount( nullFlagBinaryLength );
@@ -127,18 +119,18 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
     private final byte[] nullBuffer;
     private final int nullBufferStart;
     private final int nullBufferLength;
-    private final byte[] buffer;
-    private final int start;
-    private final int length;
+    private final byte[] dicBuffer;
+    private final int dicBufferStart;
+    private final int dicBufferLength;
 
-    public ByteDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final byte[] buffer , final int start , final int length ){
+    public ByteDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final byte[] dicBuffer , final int dicBufferStart , final int dicBufferLength ){
       this.primitiveObjectConnector = primitiveObjectConnector;
       this.nullBuffer = nullBuffer;
       this.nullBufferStart = nullBufferStart;
       this.nullBufferLength = nullBufferLength;
-      this.buffer = buffer;
-      this.start = start;
-      this.length = length;
+      this.dicBuffer = dicBuffer;
+      this.dicBufferStart = dicBufferStart;
+      this.dicBufferLength = dicBufferLength;
     }
 
     @Override
@@ -146,7 +138,7 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
       if( nullBuffer[index+nullBufferStart] == (byte)1 ){
         return null;
       }
-      return primitiveObjectConnector.convert( PrimitiveType.BYTE , new ByteObj( buffer[index+start] ) );
+      return primitiveObjectConnector.convert( PrimitiveType.BYTE , new ByteObj( dicBuffer[index+dicBufferStart] ) );
     }
 
     @Override
@@ -191,8 +183,6 @@ public class DumpByteColumnBinaryMaker implements IColumnBinaryMaker{
       int byteBinaryLength = wrapBuffer.getInt();
       int nullFlagBinaryStart = PrimitiveByteLength.INT_LENGTH * 2;
       int byteBinaryStart = nullFlagBinaryStart + nullFlagBinaryLength;
-
-      ByteBuffer byteBuffer = ByteBuffer.wrap( binary , byteBinaryStart , byteBinaryLength );
 
       IDicManager dicManager = new ByteDicManager( primitiveObjectConnector , binary , nullFlagBinaryStart , nullFlagBinaryLength , binary , byteBinaryStart , byteBinaryLength );
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );

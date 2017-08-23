@@ -19,10 +19,13 @@ package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public interface ICompressor{
 
   byte[] compress( final byte[] data , final int start , final int length ) throws IOException;
+
+  void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException;
 
   int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException; 
 

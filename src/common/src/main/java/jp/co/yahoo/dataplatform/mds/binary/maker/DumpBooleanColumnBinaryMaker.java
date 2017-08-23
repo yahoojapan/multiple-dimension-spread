@@ -47,7 +47,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
-import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
 

@@ -20,6 +20,7 @@ package jp.co.yahoo.dataplatform.mds.compressor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 
 public class DefaultCompressor implements ICompressor{
 
@@ -28,6 +29,11 @@ public class DefaultCompressor implements ICompressor{
     byte[] result = new byte[length];
     System.arraycopy( data , start , result , 0 , length );
     return result;
+  }
+
+  @Override
+  public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
+    out.write( data , start , length );
   }
 
   @Override

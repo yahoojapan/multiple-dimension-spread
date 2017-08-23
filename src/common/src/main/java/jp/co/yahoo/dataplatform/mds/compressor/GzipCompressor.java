@@ -18,8 +18,10 @@
 package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 
@@ -49,6 +51,15 @@ public class GzipCompressor implements ICompressor{
     out.close();
 
     return retVal;
+  }
+
+  @Override
+  public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
+    GZIPOutputStream gzipOut = new GZIPOutputStream( out );
+
+    gzipOut.write( data , start , length );
+    gzipOut.flush();
+    gzipOut.finish();
   }
 
   @Override
@@ -89,7 +100,7 @@ public class GzipCompressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    return new GZIPInputStream( bIn , 1024 * 256 );
+    return new BufferedInputStream( new GZIPInputStream( bIn , 1024 * 256 ) , 1024 * 256 );
   }
 
 }

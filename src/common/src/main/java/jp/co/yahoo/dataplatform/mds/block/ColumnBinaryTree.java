@@ -29,7 +29,6 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ColumnBinaryTree{
@@ -233,9 +232,13 @@ public class ColumnBinaryTree{
           int binaryLength = buffer.getLength() - binaryStart;
           columnBinary.binaryStart = binaryStart;
           columnBinary.binaryLength = binaryLength;
-          byte[] metaBinary = BinaryUtil.toLengthBytesBinary( columnBinary.toMetaBinary() );
-          System.arraycopy( metaBinary , 0 , currentMetaBinary , currentMetaBinaryOffset , metaBinary.length );
-          currentMetaBinaryOffset+=metaBinary.length;
+          byte[] metaBinary = columnBinary.toMetaBinary();
+          byte[] lengthMetaBinary = new byte[ PrimitiveByteLength.INT_LENGTH + metaBinary.length ];
+          ByteBuffer metaWrapBuffer = ByteBuffer.wrap( lengthMetaBinary );
+          metaWrapBuffer.putInt( metaBinary.length );
+          metaWrapBuffer.put( metaBinary );
+          System.arraycopy( lengthMetaBinary , 0 , currentMetaBinary , currentMetaBinaryOffset , lengthMetaBinary.length );
+          currentMetaBinaryOffset+=lengthMetaBinary.length;
         }
       }
       allBinaryLength = buffer.getLength() - allBinaryStart;
@@ -254,8 +257,12 @@ public class ColumnBinaryTree{
     metaBuffer.append( childSizeBytes );
 
     for( Map.Entry<String,ColumnBinaryTree> entry : childTreeMap.entrySet() ){
-      byte[] childNameBytes = BinaryUtil.toLengthBytesBinary( entry.getKey().getBytes( "UTF-8" ) );
-      metaBuffer.append( childNameBytes );
+      byte[] childNameBytes = entry.getKey().getBytes( "UTF-8" );
+      byte[] lengthBytes = new byte[ PrimitiveByteLength.INT_LENGTH + childNameBytes.length ];
+      ByteBuffer childWrapBuffer = ByteBuffer.wrap( lengthBytes );
+      childWrapBuffer.putInt( childNameBytes.length );
+      childWrapBuffer.put( childNameBytes );
+      metaBuffer.append( lengthBytes );
       entry.getValue().create( metaBuffer , buffer );
     }
 

@@ -56,35 +56,43 @@ public class RangeDumpLongColumnBinaryMaker extends DumpLongColumnBinaryMaker{
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    ByteBuffer nullFlagBuffer = ByteBuffer.allocate( column.size() );
-    ByteBuffer floatBuffer = ByteBuffer.allocate( column.size() * PrimitiveByteLength.LONG_LENGTH );
+    byte[] parentsBinaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() + ( column.size() * PrimitiveByteLength.LONG_LENGTH ) ];
+    ByteBuffer lengthBuffer = ByteBuffer.wrap( parentsBinaryRaw );
+    lengthBuffer.putInt( column.size() );
+    lengthBuffer.putInt( column.size() * PrimitiveByteLength.LONG_LENGTH );
+
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
+    LongBuffer longBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.LONG_LENGTH ) ).asLongBuffer();
     int rowCount = 0;
     boolean hasNull = false;
     Long min = Long.MAX_VALUE;
     Long max = Long.MIN_VALUE;
-    for( int i = 0 , n = 0 ; i < column.size() ; i++ , n += PrimitiveByteLength.LONG_LENGTH ){
+    for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
+        nullFlagBuffer.put( (byte)1 );
+        longBuffer.put( (long)0 );
         hasNull = true;
-        nullFlagBuffer.put( i , (byte)1 );
-        continue;
       }
-      rowCount++;
-      PrimitiveCell byteCell = (PrimitiveCell) cell;
-      Long target = Long.valueOf( byteCell.getRow().getLong() );
-      floatBuffer.putLong( n , target );
-      if( 0 < min.compareTo( target ) ){
-        min = Long.valueOf( target );
-      }
-      if( max.compareTo( target ) < 0 ){
-        max = Long.valueOf( target );
+      else{
+        rowCount++;
+        PrimitiveCell byteCell = (PrimitiveCell) cell;
+        nullFlagBuffer.put( (byte)0 );
+        Long target = Long.valueOf( byteCell.getRow().getLong() );
+        longBuffer.put( target );
+        if( 0 < min.compareTo( target ) ){
+          min = Long.valueOf( target );
+        }
+        if( max.compareTo( target ) < 0 ){
+          max = Long.valueOf( target );
+        }
       }
     }
 
     byte[] binary;
     int rawLength;
     if( hasNull ){
-      byte[] binaryRaw = convertBinary( nullFlagBuffer , floatBuffer , currentConfig );
+      byte[] binaryRaw = parentsBinaryRaw;
       byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
       rawLength = binaryRaw.length;
       
@@ -96,9 +104,8 @@ public class RangeDumpLongColumnBinaryMaker extends DumpLongColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      byte[] binaryRaw = floatBuffer.array();
-      rawLength = binaryRaw.length;
-      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
+      rawLength = column.size() * PrimitiveByteLength.LONG_LENGTH;
+      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() , column.size() * PrimitiveByteLength.LONG_LENGTH );
 
       binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );

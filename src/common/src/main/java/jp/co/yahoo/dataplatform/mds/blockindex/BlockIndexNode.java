@@ -82,7 +82,7 @@ public class BlockIndexNode{
     length += PrimitiveByteLength.INT_LENGTH;
     if( blockIndex != null ){
       length += PrimitiveByteLength.INT_LENGTH;
-      length += blockIndex.getClass().getName().getBytes( "UTF-8" ).length;
+      length += RangeBlockIndexNameShortCut.getShortCutName( blockIndex.getClass().getName() ).getBytes( "UTF-8" ).length;
       length += PrimitiveByteLength.INT_LENGTH;
       length += blockIndex.getBinarySize();
     }
@@ -113,7 +113,7 @@ public class BlockIndexNode{
     else{
       wrapBuffer.putInt( offset , 1 );
       offset += PrimitiveByteLength.INT_LENGTH;
-      byte[] rangeClassNameBytes = blockIndex.getClass().getName().getBytes( "UTF-8" );
+      byte[] rangeClassNameBytes = RangeBlockIndexNameShortCut.getShortCutName( blockIndex.getClass().getName() ).getBytes( "UTF-8" );
       wrapBuffer.putInt( offset , rangeClassNameBytes.length );
       offset += PrimitiveByteLength.INT_LENGTH;
       wrapBuffer.position( offset );
@@ -179,7 +179,7 @@ public class BlockIndexNode{
       wrapBuffer.position( offset );
       wrapBuffer.get( indexBinary , 0 , indexBinaryLength );
       offset += indexBinaryLength;
-      IBlockIndex blockIndex = FindBlockIndex.get( new String( classNameBytes , "UTF-8" ) );
+      IBlockIndex blockIndex = FindBlockIndex.get( RangeBlockIndexNameShortCut.getClassName( new String( classNameBytes , "UTF-8" ) ) );
       blockIndex.setFromBinary( indexBinary , 0 , indexBinary.length );
       result.setBlockIndex( blockIndex );
     }

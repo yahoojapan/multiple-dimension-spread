@@ -26,13 +26,11 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex;
-import jp.co.yahoo.dataplatform.mds.binary.maker.cache.ByteBufferCache;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeStringIndex;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -91,26 +89,19 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
     }
 
     int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
-    ICache toBinaryCache = makerCache.getCache( "to_binary_raw_cache" );
-    if( ! ( toBinaryCache instanceof ByteBufferCache) ){
-      toBinaryCache = new ByteBufferCache();
-      makerCache.registerCache( "to_binary_raw_cache" , toBinaryCache );
-    }
-    ByteBuffer rawByteBuffer = ( (ByteBufferCache)toBinaryCache ).get();
-    if( rawByteBuffer == null || rawByteBuffer.capacity() < rawSize ){
-      rawByteBuffer = ByteBuffer.allocate( rawSize );
-      toBinaryCache.register( rawByteBuffer );
-    }
-    rawByteBuffer.position(0);
-    rawByteBuffer.putInt( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() );
-    BinaryDump.appendIntegerToByteBuffer( columnIndexList , rawByteBuffer );
-    rawByteBuffer.putInt( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) );
-    BinaryDump.appendBytesToByteBuffer( stringList , totalLength , rawByteBuffer );
+    byte[] binaryRaw = new byte[ rawSize ];
+    ByteBuffer binaryWrapBuffer = ByteBuffer.wrap( binaryRaw );
 
-    int rawLength = rawByteBuffer.position();
-    byte[] binaryRaw = rawByteBuffer.array();
-
-    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , rawLength );
+    binaryWrapBuffer.putInt( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() );
+    for( Integer index : columnIndexList ){
+      binaryWrapBuffer.putInt( index );
+    }
+    binaryWrapBuffer.putInt( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) );
+    for( byte[] dicByteArray : stringList ){
+      binaryWrapBuffer.putInt( dicByteArray.length );
+      binaryWrapBuffer.put( dicByteArray );
+    }
+    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
     int minLength = PrimitiveByteLength.CHAR_LENGTH * min.length();
     int maxLength = PrimitiveByteLength.CHAR_LENGTH * max.length();
     int indexBinaryLength = PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.CHAR_LENGTH * min.length() + PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.CHAR_LENGTH * max.length() + PrimitiveByteLength.BYTE_LENGTH + PrimitiveByteLength.INT_LENGTH + binary.length;
