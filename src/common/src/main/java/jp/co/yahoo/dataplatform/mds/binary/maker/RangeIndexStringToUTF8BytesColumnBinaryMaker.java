@@ -37,6 +37,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUTF8BytesColumnBinaryMaker{

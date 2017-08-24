@@ -33,6 +33,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
@@ -115,6 +116,16 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.FLOAT , rowCount , rawLength , rowCount * PrimitiveByteLength.FLOAT_LENGTH , -1 , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    if( analizeResult.getNullCount() == 0 ){
+      return analizeResult.getColumnSize() * PrimitiveByteLength.FLOAT_LENGTH;
+    }
+    else{
+      return super.calcBinarySize( analizeResult );
+    }
   }
 
   @Override

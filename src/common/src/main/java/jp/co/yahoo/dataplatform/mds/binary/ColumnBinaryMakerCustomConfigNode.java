@@ -97,6 +97,10 @@ public class ColumnBinaryMakerCustomConfigNode{
     }
   }
 
+  public void addChildConfigNode( final String columnName , final ColumnBinaryMakerCustomConfigNode child ){
+    childConfigNode.put( columnName , child );
+  }
+
   public ColumnBinaryMakerConfig getCurrentConfig(){
     return currentConfig;
   }

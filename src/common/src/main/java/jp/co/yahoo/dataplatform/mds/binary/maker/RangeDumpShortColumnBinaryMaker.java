@@ -33,6 +33,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
@@ -115,6 +116,16 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , rawLength , rowCount * PrimitiveByteLength.SHORT_LENGTH , -1 , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    if( analizeResult.getNullCount() == 0 ){
+      return analizeResult.getColumnSize() * PrimitiveByteLength.SHORT_LENGTH;
+    }
+    else{
+      return super.calcBinarySize( analizeResult );
+    }
   }
 
   @Override

@@ -38,6 +38,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadArrayLink;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -88,6 +89,11 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     columnBinaryList.add( maker.toBinary( commonConfig , childColumnConfigNode , childColumn , makerCache.getChild( childColumn.getColumnName() ) ) );
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binaryRaw.length , 0 , -1 , compressData , 0 , compressData.length , columnBinaryList );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize();
   }
 
   @Override

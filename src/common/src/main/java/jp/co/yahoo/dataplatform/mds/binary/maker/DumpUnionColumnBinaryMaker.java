@@ -37,6 +37,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
@@ -134,6 +135,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] compressData = currentConfig.compressorClass.compress( rawBinary , 0 , rawBinary.length );
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.UNION , column.size() , rawBinary.length , column.size() * PrimitiveByteLength.BYTE_LENGTH , -1 , compressData , 0 , compressData.length , columnBinaryList );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return analizeResult.getColumnSize();
   }
 
   @Override

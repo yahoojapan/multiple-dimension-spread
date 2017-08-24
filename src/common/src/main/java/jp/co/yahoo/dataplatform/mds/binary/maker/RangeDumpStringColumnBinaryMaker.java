@@ -32,6 +32,8 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.StringObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
@@ -138,6 +140,17 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       wrapBuffer.put( compressBinaryRaw );
     }
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , rowCount , rawLength , logicalDataLength , -1 , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    if( analizeResult.getNullCount() == 0 ){
+      return analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getTotalUtf8ByteSize();
+    }
+    else{
+      return super.calcBinarySize( analizeResult );
+    }
   }
 
   @Override

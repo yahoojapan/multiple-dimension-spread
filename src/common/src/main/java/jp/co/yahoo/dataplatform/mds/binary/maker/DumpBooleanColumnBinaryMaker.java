@@ -47,6 +47,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -80,6 +81,11 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] compressData = currentConfig.compressorClass.compress( binary , 0 , binary.length );
 
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BOOLEAN , rowCount , binary.length , rowCount * PrimitiveByteLength.BOOLEAN_LENGTH , -1 , compressData , 0 , compressData.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return analizeResult.getColumnSize();
   }
 
   @Override

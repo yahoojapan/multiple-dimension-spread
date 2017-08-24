@@ -48,7 +48,8 @@ public class TestGetPrimitiveObjectArray{
   public void setup() throws IOException{
     out = new ByteArrayOutputStream();
     Configuration config = new Configuration();
-    try(MDSRecordWriter writer = new MDSRecordWriter(out , config )) {
+    config.set( "spread.column.maker.setting" , "{ \"column_name\" : \"root\" , \"string_maker_class\" : \"jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringColumnBinaryMaker\" }" );
+    try( MDSRecordWriter writer = new MDSRecordWriter( out , config ) ){
 
       JacksonMessageReader messageReader = new JacksonMessageReader();
       BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResource("blackbox/TestGetPrimitiveObjectArray.json").openStream()));

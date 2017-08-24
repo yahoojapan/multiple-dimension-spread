@@ -33,6 +33,8 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
@@ -81,6 +83,13 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , rowCount , binaryRaw.length , logicalDataLength , -1 , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    int dicBinarySize = ( analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH ) + stringAnalizeResult.getTotalUtf8ByteSize();
+    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + analizeResult.getNullCount() + dicBinarySize;
   }
 
   public byte[] convertBinary( final byte[] nullFlagBytes , final List<byte[]> objList , ColumnBinaryMakerConfig currentConfig , final int totalLength ) throws IOException{

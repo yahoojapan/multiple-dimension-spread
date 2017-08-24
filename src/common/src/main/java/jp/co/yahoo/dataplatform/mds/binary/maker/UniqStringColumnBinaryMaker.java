@@ -46,6 +46,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
@@ -108,6 +109,11 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , rowCount , binaryRaw.length , logicalTotalLength , dicMap.size() , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + analizeResult.getLogicalDataSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
   }
 
   @Override
