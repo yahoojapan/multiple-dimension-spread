@@ -16,6 +16,20 @@ Provide flexible representation like JSON and efficient reading similar to other
 gpg --gen-key
 gpg --list-keys
 ```
+add gpg setting to <maven-install-folder>/conf/settings.xml:
+```xml
+    <profile>
+      <id>sign</id>
+      <activation>
+          <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+          <gpg.passphrase>***YOUR-PASSPHRASE***</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
+```
+
 * Make sure you had installed the following two other projects before.
 https://github.com/yahoojapan/dataplatform-schema-lib
 https://github.com/yahoojapan/dataplatform-config
