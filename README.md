@@ -10,6 +10,16 @@ Provide flexible representation like JSON and efficient reading similar to other
 * Maven 3.3.9+ (for building)
 * Hive 2.0 or later
 
+## Preparement
+* Install gpg and create a gpg key for maven plugin.
+```
+gpg --gen-key
+gpg --list-keys
+```
+* Make sure you had installed the following two other projects before.
+https://github.com/yahoojapan/dataplatform-schema-lib
+https://github.com/yahoojapan/dataplatform-config
+
 
 ## Building MDS Package
 MDS is a standard Maven project. Simply run the following command from the project root directory:
