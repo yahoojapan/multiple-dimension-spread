@@ -222,7 +222,7 @@ public class ColumnBinary{
     SummaryStats stats = new SummaryStats( rowCount , rawDataSize , binaryLength , logicalDataSize , cardinality );
     if( columnBinaryList != null ){
       for( ColumnBinary columnBinary : columnBinaryList ){
-        stats.marge( columnBinary.toSummaryStats() );
+        stats.merge( columnBinary.toSummaryStats() );
       }
     }
     return stats;

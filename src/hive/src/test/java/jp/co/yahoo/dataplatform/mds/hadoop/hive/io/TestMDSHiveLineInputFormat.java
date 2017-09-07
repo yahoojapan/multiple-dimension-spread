@@ -17,6 +17,8 @@
  */
 package jp.co.yahoo.dataplatform.mds.hadoop.hive.io;
 
+import java.io.IOException;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -27,7 +29,7 @@ import jp.co.yahoo.dataplatform.mds.*;
 public class TestMDSHiveLineInputFormat{
 
   @Test
-  public void T_newInstance_1(){
+  public void T_newInstance_1() throws IOException{
     new MDSHiveLineInputFormat();
   }
 

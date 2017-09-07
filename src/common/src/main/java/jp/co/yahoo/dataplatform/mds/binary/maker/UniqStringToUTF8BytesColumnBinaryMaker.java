@@ -110,7 +110,7 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
-    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getTotalUtf8ByteSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
+    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getUniqUtf8ByteSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
   }
 
   @Override

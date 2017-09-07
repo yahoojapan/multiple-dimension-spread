@@ -29,59 +29,52 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.CombineFileSplit;
 
 import jp.co.yahoo.dataplatform.mds.MDSReader;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
-public class MDSSpreadReader extends RecordReader<NullWritable, Spread> {
+public class MDSCombineSpreadReader extends RecordReader<NullWritable, Spread> {
 
-  private final MDSReader currentReader = new MDSReader();
-  private Spread currentSpread;
+  private final MDSSpreadReader innerReader;
+
+  public MDSCombineSpreadReader( final CombineFileSplit split , final TaskAttemptContext context , final Integer index ) throws IOException{
+    Configuration config = context.getConfiguration();
+    Path path = split.getPath( index );
+    FileSystem fs = path.getFileSystem( config );
+    long fileLength = fs.getLength( path );
+    InputStream in = fs.open( path );
+
+    innerReader = new MDSSpreadReader();
+    innerReader.setStream( in , fileLength , 0 , fileLength );
+  }
 
   @Override
   public NullWritable getCurrentKey() throws IOException, InterruptedException {
-    return NullWritable.get();
+    return innerReader.getCurrentKey();
   }
 
   @Override
   public Spread getCurrentValue() throws IOException, InterruptedException {
-    return currentSpread;
+    return innerReader.getCurrentValue();
   }
 
   @Override
   public boolean nextKeyValue() throws IOException, InterruptedException {
-    if( currentReader.hasNext() ){
-      currentSpread = currentReader.next();
-      return true;
-    }
-    return false;
+    return innerReader.nextKeyValue();
   }
 
   @Override
   public float getProgress() throws IOException, InterruptedException {
-    return 0;
+    return innerReader.getProgress();
   }
 
   @Override
   public void initialize( final InputSplit inputSplit, final TaskAttemptContext context ) throws IOException, InterruptedException {
-    FileSplit fileSplit = (FileSplit)inputSplit;
-    Configuration config = context.getConfiguration();
-    Path path = fileSplit.getPath();
-    FileSystem fs = path.getFileSystem( config );
-    long fileLength = fs.getLength( path );
-    long start = fileSplit.getStart();
-    long length = fileSplit.getLength();
-    InputStream in = fs.open( path );
-  }
-
-  public void setStream( final InputStream in , final long fileLength , final long start , final long length ) throws IOException{
-    currentReader.setNewStream( in , fileLength , new jp.co.yahoo.dataplatform.config.Configuration() , start , length );
   }
 
   @Override
   public void close() throws IOException {
-    if( currentReader != null ){
-      currentReader.close();
-    }
+    innerReader.close();
   }
 }

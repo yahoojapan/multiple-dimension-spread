@@ -32,9 +32,9 @@ public class SpreadSummaryStats{
     this.summaryStats = summaryStats;
   }
 
-  public void marge( final SpreadSummaryStats spreadStats ){
+  public void merge( final SpreadSummaryStats spreadStats ){
     this.lineCount += spreadStats.getLineCount();
-    this.summaryStats.marge( spreadStats.getSummaryStats() );
+    this.summaryStats.merge( spreadStats.getSummaryStats() );
   }
 
   public long getLineCount(){

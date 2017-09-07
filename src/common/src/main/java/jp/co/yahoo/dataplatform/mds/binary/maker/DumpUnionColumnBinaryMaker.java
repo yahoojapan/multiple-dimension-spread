@@ -65,13 +65,13 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
-  private MargeType checkSameAllColumnType( final List<IColumn> columnList , final MargeType margeType ){
+  private MargeType checkSameAllColumnType( final List<IColumn> columnList , final MargeType mergeType ){
     for( IColumn column : columnList ){
-      if( ! ( getMargeType( column.getColumnType() ) == margeType ) ){
+      if( ! ( getMargeType( column.getColumnType() ) == mergeType ) ){
         return MargeType.MIX;
       }
     }
-    return margeType;
+    return mergeType;
   }
 
   public MargeType checkMargeType( final List<IColumn> columnList ){
@@ -85,7 +85,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
-  private ColumnBinary margeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
+  private ColumnBinary mergeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
     int max = -1;
     IColumnBinaryMaker maker = null;
     for( IColumn childColumn : childColumnList ){
@@ -109,9 +109,9 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     List<IColumn> childColumnList = column.getListColumn();
-    MargeType margeType = checkMargeType( childColumnList );
-    if( margeType != MargeType.MIX ){
-      return margeColumn( commonConfig , currentConfigNode , column , makerCache , childColumnList );
+    MargeType mergeType = checkMargeType( childColumnList );
+    if( mergeType != MargeType.MIX ){
+      return mergeColumn( commonConfig , currentConfigNode , column , makerCache , childColumnList );
     }
     List<ColumnBinary> columnBinaryList = new ArrayList<ColumnBinary>();
     for( IColumn childColumn : childColumnList ){

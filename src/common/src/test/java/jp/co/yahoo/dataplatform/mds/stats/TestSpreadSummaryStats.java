@@ -48,9 +48,9 @@ public class TestSpreadSummaryStats {
   }
 
   @Test
-  public void T_marge_1(){
+  public void T_merge_1(){
     SpreadSummaryStats stats = new SpreadSummaryStats( 5 , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) );
-    stats.marge( new SpreadSummaryStats( 5 , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ) );
+    stats.merge( new SpreadSummaryStats( 5 , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ) );
     assertEquals( 10 , stats.getLineCount() );
 
     SummaryStats summary = stats.getSummaryStats();
@@ -60,9 +60,9 @@ public class TestSpreadSummaryStats {
   }
 
   @Test
-  public void T_marge_2(){
+  public void T_merge_2(){
     SpreadSummaryStats stats = new SpreadSummaryStats();
-    stats.marge( new SpreadSummaryStats( 5 , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ) );
+    stats.merge( new SpreadSummaryStats( 5 , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ) );
     assertEquals( 5 , stats.getLineCount() );
 
     SummaryStats summary = stats.getSummaryStats();

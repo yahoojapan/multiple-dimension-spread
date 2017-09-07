@@ -56,7 +56,10 @@ public class ColumnBinaryTree{
   public List<ColumnBinary> getChildColumnBinary( final int index ){
     List<ColumnBinary> result = new ArrayList<ColumnBinary>();
     for( Map.Entry<String,ColumnBinaryTree> entry : childTreeMap.entrySet() ){
-      result.add( entry.getValue().getColumnBinary( index ) );
+      ColumnBinary childColumnBinary = entry.getValue().getColumnBinary( index );
+      if( childColumnBinary != null ){
+        result.add( childColumnBinary );
+      }
     }
     return result;
   }
@@ -276,6 +279,7 @@ public class ColumnBinaryTree{
     currentColumnBinaryList.clear();
     childTreeMap.clear();
     columnNameNode = null;
+    blockReadOffset = null;
     currentCount = 0;
     childCount = 0;
     metaLength = 0;

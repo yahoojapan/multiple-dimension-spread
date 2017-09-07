@@ -18,34 +18,25 @@
 package jp.co.yahoo.dataplatform.mds.hadoop.mapreduce;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
-import jp.co.yahoo.dataplatform.schema.parser.IParser;
+import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
-public class MDSParserOutputFormat extends FileOutputFormat<NullWritable,IParser>{
+public class MDSSpreadInputFormat extends FileInputFormat<NullWritable,Spread>{
 
   @Override
-  public RecordWriter<NullWritable,IParser> getRecordWriter( final TaskAttemptContext taskAttemptContext ) throws IOException,InterruptedException{
-    Configuration config = taskAttemptContext.getConfiguration(); 
-
-    String extension = ".mds";
-    Path file = getDefaultWorkFile( taskAttemptContext, extension );
-
-    FileSystem fs = file.getFileSystem( config );
-    long dfsBlockSize = Math.max( fs.getDefaultBlockSize( file ) , 1024 * 1024 * 256 );
-
-    OutputStream out = fs.create( file , true , 4096 , fs.getDefaultReplication(file) , dfsBlockSize );
-
-    return new MDSParserRecordWriter( out , new jp.co.yahoo.dataplatform.config.Configuration() );
+  public RecordReader<NullWritable,Spread> createRecordReader( final InputSplit split , final TaskAttemptContext context)throws IOException,InterruptedException{
+    return new MDSSpreadReader();
   }
-
 
 }

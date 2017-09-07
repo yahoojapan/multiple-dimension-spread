@@ -82,10 +82,10 @@ public class TestColumnStats {
   }
 
   @Test( dataProvider = "T_addSummaryStats_1")
-  public void T_margeSummaryStats_1( final ColumnType columnType , final SummaryStats summaryStats ){
+  public void T_mergeSummaryStats_1( final ColumnType columnType , final SummaryStats summaryStats ){
     ColumnStats stats = new ColumnStats( "root" );
     stats.addSummaryStats( columnType , summaryStats );
-    stats.margeSummaryStats( columnType , summaryStats );
+    stats.mergeSummaryStats( columnType , summaryStats );
 
     Map<ColumnType,SummaryStats> statsMap = stats.getSummaryStats();
     SummaryStats result = statsMap.get( columnType );
@@ -95,9 +95,9 @@ public class TestColumnStats {
   }
 
   @Test( dataProvider = "T_addSummaryStats_1")
-  public void T_margeSummaryStats_2( final ColumnType columnType , final SummaryStats summaryStats ){
+  public void T_mergeSummaryStats_2( final ColumnType columnType , final SummaryStats summaryStats ){
     ColumnStats stats = new ColumnStats( "root" );
-    stats.margeSummaryStats( columnType , summaryStats );
+    stats.mergeSummaryStats( columnType , summaryStats );
 
     Map<ColumnType,SummaryStats> statsMap = stats.getSummaryStats();
     SummaryStats result = statsMap.get( columnType );
@@ -119,9 +119,9 @@ public class TestColumnStats {
   }
 
   @Test
-  public void T_marge_1(){
+  public void T_merge_1(){
     ColumnStats stats = createMargeTestStats();
-    stats.marge( createMargeTestStats() );
+    stats.merge( createMargeTestStats() );
 
     Map<ColumnType,SummaryStats> statsMap = stats.getSummaryStats();
     SummaryStats result = statsMap.get( ColumnType.STRING );
@@ -141,9 +141,9 @@ public class TestColumnStats {
   }
 
   @Test
-  public void T_marge_2(){
+  public void T_merge_2(){
     ColumnStats stats = new ColumnStats( "new" );
-    stats.marge( createMargeTestStats() );
+    stats.merge( createMargeTestStats() );
 
     Map<ColumnType,SummaryStats> statsMap = stats.getSummaryStats();
     SummaryStats result = statsMap.get( ColumnType.STRING );
@@ -165,7 +165,7 @@ public class TestColumnStats {
   @Test
   public void T_doIntegration_1(){
     ColumnStats stats = createMargeTestStats();
-    stats.marge( createMargeTestStats() );
+    stats.merge( createMargeTestStats() );
     SummaryStats total = stats.doIntegration();
 
     assertEquals( total.getRowCount() , 40 );
@@ -176,7 +176,7 @@ public class TestColumnStats {
   @Test
   public void T_toJavaObject_1(){
     ColumnStats stats = createMargeTestStats();
-    stats.marge( createMargeTestStats() );
+    stats.merge( createMargeTestStats() );
     SummaryStats total = stats.doIntegration();
     Map<Object,Object> javaObj = stats.toJavaObject();
     assertEquals( javaObj.get( "name" ) , "root" );
