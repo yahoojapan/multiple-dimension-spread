@@ -39,19 +39,27 @@ public class ColumnStats{
     totalStats = new SummaryStats();
   }
 
-  public void addSummaryStats( final ColumnType columnType , final SummaryStats summaryStats ){
-    summaryContainer.put( columnType , summaryStats );
-    totalStats.marge( summaryStats );
+  public String getColumnName(){
+    return columnName;
   }
 
-  public void margeSummaryStats( final ColumnType columnType , final SummaryStats summaryStats ){
+  public SummaryStats getTotalStats(){
+    return totalStats;
+  }
+
+  public void addSummaryStats( final ColumnType columnType , final SummaryStats summaryStats ){
+    summaryContainer.put( columnType , summaryStats );
+    totalStats.merge( summaryStats );
+  }
+
+  public void mergeSummaryStats( final ColumnType columnType , final SummaryStats summaryStats ){
     if( summaryContainer.containsKey( columnType ) ){
-      summaryContainer.get( columnType ).marge( summaryStats );
+      summaryContainer.get( columnType ).merge( summaryStats );
     }
     else{
       addSummaryStats( columnType , summaryStats );
     }
-    totalStats.marge( summaryStats );
+    totalStats.merge( summaryStats );
   }
 
   public void addChild( final String childColumnName , final ColumnStats columnStats ){
@@ -66,34 +74,34 @@ public class ColumnStats{
     return summaryContainer;
   }
 
-  public void marge( final ColumnStats columnStats ){
-    Map<String,ColumnStats> margeColumnStats = columnStats.getChildColumnStats();
-    for( Map.Entry<String,ColumnStats> entry : margeColumnStats.entrySet() ){
+  public void merge( final ColumnStats columnStats ){
+    Map<String,ColumnStats> mergeColumnStats = columnStats.getChildColumnStats();
+    for( Map.Entry<String,ColumnStats> entry : mergeColumnStats.entrySet() ){
       if( childContainer.containsKey( entry.getKey() ) ){
-        childContainer.get( entry.getKey() ).marge( entry.getValue() );
+        childContainer.get( entry.getKey() ).merge( entry.getValue() );
       }
       else{
         childContainer.put( entry.getKey() , entry.getValue() );
       }
     }
 
-    Map<ColumnType,SummaryStats> margeSummaryStas = columnStats.getSummaryStats();
-    for( Map.Entry<ColumnType,SummaryStats> entry : margeSummaryStas.entrySet() ){
+    Map<ColumnType,SummaryStats> mergeSummaryStas = columnStats.getSummaryStats();
+    for( Map.Entry<ColumnType,SummaryStats> entry : mergeSummaryStas.entrySet() ){
       if( summaryContainer.containsKey( entry.getKey() ) ){
-        summaryContainer.get( entry.getKey() ).marge( entry.getValue() );
+        summaryContainer.get( entry.getKey() ).merge( entry.getValue() );
       }
       else{
         summaryContainer.put( entry.getKey() , entry.getValue() );
       }
-      totalStats.marge( entry.getValue() );
+      totalStats.merge( entry.getValue() );
     }
   }
 
   public SummaryStats doIntegration(){
     integrationStats = new SummaryStats();
-    integrationStats.marge( totalStats );
+    integrationStats.merge( totalStats );
     for( Map.Entry<String,ColumnStats> entry : childContainer.entrySet() ){
-      integrationStats.marge( entry.getValue().doIntegration() );
+      integrationStats.merge( entry.getValue().doIntegration() );
     }
     return integrationStats;
   }

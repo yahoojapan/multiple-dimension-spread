@@ -33,11 +33,16 @@ import jp.co.yahoo.dataplatform.schema.parser.JacksonMessageReader;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.Analyzer;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.maker.MakerCache;
+import jp.co.yahoo.dataplatform.mds.binary.optimizer.IOptimizerFactory;
+import jp.co.yahoo.dataplatform.mds.binary.optimizer.FindOptimizerFactory;
+import jp.co.yahoo.dataplatform.mds.binary.optimizer.BinaryMakerOptimizer;
 
 import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
 
@@ -53,6 +58,8 @@ public class PredicateBlockMaker implements IBlockMaker{
   private ByteArrayData metaBuffer;
   private int blockSize;
   private ColumnBinaryTree columnTree;
+  private boolean makeCustomConfig;
+  private IOptimizerFactory optimizerFactory;
 
   protected ICompressor compressor = new GzipCompressor();
   protected byte[] headerBytes;
@@ -68,6 +75,11 @@ public class PredicateBlockMaker implements IBlockMaker{
       JacksonMessageReader jsonReader = new JacksonMessageReader();
       IParser jsonParser = jsonReader.create( config.get( "spread.column.maker.setting" ) );
       configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser ); 
+    }
+    else if( config.get( "spread.column.maker.use.auto.optimizer" , "true" ).equals( "true" ) ){
+      makeCustomConfig = true;
+      optimizerFactory = FindOptimizerFactory.get( config.get( "spread.column.maker.use.auto.optimizer.factory.class" , "jp.co.yahoo.dataplatform.mds.binary.optimizer.DefaultOptimizerFactory" ) , config );
+      configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
     }
     else{
       configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
@@ -107,6 +119,12 @@ public class PredicateBlockMaker implements IBlockMaker{
 
   @Override
   public List<ColumnBinary> convertRow( final Spread spread ) throws IOException{
+    if( makeCustomConfig ){
+      List<IColumnAnalizeResult> analizeResultList = Analyzer.analize( spread );
+      BinaryMakerOptimizer optimizer = new BinaryMakerOptimizer( analizeResultList );
+      configNode = optimizer.createConfigNode( configNode.getCurrentConfig() , optimizerFactory );
+      makeCustomConfig = false;
+    }
     List<ColumnBinary> result = new ArrayList<ColumnBinary>();
     for( int i = 0 ; i < spread.getColumnSize() ; i++ ){
       IColumn column = spread.getColumn( i );

@@ -38,9 +38,10 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadArrayLink;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
@@ -57,21 +58,22 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
 
+    byte[] binaryRaw = new byte[ PrimitiveByteLength.INT_LENGTH * column.size() ];
+    IntBuffer intIndexBuffer = ByteBuffer.wrap( binaryRaw ).asIntBuffer();
+
     List<Integer> numberList = new ArrayList<Integer>();
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell instanceof ArrayCell ){
         ArrayCell arrayCell = (ArrayCell) cell;
-        numberList.add( arrayCell.getEnd() - arrayCell.getStart() );
+        intIndexBuffer.put( arrayCell.getEnd() - arrayCell.getStart() );
       }
       else{
-        numberList.add( 0 );
+        intIndexBuffer.put( 0 );
       }
     }
 
-    byte[] binary = BinaryDump.dumpInteger( numberList );
-
-    byte[] compressData = currentConfig.compressorClass.compress( binary , 0 , binary.length );
+    byte[] compressData = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
     IColumn childColumn = column.getColumn( 0 );
     List<ColumnBinary> columnBinaryList = new ArrayList<ColumnBinary>();
@@ -86,7 +88,12 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     }
     columnBinaryList.add( maker.toBinary( commonConfig , childColumnConfigNode , childColumn , makerCache.getChild( childColumn.getColumnName() ) ) );
     
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binary.length , 0 , -1 , compressData , 0 , compressData.length , columnBinaryList );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binaryRaw.length , 0 , -1 , compressData , 0 , compressData.length , columnBinaryList );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize();
   }
 
   @Override
@@ -103,11 +110,9 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-    int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    byte[] decompressBuffer = new byte[decompressSize];
-    int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
+    byte[] decompressBuffer = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
 
-    IntBuffer buffer = ByteBuffer.wrap( decompressBuffer , 0 , binaryLength ).asIntBuffer();
+    IntBuffer buffer = ByteBuffer.wrap( decompressBuffer ).asIntBuffer();
     int length = buffer.capacity();
     int currentIndex = 0;
     for( int i = 0 ; i < length ; i++ ){
@@ -233,12 +238,9 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
     private void create() throws IOException{
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
-      int decompressSize = compressor.getDecompressSize( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-      byte[] decompressBuffer = new byte[decompressSize];
+      byte[] decompressBuffer = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
 
-      int binaryLength = compressor.decompressAndSet( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength , decompressBuffer );
-
-      IntBuffer wrapBuffer = ByteBuffer.wrap( decompressBuffer , 0 , binaryLength ).asIntBuffer() ;
+      IntBuffer wrapBuffer = ByteBuffer.wrap( decompressBuffer ).asIntBuffer() ;
 
       arrayColumn = new ArrayColumn( columnBinary.columnName );
       Spread spread = new Spread( arrayColumn );

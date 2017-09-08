@@ -18,6 +18,7 @@
 package jp.co.yahoo.dataplatform.mds.hadoop.mapreduce;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.hadoop.io.NullWritable;
 
@@ -36,7 +37,6 @@ public class MDSSpreadReader extends RecordReader<NullWritable, Spread> {
 
   private final MDSReader currentReader = new MDSReader();
   private Spread currentSpread;
-
 
   @Override
   public NullWritable getCurrentKey() throws IOException, InterruptedException {
@@ -64,11 +64,18 @@ public class MDSSpreadReader extends RecordReader<NullWritable, Spread> {
 
   @Override
   public void initialize( final InputSplit inputSplit, final TaskAttemptContext context ) throws IOException, InterruptedException {
+    FileSplit fileSplit = (FileSplit)inputSplit;
     Configuration config = context.getConfiguration();
-    Path path = ( (FileSplit)inputSplit ).getPath();
+    Path path = fileSplit.getPath();
     FileSystem fs = path.getFileSystem( config );
+    long fileLength = fs.getLength( path );
+    long start = fileSplit.getStart();
+    long length = fileSplit.getLength();
+    InputStream in = fs.open( path );
+  }
 
-    currentReader.setNewStream( fs.open( path ) , inputSplit.getLength() , new jp.co.yahoo.dataplatform.config.Configuration() );
+  public void setStream( final InputStream in , final long fileLength , final long start , final long length ) throws IOException{
+    currentReader.setNewStream( in , fileLength , new jp.co.yahoo.dataplatform.config.Configuration() , start , length );
   }
 
   @Override

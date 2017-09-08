@@ -29,6 +29,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadColumn;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
@@ -58,6 +59,11 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
     }
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SPREAD , column.size() , 0 , 0 , -1 , new byte[0] , 0 , 0 , columnBinaryList );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return 0;
   }
 
   @Override

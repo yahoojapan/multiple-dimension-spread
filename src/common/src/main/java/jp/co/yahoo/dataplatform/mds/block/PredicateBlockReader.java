@@ -196,7 +196,7 @@ public class PredicateBlockReader implements IBlockReader{
       if( columnBinary != null ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( columnBinary.makerClassName );
         spread.addColumn( maker.toColumn( columnBinary , primitiveObjectConnector ) );
-        readSummaryStats.marge( columnBinary.toSummaryStats() );
+        readSummaryStats.merge( columnBinary.toSummaryStats() );
       }
     }
     spread.setRowCount( spreadSize );

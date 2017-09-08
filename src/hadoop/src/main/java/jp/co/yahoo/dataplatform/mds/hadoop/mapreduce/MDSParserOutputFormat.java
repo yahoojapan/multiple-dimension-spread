@@ -40,13 +40,11 @@ public class MDSParserOutputFormat extends FileOutputFormat<NullWritable,IParser
     Path file = getDefaultWorkFile( taskAttemptContext, extension );
 
     FileSystem fs = file.getFileSystem( config );
-    long dfsBlockSize = Math.max( fs.getDefaultBlockSize( file ), 1024 * 1024 * 32 );
+    long dfsBlockSize = Math.max( fs.getDefaultBlockSize( file ) , 1024 * 1024 * 256 );
 
     OutputStream out = fs.create( file , true , 4096 , fs.getDefaultReplication(file) , dfsBlockSize );
 
-    jp.co.yahoo.dataplatform.config.Configuration writerConfig = new jp.co.yahoo.dataplatform.config.Configuration();
-    writerConfig.set( "spread.size" , Integer.toString( 1024 * 1024 * 64 ) );
-    return new MDSParserRecordWriter( out , writerConfig );
+    return new MDSParserRecordWriter( out , new jp.co.yahoo.dataplatform.config.Configuration() );
   }
 
 

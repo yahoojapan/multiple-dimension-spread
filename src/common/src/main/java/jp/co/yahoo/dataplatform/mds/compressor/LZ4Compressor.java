@@ -18,8 +18,10 @@
 package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 
@@ -48,6 +50,15 @@ public class LZ4Compressor implements ICompressor{
     out.close();
 
     return compressByte;
+  }
+
+  @Override                                                                                                   public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
+    LZ4BlockOutputStream lzOut = new LZ4BlockOutputStream( out );
+
+    lzOut.write( data , start , length );
+    lzOut.flush();
+    lzOut.finish();
+    lzOut.close();
   }
 
   @Override
@@ -88,7 +99,7 @@ public class LZ4Compressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
-    return new LZ4BlockInputStream( bIn );
+    return new BufferedInputStream( new LZ4BlockInputStream( bIn ) );
   }
 
 }

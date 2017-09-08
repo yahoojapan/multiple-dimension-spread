@@ -37,6 +37,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
@@ -64,13 +65,13 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
-  private MargeType checkSameAllColumnType( final List<IColumn> columnList , final MargeType margeType ){
+  private MargeType checkSameAllColumnType( final List<IColumn> columnList , final MargeType mergeType ){
     for( IColumn column : columnList ){
-      if( ! ( getMargeType( column.getColumnType() ) == margeType ) ){
+      if( ! ( getMargeType( column.getColumnType() ) == mergeType ) ){
         return MargeType.MIX;
       }
     }
-    return margeType;
+    return mergeType;
   }
 
   public MargeType checkMargeType( final List<IColumn> columnList ){
@@ -84,7 +85,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
-  private ColumnBinary margeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
+  private ColumnBinary mergeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
     int max = -1;
     IColumnBinaryMaker maker = null;
     for( IColumn childColumn : childColumnList ){
@@ -108,9 +109,9 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     List<IColumn> childColumnList = column.getListColumn();
-    MargeType margeType = checkMargeType( childColumnList );
-    if( margeType != MargeType.MIX ){
-      return margeColumn( commonConfig , currentConfigNode , column , makerCache , childColumnList );
+    MargeType mergeType = checkMargeType( childColumnList );
+    if( mergeType != MargeType.MIX ){
+      return mergeColumn( commonConfig , currentConfigNode , column , makerCache , childColumnList );
     }
     List<ColumnBinary> columnBinaryList = new ArrayList<ColumnBinary>();
     for( IColumn childColumn : childColumnList ){
@@ -134,6 +135,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] compressData = currentConfig.compressorClass.compress( rawBinary , 0 , rawBinary.length );
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.UNION , column.size() , rawBinary.length , column.size() * PrimitiveByteLength.BYTE_LENGTH , -1 , compressData , 0 , compressData.length , columnBinaryList );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    return analizeResult.getColumnSize();
   }
 
   @Override

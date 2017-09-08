@@ -25,39 +25,43 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
-import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
-import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
+import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
+import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeLongIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.LongRangeBlockIndex;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerBuffer ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     Map<Long,Integer> dicMap = new HashMap<Long,Integer>();
-    List<Integer> columnIndexList = new ArrayList<Integer>();
-    List<Long> dicList = new ArrayList<Long>();
+    int columnIndexLength = column.size() * PrimitiveByteLength.INT_LENGTH;
+    int dicBufferSize = ( column.size() + 1 ) * PrimitiveByteLength.LONG_LENGTH;
+    byte[] binaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnIndexLength + dicBufferSize ];
+    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , PrimitiveByteLength.INT_LENGTH + columnIndexLength );
+    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH + columnIndexLength , PrimitiveByteLength.INT_LENGTH );
+    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+    indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
-    dicList.add( Long.valueOf( (byte)0 ) );
+    dicWrapBuffer.putLong( Long.valueOf( (long)0 ) );
 
+    Long min = Long.MAX_VALUE;
+    Long max = Long.MIN_VALUE;
     int rowCount = 0;
-    long min = Long.MAX_VALUE;
-    long max = Long.MIN_VALUE;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Long target = null;
@@ -67,42 +71,37 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
         target = Long.valueOf( stringCell.getRow().getLong() );
       }
       if( ! dicMap.containsKey( target ) ){
-        if( target < min ){
-          min = target;
+        if( 0 < min.compareTo( target ) ){
+          min = Long.valueOf( target );
         }
-        if( max < target ){
-          max = target;
+        if( max.compareTo( target ) < 0 ){
+          max = Long.valueOf( target );
         }
-        dicMap.put( target , dicList.size() );
-        dicList.add( target );
+        dicMap.put( target , dicMap.size() );
+        dicWrapBuffer.putLong( target.longValue() );
       }
-      columnIndexList.add( dicMap.get( target ) );
+      indexWrapBuffer.putInt( dicMap.get( target ) );
     }
 
-    byte[] columnIndexBinaryRaw = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpInteger( columnIndexList ) );
-    byte[] dicRawBinary = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpLong( dicList ) );
+    int dicLength = dicMap.size() * PrimitiveByteLength.LONG_LENGTH;
+    int dataLength = binaryRaw.length - ( dicBufferSize - dicLength );
+    dicLengthBuffer.putInt( dicLength );
+    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , dataLength );
 
-    byte[] binaryRaw = new byte[ columnIndexBinaryRaw.length + dicRawBinary.length ];
-    int offset = 0;
-    System.arraycopy( columnIndexBinaryRaw , 0 , binaryRaw , offset , columnIndexBinaryRaw.length );
-    offset += columnIndexBinaryRaw.length;
-    System.arraycopy( dicRawBinary , 0 , binaryRaw , offset , dicRawBinary.length );
-
-    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
-    byte[] indexBinary = new byte[ ( PrimitiveByteLength.LONG_LENGTH * 2 ) + binary.length ];
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( indexBinary , 0 , indexBinary.length );
+    byte[] binary = new byte[ PrimitiveByteLength.LONG_LENGTH * 2 + compressBinary.length ];
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
     wrapBuffer.putLong( min );
     wrapBuffer.putLong( max );
-    wrapBuffer.put( binary );
+    wrapBuffer.put( compressBinary );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.LONG , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.LONG_LENGTH , dicMap.size() , indexBinary , 0 , indexBinary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.LONG , rowCount , dataLength , rowCount * PrimitiveByteLength.LONG_LENGTH , dicMap.size() , binary , 0 , binary.length , null );
   }
 
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    long min = wrapBuffer.getLong();
-    long max = wrapBuffer.getLong();
+    Long min = Long.valueOf( wrapBuffer.getLong() );
+    Long max = Long.valueOf( wrapBuffer.getLong() );
     return new HeaderIndexLazyColumn(
       columnBinary.columnName ,
       columnBinary.columnType ,
@@ -124,8 +123,8 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
   @Override
   public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    long min = wrapBuffer.getLong();
-    long max = wrapBuffer.getLong();
+    Long min = Long.valueOf( wrapBuffer.getLong() );
+    Long max = Long.valueOf( wrapBuffer.getLong() );
     BlockIndexNode currentNode = parentNode.getChildNode( columnBinary.columnName );
     currentNode.setBlockIndex( new LongRangeBlockIndex( min , max ) );
   }

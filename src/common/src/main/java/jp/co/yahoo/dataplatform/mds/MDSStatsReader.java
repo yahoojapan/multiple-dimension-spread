@@ -52,7 +52,7 @@ public class MDSStatsReader{
       ColumnStats columnStats = new ColumnStats( "ROOT" );
       for( ColumnBinary columnBinary : columnBinaryList ){
         if( columnBinary != null ){
-          stats.marge( columnBinary.toSummaryStats() );
+          stats.merge( columnBinary.toSummaryStats() );
           columnStats.addChild( columnBinary.columnName , columnBinary.toColumnStats() );
         }
       }
@@ -65,7 +65,7 @@ public class MDSStatsReader{
   public SpreadSummaryStats getTotalSummaryStats(){
     SpreadSummaryStats stats = new SpreadSummaryStats();
     for( SpreadSummaryStats childStats : spreadSummaryStatsList ){
-      stats.marge( childStats );
+      stats.merge( childStats );
     }
     return stats;
   }
@@ -77,7 +77,7 @@ public class MDSStatsReader{
   public ColumnStats getTotalColumn(){
     ColumnStats stats = new ColumnStats( "ROOT" );
     for( ColumnStats childStats : columnStatsList ){
-      stats.marge( childStats );
+      stats.merge( childStats );
     }
     return stats;
   }

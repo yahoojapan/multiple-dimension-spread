@@ -44,6 +44,7 @@ public class TestExpression {
   private Spread getTestSpread() throws IOException{
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     Configuration config = new Configuration();
+    config.set( "spread.column.maker.setting" , "{ \"column_name\" : \"root\" , \"string_maker_class\" : \"jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringColumnBinaryMaker\" }" );
     MDSRecordWriter writer = new MDSRecordWriter( out , config );
 
     JacksonMessageReader messageReader = new JacksonMessageReader();

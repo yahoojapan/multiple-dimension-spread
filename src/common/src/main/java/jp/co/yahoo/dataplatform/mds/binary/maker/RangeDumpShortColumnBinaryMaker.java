@@ -33,6 +33,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
@@ -56,35 +57,43 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    ByteBuffer nullFlagBuffer = ByteBuffer.allocate( column.size() );
-    ByteBuffer floatBuffer = ByteBuffer.allocate( column.size() * PrimitiveByteLength.SHORT_LENGTH );
+    byte[] parentsBinaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() + ( column.size() * PrimitiveByteLength.SHORT_LENGTH ) ];
+    ByteBuffer lengthBuffer = ByteBuffer.wrap( parentsBinaryRaw );
+    lengthBuffer.putInt( column.size() );
+    lengthBuffer.putInt( column.size() * PrimitiveByteLength.SHORT_LENGTH );
+
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
+    ShortBuffer shortBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.SHORT_LENGTH ) ).asShortBuffer();
     int rowCount = 0;
     boolean hasNull = false;
     Short min = Short.MAX_VALUE;
     Short max = Short.MIN_VALUE;
-    for( int i = 0 , n = 0 ; i < column.size() ; i++ , n += PrimitiveByteLength.SHORT_LENGTH ){
+    for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
+        nullFlagBuffer.put( (byte)1 );
+        shortBuffer.put( (short)0 );
         hasNull = true;
-        nullFlagBuffer.put( i , (byte)1 );
-        continue;
       }
-      rowCount++;
-      PrimitiveCell byteCell = (PrimitiveCell) cell;
-      Short target = Short.valueOf( byteCell.getRow().getShort() );
-      floatBuffer.putShort( n , target );
-      if( 0 < min.compareTo( target ) ){
-        min = Short.valueOf( target );
-      }
-      if( max.compareTo( target ) < 0 ){
-        max = Short.valueOf( target );
+      else{
+        rowCount++;
+        PrimitiveCell byteCell = (PrimitiveCell) cell;
+        nullFlagBuffer.put( (byte)0 );
+        Short target = Short.valueOf( byteCell.getRow().getShort() );
+        shortBuffer.put( target );
+        if( 0 < min.compareTo( target ) ){
+          min = Short.valueOf( target );
+        }
+        if( max.compareTo( target ) < 0 ){
+          max = Short.valueOf( target );
+        }
       }
     }
 
     byte[] binary;
     int rawLength;
     if( hasNull ){
-      byte[] binaryRaw = convertBinary( nullFlagBuffer , floatBuffer , currentConfig );
+      byte[] binaryRaw = parentsBinaryRaw;
       byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
       rawLength = binaryRaw.length;
       
@@ -96,9 +105,8 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      byte[] binaryRaw = floatBuffer.array();
-      rawLength = binaryRaw.length;
-      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
+      rawLength = column.size() * PrimitiveByteLength.SHORT_LENGTH;
+      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() , column.size() * PrimitiveByteLength.SHORT_LENGTH );
 
       binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
@@ -108,6 +116,16 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , rawLength , rowCount * PrimitiveByteLength.SHORT_LENGTH , -1 , binary , 0 , binary.length , null );
+  }
+
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    if( analizeResult.getNullCount() == 0 ){
+      return analizeResult.getColumnSize() * PrimitiveByteLength.SHORT_LENGTH;
+    }
+    else{
+      return super.calcBinarySize( analizeResult );
+    }
   }
 
   @Override

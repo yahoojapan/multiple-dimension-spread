@@ -33,16 +33,16 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.binary.IBytesLink;
+import jp.co.yahoo.dataplatform.mds.binary.UTF8BytesLinkObj;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
@@ -54,22 +54,23 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    List<Integer> columnList = new ArrayList<Integer>();
+    byte[] nullFlagBytes = new byte[column.size()];
     List<byte[]> objList = new ArrayList<byte[]>();
-    objList.add( new byte[0] );
     int totalLength = 0;
     int logicalDataLength = 0;
     int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
-        columnList.add( 0 );
+        nullFlagBytes[i] = (byte)1;
+        objList.add( new byte[0] );
         continue;
       }
       PrimitiveCell byteCell = (PrimitiveCell) cell;
       String strObj = byteCell.getRow().getString();
       if( strObj == null ){
-        columnList.add( 0 );
+        nullFlagBytes[i] = (byte)1;
+        objList.add( new byte[0] );
         continue;
       }
       byte[] obj = strObj.getBytes( "UTF-8" );
@@ -77,28 +78,34 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       totalLength += obj.length;
       logicalDataLength += strObj.length() * PrimitiveByteLength.CHAR_LENGTH;
       objList.add( obj );
-      columnList.add( objList.size() - 1 );
     }
-    byte[] binaryRaw = convertBinary( columnList , objList , currentConfig , totalLength );
+    byte[] binaryRaw = convertBinary( nullFlagBytes , objList , currentConfig , totalLength );
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , rowCount , binaryRaw.length , logicalDataLength , -1 , binary , 0 , binary.length , null );
   }
 
-  public byte[] convertBinary( final List<Integer> columnList , final List<byte[]> objList , ColumnBinaryMakerConfig currentConfig , final int totalLength ) throws IOException{
-    byte[] dicRawBinary = BinaryDump.dumpBytes( objList , totalLength );
+  @Override
+  public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    int dicBinarySize = ( analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH ) + stringAnalizeResult.getTotalUtf8ByteSize();
+    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + analizeResult.getNullCount() + dicBinarySize;
+  }
 
-    int binaryLength = ( PrimitiveByteLength.INT_LENGTH * 2 ) + ( columnList.size() * PrimitiveByteLength.INT_LENGTH ) + dicRawBinary.length;
+  public byte[] convertBinary( final byte[] nullFlagBytes , final List<byte[]> objList , ColumnBinaryMakerConfig currentConfig , final int totalLength ) throws IOException{
+    int dicBinarySize = ( objList.size() * PrimitiveByteLength.INT_LENGTH ) + totalLength;
+    int binaryLength = ( PrimitiveByteLength.INT_LENGTH * 2 ) + nullFlagBytes.length + dicBinarySize;
 
     byte[] binaryRaw = new byte[binaryLength];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryRaw );
-    wrapBuffer.putInt( columnList.size() );
-    wrapBuffer.putInt( dicRawBinary.length );
-    for( Integer index : columnList ){
-      wrapBuffer.putInt( index );
-    }
+    wrapBuffer.putInt( nullFlagBytes.length );
+    wrapBuffer.putInt( dicBinarySize );
+    wrapBuffer.put( nullFlagBytes );
 
-    wrapBuffer.put( dicRawBinary );
+    for( byte[] obj : objList ){
+      wrapBuffer.putInt( obj.length );
+      wrapBuffer.put( obj );
+    }
 
     return binaryRaw;
   }
@@ -117,23 +124,25 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
     byte[] binary = compressor.decompress( columnBinary.binary , start , length );
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
-    int indexListSize = wrapBuffer.getInt();
+    int indexBinaryLength = wrapBuffer.getInt();
     int objBinaryLength = wrapBuffer.getInt();
     int indexBinaryStart = PrimitiveByteLength.INT_LENGTH * 2;
-    int indexBinaryLength = PrimitiveByteLength.INT_LENGTH * indexListSize;
     int objBinaryStart = indexBinaryStart + indexBinaryLength;
 
-    ByteBuffer indexBuffer = ByteBuffer.wrap( binary , indexBinaryStart , indexBinaryLength );
-    List<PrimitiveObject> dicList = new ArrayList<PrimitiveObject>();
-    BinaryDump.binaryToUTF8BytesLinkObjList( binary , objBinaryStart , objBinaryLength , new DefaultPrimitiveObjectConnector() , dicList );
-    for( int i = 0 ; i < indexListSize ; i++ ){
-      int index = indexBuffer.getInt();
-      if( index != 0 ){
-        IBytesLink obj = (IBytesLink)( dicList.get( index ) );
-        allocator.setBytes( i , obj.getLinkBytes() , obj.getStart() , obj.getLength() );
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binary , indexBinaryStart , indexBinaryLength );
+    ByteBuffer dicBuffer = ByteBuffer.wrap( binary , objBinaryStart , objBinaryLength );
+    for( int i = 0 ; i < indexBinaryLength ; i++ ){
+      byte nullFlag = nullFlagBuffer.get();
+      int objLength = dicBuffer.getInt();
+      if( nullFlag == (byte)0 ){
+        allocator.setBytes( i , binary , dicBuffer.position() , objLength );
+        dicBuffer.position( dicBuffer.position() + objLength );
+      }
+      else{
+        allocator.setNull( i );
       }
     }
-    allocator.setValueCount( indexListSize );
+    allocator.setValueCount( indexBinaryLength );
   }
 
   @Override
@@ -143,22 +152,20 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class StringDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
-    private final List<PrimitiveObject> dicList;
+    private final PrimitiveObject[] dicArray;
 
-    public StringDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final List<PrimitiveObject> dicList ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
-      this.dicList = dicList;
+    public StringDicManager( final PrimitiveObject[] dicArray ){
+      this.dicArray = dicArray;
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      return primitiveObjectConnector.convert( PrimitiveType.STRING , dicList.get( index ) );
+      return dicArray[index];
     }
 
     @Override
     public int getDicSize() throws IOException{
-      return dicList.size();
+      return dicArray.length;
     }
 
   }
@@ -193,18 +200,26 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
       byte[] binary = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
-      int indexListSize = wrapBuffer.getInt();
+      int indexBinaryLength = wrapBuffer.getInt();
       int objBinaryLength = wrapBuffer.getInt();
       int indexBinaryStart = PrimitiveByteLength.INT_LENGTH * 2;
-      int indexBinaryLength = PrimitiveByteLength.INT_LENGTH * indexListSize;
       int objBinaryStart = indexBinaryStart + indexBinaryLength;
 
-      IntBuffer indexIntBuffer = ByteBuffer.wrap( binary , indexBinaryStart , indexBinaryLength ).asIntBuffer();
-      List<PrimitiveObject> dicList = new ArrayList<PrimitiveObject>();
-      BinaryDump.binaryToUTF8BytesLinkObjList( binary , objBinaryStart , objBinaryLength , new DefaultPrimitiveObjectConnector() , dicList );
-      IDicManager dicManager = new StringDicManager( primitiveObjectConnector ,  dicList );
+      ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binary , indexBinaryStart , indexBinaryLength );
+      ByteBuffer dicBuffer = ByteBuffer.wrap( binary , objBinaryStart , objBinaryLength );
+      PrimitiveObject[] dicArray = new PrimitiveObject[indexBinaryLength];
+      for( int i = 0 ; i < dicArray.length ; i++ ){
+        byte nullFlag = nullFlagBuffer.get();
+        int objLength = dicBuffer.getInt();
+        if( nullFlag == (byte)0 ){
+          dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.STRING , new UTF8BytesLinkObj( binary , dicBuffer.position() , objLength ) );
+          dicBuffer.position( dicBuffer.position() + objLength );
+        }
+      }
+
+      IDicManager dicManager = new StringDicManager( dicArray );
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
-      column.setCellManager( new BufferDirectDictionaryLinkCellManager( ColumnType.STRING , dicManager , indexIntBuffer ) );
+      column.setCellManager( new BufferDirectCellManager( ColumnType.STRING , dicManager , indexBinaryLength ) );
       isCreate = true;
     }
 

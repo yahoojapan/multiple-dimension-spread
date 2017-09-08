@@ -20,44 +20,46 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
+import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
+import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
+import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
+import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeFloatIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
-import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
-import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class RangeIndexFloatColumnBinaryMaker extends UniqFloatColumnBinaryMaker{
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerBuffer ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     Map<Float,Integer> dicMap = new HashMap<Float,Integer>();
-    List<Integer> columnIndexList = new ArrayList<Integer>();
-    List<Float> dicList = new ArrayList<Float>();
+    int columnIndexLength = column.size() * PrimitiveByteLength.INT_LENGTH;
+    int dicBufferSize = ( column.size() + 1 ) * PrimitiveByteLength.FLOAT_LENGTH;
+    byte[] binaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnIndexLength + dicBufferSize ];
+    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , PrimitiveByteLength.INT_LENGTH + columnIndexLength );
+    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH + columnIndexLength , PrimitiveByteLength.INT_LENGTH );
+    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+    indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
-    dicList.add( Float.valueOf( (byte)0 ) );
+    dicWrapBuffer.putFloat( Float.valueOf( (float)0 ) );
 
-    int rowCount = 0;
     Float min = Float.MAX_VALUE;
     Float max = Float.MIN_VALUE;
+    int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Float target = null;
@@ -73,29 +75,24 @@ public class RangeIndexFloatColumnBinaryMaker extends UniqFloatColumnBinaryMaker
         if( max.compareTo( target ) < 0 ){
           max = Float.valueOf( target );
         }
-        dicMap.put( target , dicList.size() );
-        dicList.add( target );
+        dicMap.put( target , dicMap.size() );
+        dicWrapBuffer.putFloat( target.floatValue() );
       }
-      columnIndexList.add( dicMap.get( target ) );
+      indexWrapBuffer.putInt( dicMap.get( target ) );
     }
 
-    byte[] columnIndexBinaryRaw = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpInteger( columnIndexList ) );
-    byte[] dicRawBinary = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpFloat( dicList ) );
+    int dicLength = dicMap.size() * PrimitiveByteLength.FLOAT_LENGTH;
+    int dataLength = binaryRaw.length - ( dicBufferSize - dicLength );
+    dicLengthBuffer.putInt( dicLength );
+    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , dataLength );
 
-    byte[] binaryRaw = new byte[ columnIndexBinaryRaw.length + dicRawBinary.length ];
-    int offset = 0;
-    System.arraycopy( columnIndexBinaryRaw , 0 , binaryRaw , offset , columnIndexBinaryRaw.length );
-    offset += columnIndexBinaryRaw.length;
-    System.arraycopy( dicRawBinary , 0 , binaryRaw , offset , dicRawBinary.length );
-
-    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
-    byte[] indexBinary = new byte[ ( PrimitiveByteLength.FLOAT_LENGTH * 2 ) + binary.length ];
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( indexBinary , 0 , indexBinary.length );
+    byte[] binary = new byte[ PrimitiveByteLength.FLOAT_LENGTH * 2 + compressBinary.length ];
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
     wrapBuffer.putFloat( min );
     wrapBuffer.putFloat( max );
-    wrapBuffer.put( binary );
+    wrapBuffer.put( compressBinary );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.FLOAT , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.FLOAT_LENGTH , dicMap.size() , indexBinary , 0 , indexBinary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.FLOAT , rowCount , dataLength , rowCount * PrimitiveByteLength.FLOAT_LENGTH , dicMap.size() , binary , 0 , binary.length , null );
   }
 
   @Override

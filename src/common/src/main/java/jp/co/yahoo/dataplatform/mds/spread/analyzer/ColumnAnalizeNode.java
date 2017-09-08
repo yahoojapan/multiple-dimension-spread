@@ -15,29 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.binary;
+package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
+import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 
-import java.nio.ByteBuffer;
+public class ColumnAnalizeNode{
 
-public final class BinaryUtil{
+  private final IColumn column;
+  private final IColumnAnalizer columnAnalizer;
 
-  private BinaryUtil(){}
-
-  public static byte[] toLengthBytesBinary( final byte[] target ){
-    return toLengthBytesBinary( target , 0 , target.length );
-  }
-
-  public static byte[] toLengthBytesBinary( final byte[] target , final int start , final int length ){
-    byte[] result = new byte[ PrimitiveByteLength.INT_LENGTH + length ];
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( result );
-    int offset = 0;
-    wrapBuffer.putInt( offset , length );
-    offset+= PrimitiveByteLength.INT_LENGTH;
-    System.arraycopy( target , start , result , offset , length );
-
-    return result;
+  public ColumnAnalizeNode( final IColumn column ){
+    this.column = column;
+    columnAnalizer = ColumnAnalizerFactory.get( column );
   }
 
 }

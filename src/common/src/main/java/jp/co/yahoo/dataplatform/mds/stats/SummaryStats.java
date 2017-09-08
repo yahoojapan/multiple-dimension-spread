@@ -40,7 +40,7 @@ public class SummaryStats{
     statsCount = 1;
   }
 
-  public void marge( final SummaryStats summaryStats ){
+  public void merge( final SummaryStats summaryStats ){
     this.rowCount += summaryStats.getRowCount();
     this.rawDataSize += summaryStats.getRawDataSize();
     this.realDataSize += summaryStats.getRealDataSize();

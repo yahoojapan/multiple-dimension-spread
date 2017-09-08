@@ -20,8 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -30,8 +28,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryUtil;
-import jp.co.yahoo.dataplatform.mds.binary.BinaryDump;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -49,15 +46,20 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     Map<Double,Integer> dicMap = new HashMap<Double,Integer>();
-    List<Integer> columnIndexList = new ArrayList<Integer>();
-    List<Double> dicList = new ArrayList<Double>();
+    int columnIndexLength = column.size() * PrimitiveByteLength.INT_LENGTH;
+    int dicBufferSize = ( column.size() + 1 ) * PrimitiveByteLength.DOUBLE_LENGTH;
+    byte[] binaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnIndexLength + dicBufferSize ];
+    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , PrimitiveByteLength.INT_LENGTH + columnIndexLength );
+    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH + columnIndexLength , PrimitiveByteLength.INT_LENGTH );
+    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+    indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
-    dicList.add( Double.valueOf( (byte)0 ) );
+    dicWrapBuffer.putDouble( Double.valueOf( (double)0 ) );
 
-    int rowCount = 0;
     Double min = Double.MAX_VALUE;
     Double max = Double.MIN_VALUE;
+    int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Double target = null;
@@ -73,29 +75,24 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
         if( max.compareTo( target ) < 0 ){
           max = Double.valueOf( target );
         }
-        dicMap.put( target , dicList.size() );
-        dicList.add( target );
+        dicMap.put( target , dicMap.size() );
+        dicWrapBuffer.putDouble( target.doubleValue() );
       }
-      columnIndexList.add( dicMap.get( target ) );
+      indexWrapBuffer.putInt( dicMap.get( target ) );
     }
 
-    byte[] columnIndexBinaryRaw = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpInteger( columnIndexList ) );
-    byte[] dicRawBinary = BinaryUtil.toLengthBytesBinary( BinaryDump.dumpDouble( dicList ) );
+    int dicLength = dicMap.size() * PrimitiveByteLength.DOUBLE_LENGTH;
+    int dataLength = binaryRaw.length - ( dicBufferSize - dicLength );
+    dicLengthBuffer.putInt( dicLength );
+    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , dataLength );
 
-    byte[] binaryRaw = new byte[ columnIndexBinaryRaw.length + dicRawBinary.length ];
-    int offset = 0;
-    System.arraycopy( columnIndexBinaryRaw , 0 , binaryRaw , offset , columnIndexBinaryRaw.length );
-    offset += columnIndexBinaryRaw.length;
-    System.arraycopy( dicRawBinary , 0 , binaryRaw , offset , dicRawBinary.length );
-
-    byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
-    byte[] indexBinary = new byte[ ( PrimitiveByteLength.DOUBLE_LENGTH * 2 ) + binary.length ];
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( indexBinary , 0 , indexBinary.length );
+    byte[] binary = new byte[ PrimitiveByteLength.DOUBLE_LENGTH * 2 + compressBinary.length ];
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
     wrapBuffer.putDouble( min );
     wrapBuffer.putDouble( max );
-    wrapBuffer.put( binary );
+    wrapBuffer.put( compressBinary );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.DOUBLE , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.DOUBLE_LENGTH , dicMap.size() , indexBinary , 0 , indexBinary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.DOUBLE , rowCount , dataLength , rowCount * PrimitiveByteLength.DOUBLE_LENGTH , dicMap.size() , binary , 0 , binary.length , null );
   }
 
   @Override

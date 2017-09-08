@@ -34,6 +34,8 @@ import org.apache.hadoop.hive.ql.io.HiveOutputFormat;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
+import jp.co.yahoo.dataplatform.mds.MDSRecordWriter;
+
 public class MDSHiveParserOutputFormat extends FileOutputFormat<NullWritable,ParserWritable> implements HiveOutputFormat<NullWritable,ParserWritable>{
 
   @Override
@@ -48,6 +50,14 @@ public class MDSHiveParserOutputFormat extends FileOutputFormat<NullWritable,Par
     OutputStream out = fs.create(  outputPath , true , 4096 , fs.getDefaultReplication( outputPath ) , dfsBlockSize );
 
     Configuration config = new Configuration();
+    if( tableProperties.containsKey( "mds.spread.size" ) ){
+      String spreadSizeStr = tableProperties.getProperty( "mds.spread.size" );
+      try{
+        int spreadSize = Integer.valueOf( spreadSizeStr );
+        config.set( "spread.size" , spreadSizeStr );
+      }catch( Exception e ){
+      }
+    }
     return new MDSHiveRecordWriter( out , config );
   }
 
