@@ -95,14 +95,14 @@ public class BufferDirectCellManager implements ICellManager {
       case NOT_NULL:
         return null;
       case NULL:
-        return new ArrayList<Integer>( size() );
+        return new ArrayList<Integer>();
       default:
         return index.filter( filter );
     }
   }
 
   @Override
-  public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
+  public PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length ){
     PrimitiveObject[] result = new PrimitiveObject[length];
     int loopEnd = ( start + length );
     if( indexList.size() < loopEnd ){

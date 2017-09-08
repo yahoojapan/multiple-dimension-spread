@@ -165,11 +165,7 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
       }
     }
     for( int i = index ; i < length ; i++ ){
-      try{
-        allocator.setNull( i );
-      }catch( IOException e ){
-        throw new UncheckedIOException( e );
-      }
+      allocator.setNull( i );
     }
   }
 

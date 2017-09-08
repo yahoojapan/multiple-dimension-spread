@@ -25,7 +25,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public interface IMemoryAllocator{
 
-  default void setNull( final int index ) throws IOException{
+  default void setNull( final int index ){
     throw new UnsupportedOperationException( "Unsuppored this method." );
   }
 

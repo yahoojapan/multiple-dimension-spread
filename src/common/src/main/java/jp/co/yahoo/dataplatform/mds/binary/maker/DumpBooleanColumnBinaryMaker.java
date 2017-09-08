@@ -232,11 +232,7 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
         }
       }
       for( int i = index ; i < length ; i++ ){
-        try{
-          allocator.setNull( i );
-        }catch( IOException e ){
-          throw new RuntimeException( e );
-        }
+        allocator.setNull( i );
       }
     }
 

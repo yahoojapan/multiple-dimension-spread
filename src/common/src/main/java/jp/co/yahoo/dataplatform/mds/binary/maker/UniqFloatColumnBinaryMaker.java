@@ -69,6 +69,7 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
     dicWrapBuffer.putFloat( Float.valueOf( (float)0 ) );
 
     int rowCount = 0;
+    boolean hasNull = false;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Float target = null;
@@ -77,11 +78,20 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         target = Float.valueOf( stringCell.getRow().getFloat() );
       }
+      else{
+        hasNull = true;
+      }
       if( ! dicMap.containsKey( target ) ){
         dicMap.put( target , dicMap.size() );
         dicWrapBuffer.putFloat( target.floatValue() );
       }
       indexWrapBuffer.putInt( dicMap.get( target ) );
+    }
+
+    if( ! hasNull && dicMap.size() == 2 ){
+      ByteBuffer dicBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+      dicBuffer.getFloat();
+      return ConstantColumnBinaryMaker.createColumnBinary( new FloatObj( dicBuffer.getFloat() ) , column.getColumnName() , column.size() );
     }
 
     int dicLength = dicMap.size() * PrimitiveByteLength.FLOAT_LENGTH;
@@ -94,6 +104,9 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
+    if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
+      return PrimitiveByteLength.FLOAT_LENGTH;
+    }
     int columnIndexLength = analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH;
     int dicSize = ( analizeResult.getUniqCount() + 1 ) * PrimitiveByteLength.FLOAT_LENGTH;
     return PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength + dicSize;
