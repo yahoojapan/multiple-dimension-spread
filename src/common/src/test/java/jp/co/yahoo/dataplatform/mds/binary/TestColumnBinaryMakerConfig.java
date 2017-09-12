@@ -37,13 +37,13 @@ public class TestColumnBinaryMakerConfig{
       { ColumnType.ARRAY , DumpArrayColumnBinaryMaker.class.getName() },
       { ColumnType.SPREAD , DumpSpreadColumnBinaryMaker.class.getName() },
       { ColumnType.BOOLEAN , DumpBooleanColumnBinaryMaker.class.getName() },
-      { ColumnType.BYTE , RangeDumpByteColumnBinaryMaker.class.getName() },
+      { ColumnType.BYTE , RangeIndexByteColumnBinaryMaker.class.getName() },
       { ColumnType.BYTES , DumpBytesColumnBinaryMaker.class.getName() },
-      { ColumnType.DOUBLE , RangeDumpDoubleColumnBinaryMaker.class.getName() },
-      { ColumnType.FLOAT , RangeDumpFloatColumnBinaryMaker.class.getName() },
-      { ColumnType.INTEGER , RangeDumpIntegerColumnBinaryMaker.class.getName() },
-      { ColumnType.LONG , RangeDumpLongColumnBinaryMaker.class.getName() },
-      { ColumnType.SHORT , RangeDumpShortColumnBinaryMaker.class.getName() },
+      { ColumnType.DOUBLE , RangeIndexDoubleColumnBinaryMaker.class.getName() },
+      { ColumnType.FLOAT , RangeIndexFloatColumnBinaryMaker.class.getName() },
+      { ColumnType.INTEGER , RangeIndexIntegerColumnBinaryMaker.class.getName() },
+      { ColumnType.LONG , RangeIndexLongColumnBinaryMaker.class.getName() },
+      { ColumnType.SHORT , RangeIndexShortColumnBinaryMaker.class.getName() },
       { ColumnType.STRING , RangeIndexStringToUTF8BytesColumnBinaryMaker.class.getName() },
       { ColumnType.NULL , UnsupportedColumnBinaryMaker.class.getName() },
       { ColumnType.EMPTY_ARRAY , UnsupportedColumnBinaryMaker.class.getName() },
@@ -68,6 +68,5 @@ public class TestColumnBinaryMakerConfig{
     IColumnBinaryMaker maker = config.getColumnMaker( columnType );
     assertEquals( maker.getClass().getName() , className );
   }
-
 
 }

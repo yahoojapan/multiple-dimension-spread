@@ -52,7 +52,7 @@ public class ShortColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       Short target = Short.valueOf( ( (PrimitiveCell) cell).getRow().getShort() );
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{

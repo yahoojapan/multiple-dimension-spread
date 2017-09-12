@@ -62,7 +62,7 @@ public class StringColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       String target = ( (PrimitiveCell) cell ).getRow().getString();
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{
