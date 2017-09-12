@@ -55,7 +55,7 @@ public class TestRangeIndexByteColumnBinaryMaker {
     }
 
     @Override
-    public void setNull( final int index ) throws IOException{
+    public void setNull( final int index ){
     }
 
     @Override

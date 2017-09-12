@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.schema.objects.StringObj;
+
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -66,13 +68,15 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
       ICell cell = column.get(i);
       String targetStr = null;
       if( cell.getType() != ColumnType.NULL ){
-        hasNull = (byte)1;
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         targetStr = stringCell.getRow().getString();
         if( targetStr != null ){
           logicalTotalLength += targetStr.length() * PrimitiveByteLength.CHAR_LENGTH;
         }
+      }
+      else{
+        hasNull = (byte)1;
       }
       if( ! dicMap.containsKey( targetStr ) ){
         dicMap.put( targetStr , stringList.size() );
@@ -87,6 +91,10 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
         }
       }
       columnIndexList.add( dicMap.get( targetStr ) );
+    }
+
+    if( hasNull == (byte)0 && min.equals( max ) ){
+      return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( min ) , column.getColumnName() , column.size() );
     }
 
     int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );

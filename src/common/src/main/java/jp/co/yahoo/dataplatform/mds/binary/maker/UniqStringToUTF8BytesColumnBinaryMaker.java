@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
+import jp.co.yahoo.dataplatform.schema.objects.StringObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.binary.UTF8BytesLinkObj;
@@ -68,6 +69,7 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
     int logicalTotalLength = 0;
     int rowCount = 0;
     int columnSize = column.size();
+    boolean hasNull = false;
     for( int i = 0 ; i < columnSize ; i++ ){
       ICell cell = column.get(i);
       String targetStr = null;
@@ -79,6 +81,9 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
           logicalTotalLength += targetStr.length() * PrimitiveByteLength.CHAR_LENGTH;
         }
       }
+      else{
+        hasNull = true;
+      }
       if( ! dicMap.containsKey( targetStr ) ){
         dicMap.put( targetStr , stringList.size() );
         byte[] stringBytes = targetStr.getBytes( "UTF-8" );
@@ -86,6 +91,9 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
         totalLength += stringBytes.length;
       }
       columnIndexList.add( dicMap.get( targetStr ) );
+    }
+
+    if( ! hasNull && dicMap.size() == 2 ){                                                                                     return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( new String( stringList.get(1) , "UTF-8" ) ) , column.getColumnName() , column.size() );
     }
 
     int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
@@ -110,6 +118,9 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
+      return stringAnalizeResult.getUniqUtf8ByteSize();
+    }
     return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getUniqUtf8ByteSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
   }
 

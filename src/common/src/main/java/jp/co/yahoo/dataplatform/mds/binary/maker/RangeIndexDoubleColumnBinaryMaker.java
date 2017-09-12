@@ -23,6 +23,8 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
+
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -60,6 +62,7 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
     Double min = Double.MAX_VALUE;
     Double max = Double.MIN_VALUE;
     int rowCount = 0;
+    boolean hasNull = false;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Double target = null;
@@ -67,6 +70,9 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         target = Double.valueOf( stringCell.getRow().getDouble() );
+      }
+      else{
+        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){
@@ -79,6 +85,9 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
         dicWrapBuffer.putDouble( target.doubleValue() );
       }
       indexWrapBuffer.putInt( dicMap.get( target ) );
+    }
+    if( ! hasNull && min.equals( max ) ){
+      return ConstantColumnBinaryMaker.createColumnBinary( new DoubleObj( min ) , column.getColumnName() , column.size() );
     }
 
     int dicLength = dicMap.size() * PrimitiveByteLength.DOUBLE_LENGTH;

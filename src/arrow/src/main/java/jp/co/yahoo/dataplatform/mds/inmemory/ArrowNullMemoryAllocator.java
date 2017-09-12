@@ -35,7 +35,7 @@ public class ArrowNullMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
-  public void setNull( final int index ) throws IOException{
+  public void setNull( final int index ){
   }
 
   @Override

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import jp.co.yahoo.dataplatform.schema.objects.LongObj;
+
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -62,6 +64,7 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
     Long min = Long.MAX_VALUE;
     Long max = Long.MIN_VALUE;
     int rowCount = 0;
+    boolean hasNull = false;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       Long target = null;
@@ -69,6 +72,9 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         target = Long.valueOf( stringCell.getRow().getLong() );
+      }
+      else{
+        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){
@@ -81,6 +87,10 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
         dicWrapBuffer.putLong( target.longValue() );
       }
       indexWrapBuffer.putInt( dicMap.get( target ) );
+    }
+
+    if( ! hasNull && min.equals( max ) ){
+      return ConstantColumnBinaryMaker.createColumnBinary( new LongObj( min ) , column.getColumnName() , column.size() );
     }
 
     int dicLength = dicMap.size() * PrimitiveByteLength.LONG_LENGTH;

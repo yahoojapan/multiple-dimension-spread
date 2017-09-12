@@ -90,6 +90,10 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       }
     }
 
+    if( ! hasNull && min.equals( max ) ){
+      return ConstantColumnBinaryMaker.createColumnBinary( new DoubleObj( min ) , column.getColumnName() , column.size() );
+    }
+
     byte[] binary;
     int rawLength;
     if( hasNull ){
@@ -120,7 +124,10 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    if( analizeResult.getNullCount() == 0 ){
+    if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
+      return PrimitiveByteLength.DOUBLE_LENGTH;
+    }
+    else if( analizeResult.getNullCount() == 0 ){
       return analizeResult.getColumnSize() * PrimitiveByteLength.DOUBLE_LENGTH;
     }
     else{

@@ -47,6 +47,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
@@ -67,6 +68,7 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
     int totalLength = 0;
     int logicalTotalLength = 0;
     int rowCount = 0;
+    boolean hasNull = false;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       String targetStr = null;
@@ -80,12 +82,19 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
           logicalTotalLength += strLength;
         }
       }
+      else{
+        hasNull = true;
+      }
       if( ! dicMap.containsKey( targetStr ) ){
         dicMap.put( targetStr , stringList.size() );
         stringList.add( targetStr.toCharArray() );
         totalLength += strLength;
       }
       columnIndexList.add( dicMap.get( targetStr ) );
+    }
+
+    if( ! hasNull && dicMap.size() == 2 ){
+      return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( new String( stringList.get(1) ) ) , column.getColumnName() , column.size() );
     }
 
     int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( PrimitiveByteLength.INT_LENGTH + totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
@@ -113,7 +122,11 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + analizeResult.getLogicalDataSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
+    StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
+      return stringAnalizeResult.getUniqLogicalDataSize();
+    }
+    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getUniqLogicalDataSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
   }
 
   @Override
