@@ -301,7 +301,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeStringDicManager( dicArray );
-      column.setCellManager( new BufferDirectCellManager( ColumnType.INTEGER , dicManager , columnBinary.rowCount ) );
+      column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;
     }

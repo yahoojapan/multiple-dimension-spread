@@ -243,7 +243,7 @@ public class RangeDumpLongColumnBinaryMaker extends DumpLongColumnBinaryMaker{
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeLongDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asLongBuffer() );
-      column.setCellManager( new BufferDirectCellManager( ColumnType.INTEGER , dicManager , columnBinary.rowCount ) );
+      column.setCellManager( new BufferDirectCellManager( ColumnType.LONG , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;
     }

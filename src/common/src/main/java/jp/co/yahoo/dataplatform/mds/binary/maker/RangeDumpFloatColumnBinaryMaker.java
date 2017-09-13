@@ -243,7 +243,7 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeFloatDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asFloatBuffer() );
-      column.setCellManager( new BufferDirectCellManager( ColumnType.INTEGER , dicManager , columnBinary.rowCount ) );
+      column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;
     }
