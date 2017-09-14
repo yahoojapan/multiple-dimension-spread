@@ -89,7 +89,7 @@ public class DumpStringColumnBinaryMaker implements IColumnBinaryMaker{
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
     int dicBinarySize = ( analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH ) + stringAnalizeResult.getTotalUtf8ByteSize();
-    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + analizeResult.getNullCount() + dicBinarySize;
+    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + analizeResult.getColumnSize() + dicBinarySize;
   }
 
   public byte[] convertBinary( final byte[] nullFlagBytes , final List<byte[]> objList , ColumnBinaryMakerConfig currentConfig , final int totalLength ) throws IOException{

@@ -243,7 +243,7 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeShortDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asShortBuffer() );
-      column.setCellManager( new BufferDirectCellManager( ColumnType.INTEGER , dicManager , columnBinary.rowCount ) );
+      column.setCellManager( new BufferDirectCellManager( ColumnType.SHORT , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;
     }

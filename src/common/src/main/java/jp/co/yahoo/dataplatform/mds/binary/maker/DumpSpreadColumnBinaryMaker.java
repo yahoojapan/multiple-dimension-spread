@@ -34,8 +34,13 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor;
 
 public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
+
+  public static ColumnBinary createSpreadColumnBinary( final String columnName , final int columnSize , final List<ColumnBinary> childList ){
+    return new ColumnBinary( DumpSpreadColumnBinaryMaker.class.getName() , DefaultCompressor.class.getName() , columnName , ColumnType.SPREAD , columnSize , 0 , 0 , -1 , new byte[0] , 0 , 0 , childList );
+  }
 
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{

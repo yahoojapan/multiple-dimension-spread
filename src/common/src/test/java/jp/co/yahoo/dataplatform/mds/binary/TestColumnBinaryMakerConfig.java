@@ -39,10 +39,10 @@ public class TestColumnBinaryMakerConfig{
       { ColumnType.BOOLEAN , DumpBooleanColumnBinaryMaker.class.getName() },
       { ColumnType.BYTE , RangeDumpByteColumnBinaryMaker.class.getName() },
       { ColumnType.BYTES , DumpBytesColumnBinaryMaker.class.getName() },
-      { ColumnType.DOUBLE , RangeDumpDoubleColumnBinaryMaker.class.getName() },
+      { ColumnType.DOUBLE , RangeIndexDoubleColumnBinaryMaker.class.getName() },
       { ColumnType.FLOAT , RangeDumpFloatColumnBinaryMaker.class.getName() },
       { ColumnType.INTEGER , RangeDumpIntegerColumnBinaryMaker.class.getName() },
-      { ColumnType.LONG , RangeDumpLongColumnBinaryMaker.class.getName() },
+      { ColumnType.LONG , RangeIndexLongColumnBinaryMaker.class.getName() },
       { ColumnType.SHORT , RangeDumpShortColumnBinaryMaker.class.getName() },
       { ColumnType.STRING , RangeIndexStringToUTF8BytesColumnBinaryMaker.class.getName() },
       { ColumnType.NULL , UnsupportedColumnBinaryMaker.class.getName() },
@@ -68,6 +68,5 @@ public class TestColumnBinaryMakerConfig{
     IColumnBinaryMaker maker = config.getColumnMaker( columnType );
     assertEquals( maker.getClass().getName() , className );
   }
-
 
 }

@@ -52,7 +52,7 @@ public class IntegerColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       Integer target = Integer.valueOf( ( (PrimitiveCell) cell).getRow().getInt() );
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{

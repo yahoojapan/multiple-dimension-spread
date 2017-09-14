@@ -33,13 +33,11 @@ import jp.co.yahoo.dataplatform.mds.spread.analyzer.FloatColumnAnalizeResult;
 
 public class FloatOptimizer implements IOptimizer{
 
-  private final IColumnBinaryMaker dumpColumnBinaryMaker;
   private final IColumnBinaryMaker rangeDumpColumnBinaryMaker;
   private final IColumnBinaryMaker uniqColumnBinaryMaker;
   private final IColumnBinaryMaker rangeUniqColumnBinaryMaker;
 
   public FloatOptimizer( final Configuration config ) throws IOException{
-    dumpColumnBinaryMaker = FindColumnBinaryMaker.get( DumpFloatColumnBinaryMaker.class.getName() );
     rangeDumpColumnBinaryMaker = FindColumnBinaryMaker.get( RangeDumpFloatColumnBinaryMaker.class.getName() );
     uniqColumnBinaryMaker = FindColumnBinaryMaker.get( UniqFloatColumnBinaryMaker.class.getName() );
     rangeUniqColumnBinaryMaker = FindColumnBinaryMaker.get( RangeIndexFloatColumnBinaryMaker.class.getName() );
@@ -51,20 +49,13 @@ public class FloatOptimizer implements IOptimizer{
     FloatColumnAnalizeResult castColumnAnalizeResult = (FloatColumnAnalizeResult)analizeResult;
     IColumnBinaryMaker makerClass;
     if( castColumnAnalizeResult.maybeSorted() ){
-      int dump = rangeDumpColumnBinaryMaker.calcBinarySize( analizeResult );
-      int uniq = rangeUniqColumnBinaryMaker.calcBinarySize( analizeResult );
-      if( dump < uniq ){
-        makerClass = rangeDumpColumnBinaryMaker;
-      }
-      else{
-        makerClass = rangeUniqColumnBinaryMaker;
-      }
+      makerClass = rangeUniqColumnBinaryMaker;
     }
     else{
-      int dump = dumpColumnBinaryMaker.calcBinarySize( analizeResult );
+      int dump = rangeDumpColumnBinaryMaker.calcBinarySize( analizeResult );
       int uniq = uniqColumnBinaryMaker.calcBinarySize( analizeResult );
       if( dump < uniq ){
-        makerClass = dumpColumnBinaryMaker;
+        makerClass = rangeDumpColumnBinaryMaker;
       }
       else{
         makerClass = uniqColumnBinaryMaker;

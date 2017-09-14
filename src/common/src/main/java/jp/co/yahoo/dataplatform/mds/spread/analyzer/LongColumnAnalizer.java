@@ -52,7 +52,7 @@ public class LongColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       Long target = Long.valueOf( ( (PrimitiveCell) cell).getRow().getLong() );
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{

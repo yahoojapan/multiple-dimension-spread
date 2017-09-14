@@ -52,7 +52,7 @@ public class ByteColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       Byte target = Byte.valueOf( ( (PrimitiveCell) cell).getRow().getByte() );
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{

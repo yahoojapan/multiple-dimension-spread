@@ -46,7 +46,7 @@ public class BooleanColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       boolean target = ( (PrimitiveCell)cell ).getRow().getBoolean();
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{

@@ -52,7 +52,7 @@ public class DoubleColumnAnalizer implements IColumnAnalizer{
         continue;
       }
       Double target = Double.valueOf( ( (PrimitiveCell) cell).getRow().getDouble() );
-      if( maybeSorted && 0 <= currentSortCheckValue.compareTo( target ) ){
+      if( maybeSorted && currentSortCheckValue.compareTo( target ) <= 0 ){
         currentSortCheckValue = target;
       }
       else{
