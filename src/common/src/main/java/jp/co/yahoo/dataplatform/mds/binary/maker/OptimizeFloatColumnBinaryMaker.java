@@ -271,7 +271,6 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    // TODO 後でやること
     return 0;
   }
 
