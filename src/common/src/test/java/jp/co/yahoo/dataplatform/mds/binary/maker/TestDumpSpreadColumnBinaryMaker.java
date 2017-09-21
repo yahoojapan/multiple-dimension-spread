@@ -60,7 +60,7 @@ public class TestDumpSpreadColumnBinaryMaker {
     assertEquals( columnBinary.rowCount , 2 );
     assertEquals( columnBinary.columnType , ColumnType.SPREAD );
 
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 2 );
     assertEquals( decodeColumn.getColumnSize() , 2 );
 

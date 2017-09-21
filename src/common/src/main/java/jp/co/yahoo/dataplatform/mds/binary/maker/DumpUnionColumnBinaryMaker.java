@@ -32,9 +32,9 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
+import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
@@ -88,18 +88,24 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   private ColumnBinary mergeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
     int max = -1;
     IColumnBinaryMaker maker = null;
+    ColumnType type = null;
     for( IColumn childColumn : childColumnList ){
       ColumnType columnType = childColumn.getColumnType();
       int columnSize = ColumnTypeFactory.getColumnTypeToPrimitiveByteSize( columnType , null );
       if( max < columnSize ){
         max = columnSize;
         maker = commonConfig.getColumnMaker( columnType );
+        type = columnType;
         if( currentConfigNode != null ){
           maker = currentConfigNode.getCurrentConfig().getColumnMaker( columnType );
         }
       }
     }
-    return maker.toBinary( commonConfig , currentConfigNode , column , makerCache );
+
+    PrimitiveColumn primitiveColumn = new PrimitiveColumn( type , column.getColumnName() );
+    primitiveColumn.setCellManager( column.getCellManager() );
+      
+    return maker.toBinary( commonConfig , currentConfigNode , primitiveColumn , makerCache );
   }
 
   @Override
@@ -134,7 +140,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
 
     byte[] compressData = currentConfig.compressorClass.compress( rawBinary , 0 , rawBinary.length );
     
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.UNION , column.size() , rawBinary.length , column.size() * PrimitiveByteLength.BYTE_LENGTH , -1 , compressData , 0 , compressData.length , columnBinaryList );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.UNION , column.size() , rawBinary.length , column.size() * Byte.BYTES , -1 , compressData , 0 , compressData.length , columnBinaryList );
   }
 
   @Override
@@ -143,8 +149,8 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new UnionColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new UnionColumnManager( columnBinary ) );
   }
 
   @Override
@@ -169,13 +175,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   public class UnionColumnManager implements IColumnManager{
 
     private final ColumnBinary columnBinary;
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private UnionColumn unionColumn;
     private boolean isCreate;
 
-    public UnionColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public UnionColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -188,7 +192,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
 
       for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
-        IColumn column = maker.toColumn( childColumnBinary , primitiveObjectConnector );
+        IColumn column = maker.toColumn( childColumnBinary );
         column.setParentsColumn( unionColumn );
         unionColumn.setColumn( column );
         columnContainer.put( column.getColumnType() , column );

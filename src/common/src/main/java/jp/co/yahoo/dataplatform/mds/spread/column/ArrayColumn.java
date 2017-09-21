@@ -112,7 +112,7 @@ public class ArrayColumn implements IColumn{
     int end = spread.size();
 
     cellManager.add( new ArrayCell( new SpreadArrayLink( spread , index , start , end ) ) , index );
-    totalBytes += PrimitiveByteLength.INT_LENGTH * ( end - start );
+    totalBytes += Integer.BYTES * ( end - start );
     totalBytes += PrimitiveByteLength.JAVA_OBJECT_LENGTH * ( end - start );
     return totalBytes;
   }

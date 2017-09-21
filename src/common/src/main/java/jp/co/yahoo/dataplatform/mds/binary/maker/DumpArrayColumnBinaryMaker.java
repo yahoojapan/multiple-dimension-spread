@@ -39,7 +39,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
@@ -58,7 +57,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
 
-    byte[] binaryRaw = new byte[ PrimitiveByteLength.INT_LENGTH * column.size() ];
+    byte[] binaryRaw = new byte[ Integer.BYTES * column.size() ];
     IntBuffer intIndexBuffer = ByteBuffer.wrap( binaryRaw ).asIntBuffer();
 
     List<Integer> numberList = new ArrayList<Integer>();
@@ -93,12 +92,12 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize();
+    return Integer.BYTES * analizeResult.getColumnSize();
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ArrayColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ArrayColumnManager( columnBinary ) );
   }
 
   @Override
@@ -227,13 +226,11 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
   public class ArrayColumnManager implements IColumnManager{
 
     private final ColumnBinary columnBinary;
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private ArrayColumn arrayColumn;
     private boolean isCreate;
 
-    public ArrayColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public ArrayColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -246,7 +243,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       Spread spread = new Spread( arrayColumn );
       for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
-        IColumn column = maker.toColumn( childColumnBinary , primitiveObjectConnector );
+        IColumn column = maker.toColumn( childColumnBinary );
         column.setParentsColumn( arrayColumn );
         spread.addColumn( column );
       }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
@@ -48,12 +47,12 @@ public class RangeIndexByteColumnBinaryMaker extends UniqByteColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     Map<Byte,Integer> dicMap = new HashMap<Byte,Integer>();
-    int columnIndexLength = column.size() * PrimitiveByteLength.INT_LENGTH;
-    int dicBufferSize = ( column.size() + 1 ) * PrimitiveByteLength.BYTE_LENGTH;
-    byte[] binaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnIndexLength + dicBufferSize ];
-    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , PrimitiveByteLength.INT_LENGTH + columnIndexLength );
-    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH + columnIndexLength , PrimitiveByteLength.INT_LENGTH );
-    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+    int columnIndexLength = column.size() * Integer.BYTES;
+    int dicBufferSize = ( column.size() + 1 ) * Byte.BYTES;
+    byte[] binaryRaw = new byte[ ( Integer.BYTES * 2 ) + columnIndexLength + dicBufferSize ];
+    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , Integer.BYTES + columnIndexLength );
+    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES + columnIndexLength , Integer.BYTES );
+    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES * 2 + columnIndexLength , dicBufferSize );
     indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
@@ -91,22 +90,22 @@ public class RangeIndexByteColumnBinaryMaker extends UniqByteColumnBinaryMaker{
       return ConstantColumnBinaryMaker.createColumnBinary( new ByteObj( min ) , column.getColumnName() , column.size() );
     }
 
-    int dicLength = dicMap.size() * PrimitiveByteLength.BYTE_LENGTH;
+    int dicLength = dicMap.size() * Byte.BYTES;
     int dataLength = binaryRaw.length - ( dicBufferSize - dicLength );
     dicLengthBuffer.putInt( dicLength );
     byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , dataLength );
 
-    byte[] binary = new byte[ PrimitiveByteLength.BYTE_LENGTH * 2 + compressBinary.length ];
+    byte[] binary = new byte[ Byte.BYTES * 2 + compressBinary.length ];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
     wrapBuffer.put( min );
     wrapBuffer.put( max );
     wrapBuffer.put( compressBinary );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BYTE , rowCount , dataLength , rowCount * PrimitiveByteLength.BYTE_LENGTH , dicMap.size() , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BYTE , rowCount , dataLength , rowCount * Byte.BYTES , dicMap.size() , binary , 0 , binary.length , null );
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Byte min = Byte.valueOf( wrapBuffer.get() );
     Byte max = Byte.valueOf( wrapBuffer.get() );
@@ -115,9 +114,8 @@ public class RangeIndexByteColumnBinaryMaker extends UniqByteColumnBinaryMaker{
       columnBinary.columnType ,
       new ByteColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
-        columnBinary.binaryStart + ( PrimitiveByteLength.BYTE_LENGTH * 2 ) ,
-        columnBinary.binaryLength - ( PrimitiveByteLength.BYTE_LENGTH * 2 )
+        columnBinary.binaryStart + ( Byte.BYTES * 2 ) ,
+        columnBinary.binaryLength - ( Byte.BYTES * 2 )
       )
       , new RangeByteIndex( min , max )
     );
@@ -125,7 +123,7 @@ public class RangeIndexByteColumnBinaryMaker extends UniqByteColumnBinaryMaker{
 
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
-    loadInMemoryStorage( columnBinary , allocator , columnBinary.binaryStart + ( PrimitiveByteLength.BYTE_LENGTH * 2 ) , columnBinary.binaryLength - ( PrimitiveByteLength.BYTE_LENGTH * 2 ) );
+    loadInMemoryStorage( columnBinary , allocator , columnBinary.binaryStart + ( Byte.BYTES * 2 ) , columnBinary.binaryLength - ( Byte.BYTES * 2 ) );
   }
 
   @Override

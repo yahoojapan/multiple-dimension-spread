@@ -34,7 +34,6 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeStringIndex;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
@@ -72,7 +71,7 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         targetStr = stringCell.getRow().getString();
         if( targetStr != null ){
-          logicalTotalLength += targetStr.length() * PrimitiveByteLength.CHAR_LENGTH;
+          logicalTotalLength += targetStr.length() * Character.BYTES;
         }
       }
       else{
@@ -97,41 +96,41 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
       return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( min ) , column.getColumnName() , column.size() );
     }
 
-    int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
+    int rawSize = ( Integer.BYTES * columnIndexList.size() ) + ( totalLength + ( Integer.BYTES * stringList.size() ) ) + ( Integer.BYTES * 2 );
     byte[] binaryRaw = new byte[ rawSize ];
     ByteBuffer binaryWrapBuffer = ByteBuffer.wrap( binaryRaw );
 
-    binaryWrapBuffer.putInt( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() );
+    binaryWrapBuffer.putInt( Integer.BYTES * columnIndexList.size() );
     for( Integer index : columnIndexList ){
       binaryWrapBuffer.putInt( index );
     }
-    binaryWrapBuffer.putInt( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) );
+    binaryWrapBuffer.putInt( totalLength + ( Integer.BYTES * stringList.size() ) );
     for( byte[] dicByteArray : stringList ){
       binaryWrapBuffer.putInt( dicByteArray.length );
       binaryWrapBuffer.put( dicByteArray );
     }
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
-    int minLength = PrimitiveByteLength.CHAR_LENGTH * min.length();
-    int maxLength = PrimitiveByteLength.CHAR_LENGTH * max.length();
-    int indexBinaryLength = PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.CHAR_LENGTH * min.length() + PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.CHAR_LENGTH * max.length() + PrimitiveByteLength.BYTE_LENGTH + PrimitiveByteLength.INT_LENGTH + binary.length;
+    int minLength = Character.BYTES * min.length();
+    int maxLength = Character.BYTES * max.length();
+    int indexBinaryLength = Integer.BYTES + Character.BYTES * min.length() + Integer.BYTES + Character.BYTES * max.length() + Byte.BYTES + Integer.BYTES + binary.length;
     byte[] indexBinary = new byte[indexBinaryLength];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( indexBinary , 0 , indexBinary.length );
     CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = 0;
     wrapBuffer.putInt( offset , minLength );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     wrapBuffer.putInt( offset , maxLength );
-    offset += PrimitiveByteLength.INT_LENGTH;
-    viewCharBuffer.position( offset / PrimitiveByteLength.CHAR_LENGTH );
+    offset += Integer.BYTES;
+    viewCharBuffer.position( offset / Character.BYTES );
     viewCharBuffer.put( min.toCharArray() );
     offset += minLength;
-    viewCharBuffer.position( offset / PrimitiveByteLength.CHAR_LENGTH );
+    viewCharBuffer.position( offset / Character.BYTES );
     viewCharBuffer.put( max.toCharArray() );
     offset += maxLength;
     wrapBuffer.put( offset , hasNull );
     offset++;
     wrapBuffer.putInt( offset , binary.length );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     wrapBuffer.position( offset );
     wrapBuffer.put( binary );
 
@@ -139,27 +138,27 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = columnBinary.binaryStart;
     int minLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     int maxLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
-    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / PrimitiveByteLength.CHAR_LENGTH );
-    char[] minCharArray = new char[ minLength / PrimitiveByteLength.CHAR_LENGTH ];
+    offset += Integer.BYTES;
+    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / Character.BYTES );
+    char[] minCharArray = new char[ minLength / Character.BYTES ];
     viewCharBuffer.get( minCharArray );
     offset += minLength;
-    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / PrimitiveByteLength.CHAR_LENGTH );
-    char[] maxCharArray = new char[ maxLength / PrimitiveByteLength.CHAR_LENGTH ];
+    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / Character.BYTES );
+    char[] maxCharArray = new char[ maxLength / Character.BYTES ];
     viewCharBuffer.get( maxCharArray );
     offset += maxLength;
     byte hasNull = wrapBuffer.get( offset );
     offset++;
     int binaryLength = wrapBuffer.getInt( offset ); 
-    offset += PrimitiveByteLength.INT_LENGTH;
-    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , primitiveObjectConnector , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) , hasNull == (byte)1 ) );
+    offset += Integer.BYTES;
+    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) , hasNull == (byte)1 ) );
   }
 
   @Override
@@ -167,14 +166,14 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     int offset = columnBinary.binaryStart;
     int minLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     int maxLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     offset += minLength;
     offset += maxLength;
     offset++;
     int compressBinaryLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     loadInMemoryStorage( columnBinary , allocator , offset , compressBinaryLength );
   }
 
@@ -184,15 +183,15 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
     CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = columnBinary.binaryStart;
     int minLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     int maxLength = wrapBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
-    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / PrimitiveByteLength.CHAR_LENGTH );
-    char[] minCharArray = new char[ minLength / PrimitiveByteLength.CHAR_LENGTH ];
+    offset += Integer.BYTES;
+    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / Character.BYTES );
+    char[] minCharArray = new char[ minLength / Character.BYTES ];
     viewCharBuffer.get( minCharArray );
     offset += minLength;
-    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / PrimitiveByteLength.CHAR_LENGTH );
-    char[] maxCharArray = new char[ maxLength / PrimitiveByteLength.CHAR_LENGTH ];
+    viewCharBuffer.position( ( offset - columnBinary.binaryStart ) / Character.BYTES );
+    char[] maxCharArray = new char[ maxLength / Character.BYTES ];
     viewCharBuffer.get( maxCharArray );
 
     BlockIndexNode currentNode = parentNode.getChildNode( columnBinary.columnName );

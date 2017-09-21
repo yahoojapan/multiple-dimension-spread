@@ -36,7 +36,7 @@ public class UnsupportedColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     return NullColumn.getInstance();
   }
 

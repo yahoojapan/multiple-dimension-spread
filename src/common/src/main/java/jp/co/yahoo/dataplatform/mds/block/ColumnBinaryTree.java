@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnTypeFactory;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
@@ -135,10 +134,10 @@ public class ColumnBinaryTree{
     ByteBuffer byteBuffer = ByteBuffer.wrap( metaBinary , start , ( metaBinary.length - start ) );
     int offset = start;
     int childSize =  byteBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     for( int i = 0 ; i < childSize ; i++ ){
       int childNameLength =  byteBuffer.getInt( offset );
-      offset += PrimitiveByteLength.INT_LENGTH;
+      offset += Integer.BYTES;
       String childName = new String( metaBinary , offset , childNameLength );
       offset += childNameLength;
       ColumnBinaryTree childColumnBinary = new ColumnBinaryTree();
@@ -170,11 +169,11 @@ public class ColumnBinaryTree{
       }
     }
     allBinaryStart = byteBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     allBinaryLength =  byteBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     int currentMetaBinaryLength =  byteBuffer.getInt( offset );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     if( currentMetaBinaryLength != 0 ){
       byte[] childBuffer = null;
       int childStartDataOffset = 0;
@@ -184,9 +183,9 @@ public class ColumnBinaryTree{
       for( int startOffset = offset ; offset < startOffset + currentMetaBinaryLength ; ){
         currentCount++; 
         int index = byteBuffer.getInt( offset );
-        offset += PrimitiveByteLength.INT_LENGTH;
+        offset += Integer.BYTES;
         int metaBinaryLength = byteBuffer.getInt( offset );
-        offset += PrimitiveByteLength.INT_LENGTH;
+        offset += Integer.BYTES;
         if( columnNameNode.isDisable() || metaBinaryLength == 0 ){
           currentColumnBinaryList.add( null );
         }
@@ -214,9 +213,9 @@ public class ColumnBinaryTree{
   }
 
   public void create( final ByteArrayData metaBuffer , final ByteArrayData buffer ) throws IOException{
-    byte[] binaryOffsetMetaData = new byte[PrimitiveByteLength.INT_LENGTH * 3];
+    byte[] binaryOffsetMetaData = new byte[Integer.BYTES * 3];
     if( ! currentColumnBinaryList.isEmpty() ){
-      byte[] currentMetaBinary = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) * currentColumnBinaryList.size() + metaLength ];
+      byte[] currentMetaBinary = new byte[ ( Integer.BYTES * 2 ) * currentColumnBinaryList.size() + metaLength ];
       ByteBuffer wrapMetaBinaryBuffer = ByteBuffer.wrap( currentMetaBinary );
       int currentMetaBinaryOffset = 0;
 
@@ -224,10 +223,10 @@ public class ColumnBinaryTree{
       for( int i = 0 ; i < currentColumnBinaryList.size() ; i++ ){
         ColumnBinary columnBinary = currentColumnBinaryList.get(i); 
         wrapMetaBinaryBuffer.putInt( currentMetaBinaryOffset , i );
-        currentMetaBinaryOffset+= PrimitiveByteLength.INT_LENGTH;
+        currentMetaBinaryOffset += Integer.BYTES;
         if( columnBinary == null ){
           wrapMetaBinaryBuffer.putInt( currentMetaBinaryOffset , 0 );
-          currentMetaBinaryOffset+= PrimitiveByteLength.INT_LENGTH;
+          currentMetaBinaryOffset += Integer.BYTES;
         }
         else{
           int binaryStart = buffer.getLength();
@@ -236,7 +235,7 @@ public class ColumnBinaryTree{
           columnBinary.binaryStart = binaryStart;
           columnBinary.binaryLength = binaryLength;
           byte[] metaBinary = columnBinary.toMetaBinary();
-          byte[] lengthMetaBinary = new byte[ PrimitiveByteLength.INT_LENGTH + metaBinary.length ];
+          byte[] lengthMetaBinary = new byte[ Integer.BYTES + metaBinary.length ];
           ByteBuffer metaWrapBuffer = ByteBuffer.wrap( lengthMetaBinary );
           metaWrapBuffer.putInt( metaBinary.length );
           metaWrapBuffer.put( metaBinary );
@@ -245,7 +244,7 @@ public class ColumnBinaryTree{
         }
       }
       allBinaryLength = buffer.getLength() - allBinaryStart;
-      binaryOffsetMetaData = new byte[ PrimitiveByteLength.INT_LENGTH * 3 + currentMetaBinary.length ];
+      binaryOffsetMetaData = new byte[ Integer.BYTES * 3 + currentMetaBinary.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryOffsetMetaData );
       wrapBuffer.putInt( allBinaryStart );
       wrapBuffer.putInt( allBinaryLength );
@@ -254,14 +253,14 @@ public class ColumnBinaryTree{
     }
  
     int childSize = childTreeMap.size();
-    byte[] childSizeBytes = new byte[PrimitiveByteLength.INT_LENGTH];
+    byte[] childSizeBytes = new byte[Integer.BYTES];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( childSizeBytes );
     wrapBuffer.putInt( 0 , childSize );
     metaBuffer.append( childSizeBytes );
 
     for( Map.Entry<String,ColumnBinaryTree> entry : childTreeMap.entrySet() ){
       byte[] childNameBytes = entry.getKey().getBytes( "UTF-8" );
-      byte[] lengthBytes = new byte[ PrimitiveByteLength.INT_LENGTH + childNameBytes.length ];
+      byte[] lengthBytes = new byte[ Integer.BYTES + childNameBytes.length ];
       ByteBuffer childWrapBuffer = ByteBuffer.wrap( lengthBytes );
       childWrapBuffer.putInt( childNameBytes.length );
       childWrapBuffer.put( childNameBytes );

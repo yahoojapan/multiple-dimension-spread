@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -48,7 +47,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
   private int getBinaryLength( final int columnSize ){
-    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnSize + ( columnSize * PrimitiveByteLength.SHORT_LENGTH );
+    return ( Integer.BYTES * 2 ) + columnSize + ( columnSize * Short.BYTES );
   }
 
   @Override
@@ -60,10 +59,10 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] binaryRaw = new byte[ getBinaryLength( column.size() ) ];
     ByteBuffer lengthBuffer = ByteBuffer.wrap( binaryRaw );
     lengthBuffer.putInt( column.size() );
-    lengthBuffer.putInt( column.size() * PrimitiveByteLength.SHORT_LENGTH );
+    lengthBuffer.putInt( column.size() * Short.BYTES );
 
-    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
-    ShortBuffer shortBuffer = ByteBuffer.wrap( binaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.SHORT_LENGTH ) ).asShortBuffer();
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES * 2 , column.size() );
+    ShortBuffer shortBuffer = ByteBuffer.wrap( binaryRaw , ( Integer.BYTES * 2 + column.size() ) , ( column.size() * Short.BYTES ) ).asShortBuffer();
 
     int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
@@ -82,7 +81,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.SHORT_LENGTH , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , binaryRaw.length , rowCount * Short.BYTES , -1 , binary , 0 , binary.length , null );
   }
 
   @Override
@@ -91,8 +90,8 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ShortColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ShortColumnManager( columnBinary ) );
   }
 
   @Override
@@ -106,7 +105,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
     int nullFlagBinaryLength = wrapBuffer.getInt();
     int shortBinaryLength = wrapBuffer.getInt();
-    int nullFlagBinaryStart = PrimitiveByteLength.INT_LENGTH * 2; 
+    int nullFlagBinaryStart = Integer.BYTES * 2; 
     int shortBinaryStart = nullFlagBinaryStart + nullFlagBinaryLength;
 
     ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binary , nullFlagBinaryStart , nullFlagBinaryLength );
@@ -126,14 +125,12 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class ShortDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final byte[] nullBuffer;
     private final int nullBufferStart;
     private final int nullBufferLength;
     private final ShortBuffer dicBuffer;
 
-    public ShortDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final ShortBuffer dicBuffer ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public ShortDicManager( final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final ShortBuffer dicBuffer ){
       this.nullBuffer = nullBuffer;
       this.nullBufferStart = nullBufferStart;
       this.nullBufferLength = nullBufferLength;
@@ -145,7 +142,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
       if( nullBuffer[index+nullBufferStart] == (byte)1 ){
         return null;
       }
-      return primitiveObjectConnector.convert( PrimitiveType.SHORT , new ShortObj( dicBuffer.get( index ) ) );
+      return new ShortObj( dicBuffer.get( index ) );
     }
 
     @Override
@@ -157,23 +154,20 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class ShortColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public ShortColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public ShortColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = columnBinary.binaryStart;
       this.binaryLength = columnBinary.binaryLength;
     }
 
-    public ShortColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public ShortColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -188,12 +182,12 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
       int nullFlagBinaryLength = wrapBuffer.getInt();
       int shortBinaryLength = wrapBuffer.getInt();
-      int nullFlagBinaryStart = PrimitiveByteLength.INT_LENGTH * 2;
+      int nullFlagBinaryStart = Integer.BYTES * 2;
       int shortBinaryStart = nullFlagBinaryStart + nullFlagBinaryLength;
 
       ShortBuffer shortBuffer = ByteBuffer.wrap( binary , shortBinaryStart , shortBinaryLength ).asShortBuffer();
 
-      IDicManager dicManager = new ShortDicManager( primitiveObjectConnector , binary , nullFlagBinaryStart , nullFlagBinaryLength , shortBuffer );
+      IDicManager dicManager = new ShortDicManager( binary , nullFlagBinaryStart , nullFlagBinaryLength , shortBuffer );
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       column.setCellManager( new BufferDirectCellManager( ColumnType.SHORT , dicManager , nullFlagBinaryLength ) );
 

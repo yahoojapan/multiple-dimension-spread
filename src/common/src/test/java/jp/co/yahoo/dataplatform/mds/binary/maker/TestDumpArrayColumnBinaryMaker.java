@@ -152,7 +152,7 @@ public class TestDumpArrayColumnBinaryMaker{
     assertEquals( columnBinary.rowCount , 4 );
     Assert.assertEquals( columnBinary.columnType , ColumnType.ARRAY );
 
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     IColumn expandColumn = decodeColumn.getColumn(0);
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 1 );

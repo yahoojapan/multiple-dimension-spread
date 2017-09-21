@@ -40,7 +40,7 @@ public class TestUnsupportedColumnBinaryMaker {
 
     IColumnBinaryMaker maker = new UnsupportedColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , NullColumn.getInstance() , new MakerCache() );
-    IColumn result = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn result = maker.toColumn( columnBinary );
     assertTrue( result instanceof NullColumn );
   }
   

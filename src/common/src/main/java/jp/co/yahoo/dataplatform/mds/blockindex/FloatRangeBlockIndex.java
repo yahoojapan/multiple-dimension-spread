@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import java.nio.ByteBuffer;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberRangeFilter;
@@ -64,7 +62,7 @@ public class FloatRangeBlockIndex implements IBlockIndex{
 
   @Override
   public int getBinarySize(){
-    return PrimitiveByteLength.FLOAT_LENGTH * 2;
+    return Float.BYTES * 2;
   }
 
   @Override

@@ -31,7 +31,7 @@ public interface IColumnBinaryMaker{
 
   ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerBuffer ) throws IOException;
 
-  IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException;
+  IColumn toColumn( final ColumnBinary columnBinary ) throws IOException;
 
   int calcBinarySize( final IColumnAnalizeResult analizeResult );
 

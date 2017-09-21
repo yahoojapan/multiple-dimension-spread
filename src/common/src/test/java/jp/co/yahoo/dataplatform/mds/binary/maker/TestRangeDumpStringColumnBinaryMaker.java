@@ -28,6 +28,8 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
+
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -138,12 +140,13 @@ public class TestRangeDumpStringColumnBinaryMaker {
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 2 );
     assertEquals( columnBinary.columnType , ColumnType.STRING );
 
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -171,7 +174,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
     assertEquals( columnBinary.rowCount , 3 );
     assertEquals( columnBinary.columnType , ColumnType.STRING );
 
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -181,6 +184,20 @@ public class TestRangeDumpStringColumnBinaryMaker {
 
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
+  }
+
+  @Test
+  public void T_toBinary_3() throws IOException{
+    IColumn column = new PrimitiveColumn( ColumnType.STRING , "STRING" );
+    column.add( ColumnType.STRING , new StringObj( "" ) , 0 );
+    column.add( ColumnType.STRING , new StringObj( "a" ) , 1 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
   }
 
   @Test
@@ -218,6 +235,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 3 );

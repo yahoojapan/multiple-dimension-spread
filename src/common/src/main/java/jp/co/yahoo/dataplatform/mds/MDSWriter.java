@@ -28,7 +28,6 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.block.FindBlockMaker;
 import jp.co.yahoo.dataplatform.mds.block.IBlockMaker;
 import jp.co.yahoo.dataplatform.mds.block.BlockSkipPredicateBlockMaker;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -47,19 +46,19 @@ public class MDSWriter implements AutoCloseable{
     blockMaker = FindBlockMaker.get( config.get( "block.maker.class" , BlockSkipPredicateBlockMaker.class.getName() ) );
     blockMaker.setup( blockSize , config );
     String blockMakerClassName = blockMaker.getReaderClassName();
-    int classNameLength = blockMakerClassName.length() * PrimitiveByteLength.CHAR_LENGTH;
+    int classNameLength = blockMakerClassName.length() * Character.BYTES;
 
-    byte[] header = new byte[MAGIC.length + PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.INT_LENGTH + classNameLength ];
+    byte[] header = new byte[MAGIC.length + Integer.BYTES + Integer.BYTES + classNameLength ];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( header );
     CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = 0;
     wrapBuffer.put( MAGIC , 0 , MAGIC.length );
     offset += MAGIC.length;
     wrapBuffer.putInt( offset , blockSize );
-    offset += PrimitiveByteLength.INT_LENGTH;
+    offset += Integer.BYTES;
     wrapBuffer.putInt( offset , classNameLength );
-    offset += PrimitiveByteLength.INT_LENGTH;
-    viewCharBuffer.position( offset / PrimitiveByteLength.CHAR_LENGTH );
+    offset += Integer.BYTES;
+    viewCharBuffer.position( offset / Character.BYTES );
     viewCharBuffer.put( blockMakerClassName.toCharArray() );
 
     blockMaker.appendHeader( header );
