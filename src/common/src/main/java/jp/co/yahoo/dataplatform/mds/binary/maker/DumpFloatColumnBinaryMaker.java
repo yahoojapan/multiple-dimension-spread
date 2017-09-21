@@ -90,8 +90,8 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new FloatColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new FloatColumnManager( columnBinary ) );
   }
 
   @Override
@@ -125,14 +125,12 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class FloatDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final byte[] nullBuffer;
     private final int nullBufferStart;
     private final int nullBufferLength;
     private final FloatBuffer dicBuffer;
 
-    public FloatDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final FloatBuffer dicBuffer ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public FloatDicManager( final byte[] nullBuffer , final int nullBufferStart , final int nullBufferLength , final FloatBuffer dicBuffer ){
       this.nullBuffer = nullBuffer;
       this.nullBufferStart = nullBufferStart;
       this.nullBufferLength = nullBufferLength;
@@ -144,7 +142,7 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
       if( nullBuffer[index+nullBufferStart] == (byte)1 ){
         return null;
       }
-      return primitiveObjectConnector.convert( PrimitiveType.FLOAT , new FloatObj( dicBuffer.get( index ) ) );
+      return new FloatObj( dicBuffer.get( index ) );
     }
 
     @Override
@@ -156,23 +154,20 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class FloatColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public FloatColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public FloatColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = columnBinary.binaryStart;
       this.binaryLength = columnBinary.binaryLength;
     }
 
-    public FloatColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public FloatColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -192,7 +187,7 @@ public class DumpFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
       FloatBuffer floatBuffer = ByteBuffer.wrap( binary , floatBinaryStart , floatBinaryLength ).asFloatBuffer();
 
-      IDicManager dicManager = new FloatDicManager( primitiveObjectConnector , binary , nullFlagBinaryStart , nullFlagBinaryLength , floatBuffer );
+      IDicManager dicManager = new FloatDicManager( binary , nullFlagBinaryStart , nullFlagBinaryLength , floatBuffer );
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       column.setCellManager( new BufferDirectCellManager( ColumnType.FLOAT , dicManager , nullFlagBinaryLength ) );
 

@@ -89,8 +89,8 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new BooleanColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new BooleanColumnManager( columnBinary ) );
   }
 
   @Override
@@ -241,13 +241,11 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
   public class BooleanColumnManager implements IColumnManager{
 
     private final ColumnBinary columnBinary;
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public BooleanColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public BooleanColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -258,8 +256,8 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
       ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
       byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
 
-      PrimitiveObject trueObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , TRUE );
-      PrimitiveObject falseObject = primitiveObjectConnector.convert( PrimitiveType.BOOLEAN , FALSE );
+      PrimitiveObject trueObject = TRUE;
+      PrimitiveObject falseObject = FALSE;
 
       column = new PrimitiveColumn( ColumnType.BOOLEAN , columnBinary.columnName );
       column.setCellManager( new DirectBufferBooleanCellManager( binary , trueObject , falseObject ) );

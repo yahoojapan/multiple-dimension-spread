@@ -160,7 +160,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     int minLength = wrapBuffer.getInt();
     char[] minCharArray = new char[minLength];
@@ -183,7 +183,6 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
         columnBinary.columnType , 
         new StringColumnManager( 
           columnBinary , 
-          primitiveObjectConnector , 
           columnBinary.binaryStart + headerSize , 
           columnBinary.binaryLength - headerSize ) , 
           new RangeStringIndex( min , max , true ) 
@@ -195,7 +194,6 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
         columnBinary.columnType ,
         new RangeStringColumnManager(
           columnBinary ,
-          primitiveObjectConnector ,
           columnBinary.binaryStart + headerSize ,
           columnBinary.binaryLength - headerSize ) ,
           new RangeStringIndex( min , max , false )
@@ -270,16 +268,14 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
 
   public class RangeStringColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public RangeStringColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public RangeStringColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -294,7 +290,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       PrimitiveObject[] dicArray = new PrimitiveObject[ columnBinary.rowCount ];
       for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
         int objLength = wrapBuffer.getInt();
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.STRING , new UTF8BytesLinkObj( binary , wrapBuffer.position() , objLength ) );
+        dicArray[i] = new UTF8BytesLinkObj( binary , wrapBuffer.position() , objLength );
         wrapBuffer.position( wrapBuffer.position() + objLength );
       }
 

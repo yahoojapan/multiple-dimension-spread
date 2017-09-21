@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.binary.maker.DefaultPrimitiveObjectConnector;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.config.Configuration;
@@ -38,7 +37,6 @@ import jp.co.yahoo.dataplatform.mds.spread.expand.ExpandFunctionFactory;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
-import jp.co.yahoo.dataplatform.mds.binary.maker.IPrimitiveObjectConnector;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
 import jp.co.yahoo.dataplatform.mds.stats.SummaryStats;
@@ -49,8 +47,6 @@ public class PredicateBlockReader implements IBlockReader{
   private final ColumnBinaryTree columnBinaryTree = new ColumnBinaryTree();
   private final List<Integer> spreadSizeList = new ArrayList<Integer>();
   private final SummaryStats readSummaryStats = new SummaryStats();
-
-  private IPrimitiveObjectConnector primitiveObjectConnector;
 
   private ColumnNameNode columnFilterNode;
   private int readCount;
@@ -76,7 +72,6 @@ public class PredicateBlockReader implements IBlockReader{
 
   @Override
   public void setup( final Configuration config ) throws IOException{
-    primitiveObjectConnector = (IPrimitiveObjectConnector)( config.getObject( "binary.primitive.object.connector.class" , DefaultPrimitiveObjectConnector.class.getName() ) );
     expandFunction = ExpandFunctionFactory.get( config );
     flattenFunction = FlattenFunctionFactory.get( config );
 
@@ -194,7 +189,7 @@ public class PredicateBlockReader implements IBlockReader{
     for( ColumnBinary columnBinary : block.get( readCount ) ){
       if( columnBinary != null ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( columnBinary.makerClassName );
-        spread.addColumn( maker.toColumn( columnBinary , primitiveObjectConnector ) );
+        spread.addColumn( maker.toColumn( columnBinary ) );
         readSummaryStats.merge( columnBinary.toSummaryStats() );
       }
     }

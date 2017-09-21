@@ -105,7 +105,7 @@ public class RangeIndexShortColumnBinaryMaker extends UniqShortColumnBinaryMaker
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Short min = Short.valueOf( wrapBuffer.getShort() );
     Short max = Short.valueOf( wrapBuffer.getShort() );
@@ -114,7 +114,6 @@ public class RangeIndexShortColumnBinaryMaker extends UniqShortColumnBinaryMaker
       columnBinary.columnType ,
       new ShortColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
         columnBinary.binaryStart + ( Short.BYTES * 2 ) ,
         columnBinary.binaryLength - ( Short.BYTES * 2 )
       )

@@ -135,7 +135,7 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Float min = Float.valueOf( wrapBuffer.getFloat() );
     Float max = Float.valueOf( wrapBuffer.getFloat() );
@@ -146,7 +146,6 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
         columnBinary.columnType , 
         new FloatColumnManager( 
           columnBinary , 
-          primitiveObjectConnector , 
           columnBinary.binaryStart + HEADER_SIZE , 
           columnBinary.binaryLength - HEADER_SIZE ) , 
           new RangeFloatIndex( min , max ) 
@@ -158,7 +157,6 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
         columnBinary.columnType ,
         new RangeFloatColumnManager(
           columnBinary ,
-          primitiveObjectConnector ,
           columnBinary.binaryStart + HEADER_SIZE ,
           columnBinary.binaryLength - HEADER_SIZE ) ,
           new RangeFloatIndex( min , max )
@@ -195,19 +193,17 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
 
   public class RangeFloatDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final FloatBuffer dicBuffer;
     private final int dicLength;
 
-    public RangeFloatDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final FloatBuffer dicBuffer ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public RangeFloatDicManager( final FloatBuffer dicBuffer ){
       this.dicBuffer = dicBuffer;
       dicLength = dicBuffer.capacity(); 
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      return primitiveObjectConnector.convert( PrimitiveType.FLOAT , new FloatObj( dicBuffer.get( index ) ) );
+      return new FloatObj( dicBuffer.get( index ) );
     }
 
     @Override
@@ -219,16 +215,14 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
 
   public class RangeFloatColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public RangeFloatColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public RangeFloatColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -241,7 +235,7 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
       byte[] binary = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
-      IDicManager dicManager = new RangeFloatDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asFloatBuffer() );
+      IDicManager dicManager = new RangeFloatDicManager( ByteBuffer.wrap( binary ).asFloatBuffer() );
       column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;

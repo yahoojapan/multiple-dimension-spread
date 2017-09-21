@@ -112,8 +112,8 @@ public class UniqDoubleColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new DoubleColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new DoubleColumnManager( columnBinary ) );
   }
 
   @Override
@@ -170,23 +170,20 @@ public class UniqDoubleColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class DoubleColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int columnBinaryStart;
     private final int columnBinaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public DoubleColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public DoubleColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.columnBinaryStart = columnBinary.binaryStart;
       this.columnBinaryLength = columnBinary.binaryLength;
     }
 
-    public DoubleColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int columnBinaryStart , final int columnBinaryLength ) throws IOException{
+    public DoubleColumnManager( final ColumnBinary columnBinary , final int columnBinaryStart , final int columnBinaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.columnBinaryStart = columnBinaryStart;
       this.columnBinaryLength = columnBinaryLength;
     }
@@ -205,7 +202,7 @@ public class UniqDoubleColumnBinaryMaker implements IColumnBinaryMaker{
       dicBuffer.get();
       PrimitiveObject[] dicArray = new PrimitiveObject[dicSize/Double.BYTES];
       for( int i = 1 ; i < dicArray.length ; i++ ){
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.DOUBLE , new DoubleObj( dicBuffer.get() ) );
+        dicArray[i] = new DoubleObj( dicBuffer.get() );
       }
 
       IDicManager dicManager = new DoubleDicManager( dicArray );

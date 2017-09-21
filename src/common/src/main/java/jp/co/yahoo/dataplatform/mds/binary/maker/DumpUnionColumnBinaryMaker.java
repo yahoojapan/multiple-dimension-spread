@@ -149,8 +149,8 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new UnionColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new UnionColumnManager( columnBinary ) );
   }
 
   @Override
@@ -175,13 +175,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   public class UnionColumnManager implements IColumnManager{
 
     private final ColumnBinary columnBinary;
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private UnionColumn unionColumn;
     private boolean isCreate;
 
-    public UnionColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public UnionColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -194,7 +192,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
 
       for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
-        IColumn column = maker.toColumn( childColumnBinary , primitiveObjectConnector );
+        IColumn column = maker.toColumn( childColumnBinary );
         column.setParentsColumn( unionColumn );
         unionColumn.setColumn( column );
         columnContainer.put( column.getColumnType() , column );

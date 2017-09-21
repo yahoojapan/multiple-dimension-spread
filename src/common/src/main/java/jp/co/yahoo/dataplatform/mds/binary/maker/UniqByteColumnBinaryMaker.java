@@ -111,8 +111,8 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ByteColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ByteColumnManager( columnBinary ) );
   }
 
   @Override
@@ -168,23 +168,20 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class ByteColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public ByteColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public ByteColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = columnBinary.binaryStart;
       this.binaryLength = columnBinary.binaryLength;
     }
 
-    public ByteColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public ByteColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -203,7 +200,7 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
       dicWrapBuffer.get();
       PrimitiveObject[] dicArray = new PrimitiveObject[dicSize/Byte.BYTES];
       for( int i = 1 ; i < dicArray.length ; i++ ){
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.BYTE , new ByteObj( dicWrapBuffer.get() ) );
+        dicArray[i] = new ByteObj( dicWrapBuffer.get() );
       }
 
       IDicManager dicManager = new ByteDicManager( dicArray );

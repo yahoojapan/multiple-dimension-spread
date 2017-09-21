@@ -276,7 +276,7 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Float min = Float.valueOf( wrapBuffer.getFloat() );
     Float max = Float.valueOf( wrapBuffer.getFloat() );
@@ -287,7 +287,6 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
       columnBinary.columnName ,
       columnBinary.columnType ,
       new ColumnManager(
-        primitiveObjectConnector ,
         columnBinary ,
         indexMaker ,
         dicMaker
@@ -358,7 +357,6 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class ColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final IDictionaryIndexMaker indexMaker;
     private final IDictionaryMaker dicMaker;
@@ -366,8 +364,7 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public ColumnManager( final IPrimitiveObjectConnector primitiveObjectConnector , final ColumnBinary columnBinary , final IDictionaryIndexMaker indexMaker , final IDictionaryMaker dicMaker ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public ColumnManager( final ColumnBinary columnBinary , final IDictionaryIndexMaker indexMaker , final IDictionaryMaker dicMaker ){
       this.columnBinary = columnBinary;
       this.indexMaker = indexMaker;
       this.dicMaker = dicMaker;

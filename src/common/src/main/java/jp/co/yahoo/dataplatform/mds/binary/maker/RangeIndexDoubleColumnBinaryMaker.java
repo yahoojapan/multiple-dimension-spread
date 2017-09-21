@@ -104,7 +104,7 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Double min = Double.valueOf( wrapBuffer.getDouble() );
     Double max = Double.valueOf( wrapBuffer.getDouble() );
@@ -113,7 +113,6 @@ public class RangeIndexDoubleColumnBinaryMaker extends UniqDoubleColumnBinaryMak
       columnBinary.columnType ,
       new DoubleColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
         columnBinary.binaryStart + ( Double.BYTES * 2 ) ,
         columnBinary.binaryLength - ( Double.BYTES * 2 )
       )

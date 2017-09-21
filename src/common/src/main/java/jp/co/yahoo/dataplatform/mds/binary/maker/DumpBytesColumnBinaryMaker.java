@@ -107,8 +107,8 @@ public class DumpBytesColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new BytesColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new BytesColumnManager( columnBinary ) );
   }
 
   @Override
@@ -169,23 +169,20 @@ public class DumpBytesColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class BytesColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public BytesColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public BytesColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = columnBinary.binaryStart;
       this.binaryLength = columnBinary.binaryLength;
     }
 
-    public BytesColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public BytesColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -208,7 +205,7 @@ public class DumpBytesColumnBinaryMaker implements IColumnBinaryMaker{
       PrimitiveObject[] dicArray = new PrimitiveObject[ columnBinary.rowCount + 1 ];
       for( int i = 0 ; i < dicArray.length ; i++ ){
         int objLength = dicBuffer.getInt();
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.BYTES , new UTF8BytesLinkObj( binary , dicBuffer.position() , objLength ) );
+        dicArray[i] = new UTF8BytesLinkObj( binary , dicBuffer.position() , objLength );
         dicBuffer.position( dicBuffer.position() + objLength );
       }
 

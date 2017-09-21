@@ -142,7 +142,7 @@ public class TestDumpBooleanColumnBinaryMaker {
     assertEquals( columnBinary.rowCount , 2 );
     Assert.assertEquals( columnBinary.columnType , ColumnType.BOOLEAN );
 
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 

@@ -112,8 +112,8 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new FloatColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new FloatColumnManager( columnBinary ) );
   }
 
   @Override
@@ -170,23 +170,20 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class FloatColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int columnBinaryStart;
     private final int columnBinaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public FloatColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public FloatColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.columnBinaryStart = columnBinary.binaryStart;
       this.columnBinaryLength = columnBinary.binaryLength;
     }
 
-    public FloatColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int columnBinaryStart , final int columnBinaryLength ) throws IOException{
+    public FloatColumnManager( final ColumnBinary columnBinary , final int columnBinaryStart , final int columnBinaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.columnBinaryStart = columnBinaryStart;
       this.columnBinaryLength = columnBinaryLength;
     }
@@ -205,7 +202,7 @@ public class UniqFloatColumnBinaryMaker implements IColumnBinaryMaker{
       dicBuffer.get();
       PrimitiveObject[] dicArray = new PrimitiveObject[dicSize/Float.BYTES];
       for( int i = 1 ; i < dicArray.length ; i++ ){
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.FLOAT , new FloatObj( dicBuffer.get() ) );
+        dicArray[i] = new FloatObj( dicBuffer.get() );
       }
 
       IDicManager dicManager = new FloatDicManager( dicArray );

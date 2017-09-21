@@ -105,7 +105,7 @@ public class RangeIndexFloatColumnBinaryMaker extends UniqFloatColumnBinaryMaker
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Float min = Float.valueOf( wrapBuffer.getFloat() );
     Float max = Float.valueOf( wrapBuffer.getFloat() );
@@ -114,7 +114,6 @@ public class RangeIndexFloatColumnBinaryMaker extends UniqFloatColumnBinaryMaker
       columnBinary.columnType ,
       new FloatColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
         columnBinary.binaryStart + ( Float.BYTES * 2 ) ,
         columnBinary.binaryLength - ( Float.BYTES * 2 )
       )

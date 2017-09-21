@@ -107,7 +107,7 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Long min = Long.valueOf( wrapBuffer.getLong() );
     Long max = Long.valueOf( wrapBuffer.getLong() );
@@ -116,7 +116,6 @@ public class RangeIndexLongColumnBinaryMaker extends UniqLongColumnBinaryMaker{
       columnBinary.columnType ,
       new LongColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
         columnBinary.binaryStart + ( Long.BYTES * 2 ) ,
         columnBinary.binaryLength - ( Long.BYTES * 2 )
       )

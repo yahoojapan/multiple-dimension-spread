@@ -129,8 +129,8 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary ) );
   }
 
   @Override
@@ -192,14 +192,12 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class StringColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public StringColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public StringColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -220,7 +218,7 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < dicArray.length ; i++ ){
         char[] chars = new char[dicLengthBuffer.get()];
         dicBuffer.get( chars );
-        dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.STRING , new StringObj( new String( chars ) ) );
+        dicArray[i] = new StringObj( new String( chars ) );
       }
       IDicManager dicManager = new StringDicManager( dicArray );
 

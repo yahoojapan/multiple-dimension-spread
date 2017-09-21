@@ -96,8 +96,8 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
-    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ArrayColumnManager( columnBinary , primitiveObjectConnector ) );
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
+    return new LazyColumn( columnBinary.columnName , columnBinary.columnType , new ArrayColumnManager( columnBinary ) );
   }
 
   @Override
@@ -226,13 +226,11 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
   public class ArrayColumnManager implements IColumnManager{
 
     private final ColumnBinary columnBinary;
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private ArrayColumn arrayColumn;
     private boolean isCreate;
 
-    public ArrayColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+    public ArrayColumnManager( final ColumnBinary columnBinary ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
     }
 
     private void create() throws IOException{
@@ -245,7 +243,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       Spread spread = new Spread( arrayColumn );
       for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
-        IColumn column = maker.toColumn( childColumnBinary , primitiveObjectConnector );
+        IColumn column = maker.toColumn( childColumnBinary );
         column.setParentsColumn( arrayColumn );
         spread.addColumn( column );
       }

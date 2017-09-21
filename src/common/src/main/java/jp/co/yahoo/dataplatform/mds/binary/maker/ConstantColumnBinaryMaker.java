@@ -71,7 +71,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     IColumn result = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
     ICellManager cellManager;
     

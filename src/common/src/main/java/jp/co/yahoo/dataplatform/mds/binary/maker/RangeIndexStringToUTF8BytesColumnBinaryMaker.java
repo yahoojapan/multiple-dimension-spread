@@ -138,7 +138,7 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     CharBuffer viewCharBuffer = wrapBuffer.asCharBuffer();
     int offset = columnBinary.binaryStart;
@@ -158,7 +158,7 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
     offset++;
     int binaryLength = wrapBuffer.getInt( offset ); 
     offset += Integer.BYTES;
-    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , primitiveObjectConnector , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) , hasNull == (byte)1 ) );
+    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) , hasNull == (byte)1 ) );
   }
 
   @Override

@@ -135,7 +135,7 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Short min = Short.valueOf( wrapBuffer.getShort() );
     Short max = Short.valueOf( wrapBuffer.getShort() );
@@ -146,7 +146,6 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
         columnBinary.columnType , 
         new ShortColumnManager( 
           columnBinary , 
-          primitiveObjectConnector , 
           columnBinary.binaryStart + HEADER_SIZE , 
           columnBinary.binaryLength - HEADER_SIZE ) , 
           new RangeShortIndex( min , max ) 
@@ -158,7 +157,6 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
         columnBinary.columnType ,
         new RangeShortColumnManager(
           columnBinary ,
-          primitiveObjectConnector ,
           columnBinary.binaryStart + HEADER_SIZE ,
           columnBinary.binaryLength - HEADER_SIZE ) ,
           new RangeShortIndex( min , max )
@@ -195,19 +193,17 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
 
   public class RangeShortDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ShortBuffer dicBuffer;
     private final int dicLength;
 
-    public RangeShortDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final ShortBuffer dicBuffer ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public RangeShortDicManager( final ShortBuffer dicBuffer ){
       this.dicBuffer = dicBuffer;
       dicLength = dicBuffer.capacity(); 
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      return primitiveObjectConnector.convert( PrimitiveType.SHORT , new ShortObj( dicBuffer.get( index ) ) );
+      return new ShortObj( dicBuffer.get( index ) );
     }
 
     @Override
@@ -219,16 +215,14 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
 
   public class RangeShortColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public RangeShortColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public RangeShortColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -241,7 +235,7 @@ public class RangeDumpShortColumnBinaryMaker extends DumpShortColumnBinaryMaker{
       byte[] binary = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
-      IDicManager dicManager = new RangeShortDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asShortBuffer() );
+      IDicManager dicManager = new RangeShortDicManager( ByteBuffer.wrap( binary ).asShortBuffer() );
       column.setCellManager( new BufferDirectCellManager( ColumnType.SHORT , dicManager , columnBinary.rowCount ) );
 
       isCreate = true;

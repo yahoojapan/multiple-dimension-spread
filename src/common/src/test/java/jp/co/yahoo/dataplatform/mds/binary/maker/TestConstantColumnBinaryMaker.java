@@ -51,7 +51,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.BOOLEAN );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -70,7 +70,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.BYTE );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary  );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -89,7 +89,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.SHORT );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -107,7 +107,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.INTEGER );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -125,7 +125,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.LONG );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -143,7 +143,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.FLOAT );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -161,7 +161,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.DOUBLE );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -181,7 +181,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.STRING );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
@@ -202,7 +202,7 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( columnBinary.columnType , ColumnType.BYTES );
 
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
-    IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
+    IColumn decodeColumn = maker.toColumn( columnBinary );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 

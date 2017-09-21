@@ -107,7 +107,7 @@ public class RangeIndexIntegerColumnBinaryMaker extends UniqIntegerColumnBinaryM
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Integer min = Integer.valueOf( wrapBuffer.getInt() );
     Integer max = Integer.valueOf( wrapBuffer.getInt() );
@@ -116,7 +116,6 @@ public class RangeIndexIntegerColumnBinaryMaker extends UniqIntegerColumnBinaryM
       columnBinary.columnType ,
       new IntegerColumnManager(
         columnBinary ,
-        primitiveObjectConnector ,
         columnBinary.binaryStart + ( Integer.BYTES * 2 ) ,
         columnBinary.binaryLength - ( Integer.BYTES * 2 )
       )

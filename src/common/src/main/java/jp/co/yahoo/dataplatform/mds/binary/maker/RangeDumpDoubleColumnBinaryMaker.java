@@ -136,7 +136,7 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
   }
 
   @Override
-  public IColumn toColumn( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector ) throws IOException{
+  public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Double min = Double.valueOf( wrapBuffer.getDouble() );
     Double max = Double.valueOf( wrapBuffer.getDouble() );
@@ -147,7 +147,6 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
         columnBinary.columnType , 
         new DoubleColumnManager( 
           columnBinary , 
-          primitiveObjectConnector , 
           columnBinary.binaryStart + HEADER_SIZE , 
           columnBinary.binaryLength - HEADER_SIZE ) , 
           new RangeDoubleIndex( min , max ) 
@@ -159,7 +158,6 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
         columnBinary.columnType ,
         new RangeDoubleColumnManager(
           columnBinary ,
-          primitiveObjectConnector ,
           columnBinary.binaryStart + HEADER_SIZE ,
           columnBinary.binaryLength - HEADER_SIZE ) ,
           new RangeDoubleIndex( min , max )
@@ -196,19 +194,17 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
 
   public class RangeDoubleDicManager implements IDicManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final DoubleBuffer dicBuffer;
     private final int dicLength;
 
-    public RangeDoubleDicManager( final IPrimitiveObjectConnector primitiveObjectConnector , final DoubleBuffer dicBuffer ){
-      this.primitiveObjectConnector = primitiveObjectConnector;
+    public RangeDoubleDicManager( final DoubleBuffer dicBuffer ){
       this.dicBuffer = dicBuffer;
       dicLength = dicBuffer.capacity(); 
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      return primitiveObjectConnector.convert( PrimitiveType.DOUBLE , new DoubleObj( dicBuffer.get( index ) ) );
+      return new DoubleObj( dicBuffer.get( index ) );
     }
 
     @Override
@@ -220,16 +216,14 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
 
   public class RangeDoubleColumnManager implements IColumnManager{
 
-    private final IPrimitiveObjectConnector primitiveObjectConnector;
     private final ColumnBinary columnBinary;
     private final int binaryStart;
     private final int binaryLength;
     private PrimitiveColumn column;
     private boolean isCreate;
 
-    public RangeDoubleColumnManager( final ColumnBinary columnBinary , final IPrimitiveObjectConnector primitiveObjectConnector , final int binaryStart , final int binaryLength ) throws IOException{
+    public RangeDoubleColumnManager( final ColumnBinary columnBinary , final int binaryStart , final int binaryLength ) throws IOException{
       this.columnBinary = columnBinary;
-      this.primitiveObjectConnector = primitiveObjectConnector;
       this.binaryStart = binaryStart;
       this.binaryLength = binaryLength;
     }
@@ -242,7 +236,7 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       byte[] binary = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
-      IDicManager dicManager = new RangeDoubleDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asDoubleBuffer() );
+      IDicManager dicManager = new RangeDoubleDicManager( ByteBuffer.wrap( binary ).asDoubleBuffer() );
       column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
       column.setIndex( new SequentialNumberCellIndex( ColumnType.DOUBLE , dicManager ) );
 
