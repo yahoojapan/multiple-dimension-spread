@@ -25,14 +25,13 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
 import net.jpountz.lz4.LZ4BlockOutputStream;
 import net.jpountz.lz4.LZ4BlockInputStream;
 
 public class LZ4Compressor implements ICompressor{
 
-  private static final byte[] LENGTH_DUMMY = new byte[PrimitiveByteLength.INT_LENGTH];
+  private static final byte[] LENGTH_DUMMY = new byte[Integer.BYTES];
 
   @Override
   public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
@@ -72,7 +71,7 @@ public class LZ4Compressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
 
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     LZ4BlockInputStream in = new LZ4BlockInputStream( bIn );
 
     byte[] retVal = new byte[dataLength];
@@ -86,7 +85,7 @@ public class LZ4Compressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
 
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     LZ4BlockInputStream in = new LZ4BlockInputStream( bIn );
 
     InputStreamUtils.read( in , buffer , 0 , dataLength );
@@ -98,7 +97,7 @@ public class LZ4Compressor implements ICompressor{
   public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     return new BufferedInputStream( new LZ4BlockInputStream( bIn ) );
   }
 

@@ -17,7 +17,6 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
@@ -80,7 +79,7 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public int getLogicalDataSize(){
-    return PrimitiveByteLength.DOUBLE_LENGTH * rowCount;
+    return Double.BYTES * rowCount;
   }
 
   public double getMin(){

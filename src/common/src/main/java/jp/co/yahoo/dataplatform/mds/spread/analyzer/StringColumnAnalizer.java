@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -71,7 +70,7 @@ public class StringColumnAnalizer implements IColumnAnalizer{
 
       byte[] stringBytes = target.getBytes( "UTF-8" );
       rowCount++;
-      int charLength = target.length() * PrimitiveByteLength.CHAR_LENGTH;
+      int charLength = target.length() * Character.BYTES;
       totalLogicalDataSize += charLength;
       totalUtf8ByteSize = stringBytes.length;
 

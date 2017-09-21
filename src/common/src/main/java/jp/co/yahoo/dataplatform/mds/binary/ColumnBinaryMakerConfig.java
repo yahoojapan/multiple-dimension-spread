@@ -56,12 +56,12 @@ public class ColumnBinaryMakerConfig{
     spreadMakerClass = FindColumnBinaryMaker.get( DumpSpreadColumnBinaryMaker.class.getName() );
 
     booleanMakerClass = FindColumnBinaryMaker.get( DumpBooleanColumnBinaryMaker.class.getName() );
-    byteMakerClass = FindColumnBinaryMaker.get( RangeDumpByteColumnBinaryMaker.class.getName() );
-    doubleMakerClass = FindColumnBinaryMaker.get( RangeIndexDoubleColumnBinaryMaker.class.getName() );
+    byteMakerClass = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
+    doubleMakerClass = FindColumnBinaryMaker.get( RangeDumpDoubleColumnBinaryMaker.class.getName() );
     floatMakerClass = FindColumnBinaryMaker.get( RangeDumpFloatColumnBinaryMaker.class.getName() );
-    integerMakerClass = FindColumnBinaryMaker.get( RangeDumpIntegerColumnBinaryMaker.class.getName() );
-    longMakerClass = FindColumnBinaryMaker.get( RangeIndexLongColumnBinaryMaker.class.getName() );
-    shortMakerClass = FindColumnBinaryMaker.get( RangeDumpShortColumnBinaryMaker.class.getName() );
+    integerMakerClass = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
+    longMakerClass = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
+    shortMakerClass = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
 
     stringMakerClass = FindColumnBinaryMaker.get( RangeIndexStringToUTF8BytesColumnBinaryMaker.class.getName() );
     bytesMakerClass = FindColumnBinaryMaker.get( DumpBytesColumnBinaryMaker.class.getName() );

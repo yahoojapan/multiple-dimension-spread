@@ -19,55 +19,55 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 
 import java.io.IOException;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 
-import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
-import org.testng.annotations.Test;
 
-import jp.co.yahoo.dataplatform.schema.objects.StringObj;
+import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.UnionColumn;
+import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
-import jp.co.yahoo.dataplatform.schema.objects.*;
-
-public class TestDumpUnionColumnBinaryMaker {
+public class TestOptimizeLongColumnBinaryMaker {
 
   @Test
   public void T_toBinary_1() throws IOException{
-    IColumn firstColumn = new PrimitiveColumn( ColumnType.STRING , "UNION" );
-    firstColumn.add( ColumnType.STRING , new StringObj( "a" ) , 0 );
-    
-    IColumn column = new UnionColumn( firstColumn );
-    column.add( ColumnType.INTEGER , new IntegerObj( 1 ) , 1 );
+    IColumn column = new PrimitiveColumn( ColumnType.SHORT , "SHORT" );
+    column.add( ColumnType.SHORT , new ShortObj( (short)1 ) , 0 );
+    column.add( ColumnType.SHORT , new ShortObj( (short)2 ) , 1 );
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new DumpUnionColumnBinaryMaker();
+    IColumnBinaryMaker maker = new OptimizeLongColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
 
-    assertEquals( columnBinary.columnName , "UNION" );
+    assertEquals( columnBinary.columnName , "SHORT" );
     assertEquals( columnBinary.rowCount , 2 );
-    assertEquals( columnBinary.columnType , ColumnType.UNION );
+    assertEquals( columnBinary.columnType , ColumnType.SHORT );
 
     IColumn decodeColumn = maker.toColumn( columnBinary , new DefaultPrimitiveObjectConnector() );
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
 
-    assertEquals( "a" , ( (PrimitiveObject)( decodeColumn.get(0).getRow() ) ).getString() );
-    assertEquals( 1 , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getInt() );
+    assertEquals( (short)1 , ( (PrimitiveObject)( decodeColumn.get(0).getRow() ) ).getShort() );
+    assertEquals( (short)2 , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getShort() );
 
     assertEquals( decodeColumn.getColumnKeys().size() , 0 );
     assertEquals( decodeColumn.getColumnSize() , 0 );
   }
+
 }
 

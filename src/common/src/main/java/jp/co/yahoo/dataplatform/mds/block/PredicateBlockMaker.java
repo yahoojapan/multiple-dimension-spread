@@ -44,8 +44,6 @@ import jp.co.yahoo.dataplatform.mds.binary.optimizer.IOptimizerFactory;
 import jp.co.yahoo.dataplatform.mds.binary.optimizer.FindOptimizerFactory;
 import jp.co.yahoo.dataplatform.mds.binary.optimizer.BinaryMakerOptimizer;
 
-import static jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength.INT_LENGTH;
-
 public class PredicateBlockMaker implements IBlockMaker{
 
   private static final int META_BUFFER_SIZE = 1024 * 1024 * 1;
@@ -76,7 +74,7 @@ public class PredicateBlockMaker implements IBlockMaker{
       IParser jsonParser = jsonReader.create( config.get( "spread.column.maker.setting" ) );
       configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser ); 
     }
-    else if( config.get( "spread.column.maker.use.auto.optimizer" , "true" ).equals( "true" ) ){
+    else if( config.get( "spread.column.maker.use.auto.optimizer" , "false" ).equals( "true" ) ){
       makeCustomConfig = true;
       optimizerFactory = FindOptimizerFactory.get( config.get( "spread.column.maker.use.auto.optimizer.factory.class" , "jp.co.yahoo.dataplatform.mds.binary.optimizer.DefaultOptimizerFactory" ) , config );
       configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
@@ -108,7 +106,7 @@ public class PredicateBlockMaker implements IBlockMaker{
 
   @Override
   public void append( final int spreadSize , final List<ColumnBinary> binaryList ) throws IOException{
-    bufferSize += getColumnBinarySize( binaryList ) + INT_LENGTH * 2;
+    bufferSize += getColumnBinarySize( binaryList ) + Integer.BYTES * 2;
     spreadSizeList.add( spreadSize );
 
     columnTree.addChild( binaryList );
@@ -142,7 +140,7 @@ public class PredicateBlockMaker implements IBlockMaker{
   @Override
   public boolean canAppend( final List<ColumnBinary> binaryList ) throws IOException{
     int length = getColumnBinarySize( binaryList );
-    return ( size() + length + INT_LENGTH + INT_LENGTH + ( INT_LENGTH * spreadSizeList.size() + 1 ) ) < blockSize;
+    return ( size() + length + Integer.BYTES + Integer.BYTES + ( Integer.BYTES * spreadSizeList.size() + 1 ) ) < blockSize;
   }
 
   @Override
@@ -168,7 +166,7 @@ public class PredicateBlockMaker implements IBlockMaker{
 
     byte[] result;
     if( dataSize == -1 ){
-      result = new byte[ headerBytes.length + dataBuffer.getLength() + metaBinary.length + INT_LENGTH + INT_LENGTH + ( INT_LENGTH * spreadSizeList.size() ) ];
+      result = new byte[ headerBytes.length + dataBuffer.getLength() + metaBinary.length + Integer.BYTES + Integer.BYTES + ( Integer.BYTES * spreadSizeList.size() ) ];
     }
     else{
       result = new byte[dataSize];
@@ -180,14 +178,14 @@ public class PredicateBlockMaker implements IBlockMaker{
 
     ByteBuffer wrapBuffer = ByteBuffer.wrap( result );
     wrapBuffer.putInt( offset , spreadSizeList.size() );
-    offset += INT_LENGTH;
+    offset += Integer.BYTES;
     for( Integer spreadSize : spreadSizeList ){
       wrapBuffer.putInt( offset , spreadSize.intValue() );
-      offset += INT_LENGTH;
+      offset += Integer.BYTES;
     }
 
     wrapBuffer.putInt( offset , metaBinary.length );
-    offset += INT_LENGTH;
+    offset += Integer.BYTES;
 
     System.arraycopy( metaBinary , 0 , result , offset , metaBinary.length );
     offset += metaBinary.length;

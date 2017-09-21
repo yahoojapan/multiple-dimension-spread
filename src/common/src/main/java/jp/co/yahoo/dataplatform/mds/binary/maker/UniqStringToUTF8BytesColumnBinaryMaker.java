@@ -38,7 +38,6 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStringCellIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
@@ -78,7 +77,7 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         targetStr = stringCell.getRow().getString();
         if( targetStr != null ){
-          logicalTotalLength += targetStr.length() * PrimitiveByteLength.CHAR_LENGTH;
+          logicalTotalLength += targetStr.length() * Character.BYTES;
         }
       }
       else{
@@ -96,15 +95,15 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
     if( ! hasNull && dicMap.size() == 2 ){                                                                                     return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( new String( stringList.get(1) , "UTF-8" ) ) , column.getColumnName() , column.size() );
     }
 
-    int rawSize = ( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() ) + ( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
+    int rawSize = ( Integer.BYTES * columnIndexList.size() ) + ( totalLength + ( Integer.BYTES * stringList.size() ) ) + ( Integer.BYTES * 2 );
     byte[] binaryRaw = new byte[ rawSize ];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryRaw );
 
-    wrapBuffer.putInt( PrimitiveByteLength.INT_LENGTH * columnIndexList.size() );
+    wrapBuffer.putInt( Integer.BYTES * columnIndexList.size() );
     for( Integer index : columnIndexList ){
       wrapBuffer.putInt( index );
     }
-    wrapBuffer.putInt( totalLength + ( PrimitiveByteLength.INT_LENGTH * stringList.size() ) );
+    wrapBuffer.putInt( totalLength + ( Integer.BYTES * stringList.size() ) );
     for( byte[] dicByteArray : stringList ){
       wrapBuffer.putInt( dicByteArray.length );
       wrapBuffer.put( dicByteArray );
@@ -121,7 +120,7 @@ public class UniqStringToUTF8BytesColumnBinaryMaker implements IColumnBinaryMake
     if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
       return stringAnalizeResult.getUniqUtf8ByteSize();
     }
-    return ( PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize() ) + ( PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getUniqUtf8ByteSize() + ( PrimitiveByteLength.INT_LENGTH * analizeResult.getUniqCount() ) ) + ( PrimitiveByteLength.INT_LENGTH * 2 );
+    return ( Integer.BYTES * analizeResult.getColumnSize() ) + ( Integer.BYTES + stringAnalizeResult.getUniqUtf8ByteSize() + ( Integer.BYTES * analizeResult.getUniqCount() ) ) + ( Integer.BYTES * 2 );
   }
 
   @Override

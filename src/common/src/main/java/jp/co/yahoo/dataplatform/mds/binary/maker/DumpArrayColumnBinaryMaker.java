@@ -39,7 +39,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
@@ -58,7 +57,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
 
-    byte[] binaryRaw = new byte[ PrimitiveByteLength.INT_LENGTH * column.size() ];
+    byte[] binaryRaw = new byte[ Integer.BYTES * column.size() ];
     IntBuffer intIndexBuffer = ByteBuffer.wrap( binaryRaw ).asIntBuffer();
 
     List<Integer> numberList = new ArrayList<Integer>();
@@ -93,7 +92,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return PrimitiveByteLength.INT_LENGTH * analizeResult.getColumnSize();
+    return Integer.BYTES * analizeResult.getColumnSize();
   }
 
   @Override

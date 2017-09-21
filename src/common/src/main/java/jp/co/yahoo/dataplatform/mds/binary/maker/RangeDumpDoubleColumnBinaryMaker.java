@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -43,13 +42,14 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeDoubleIndex;
+import jp.co.yahoo.dataplatform.mds.binary.maker.index.SequentialNumberCellIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMaker{
 
-  private static final int HEADER_SIZE = ( PrimitiveByteLength.DOUBLE_LENGTH * 2 ) + PrimitiveByteLength.INT_LENGTH;
+  private static final int HEADER_SIZE = ( Double.BYTES * 2 ) + Integer.BYTES;
 
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
@@ -57,13 +57,13 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    byte[] parentsBinaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() + ( column.size() * PrimitiveByteLength.DOUBLE_LENGTH ) ];
+    byte[] parentsBinaryRaw = new byte[ ( Integer.BYTES * 2 ) + column.size() + ( column.size() * Double.BYTES ) ];
     ByteBuffer lengthBuffer = ByteBuffer.wrap( parentsBinaryRaw );
     lengthBuffer.putInt( column.size() );
-    lengthBuffer.putInt( column.size() * PrimitiveByteLength.DOUBLE_LENGTH );
+    lengthBuffer.putInt( column.size() * Double.BYTES );
 
-    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
-    DoubleBuffer doubleBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.DOUBLE_LENGTH ) ).asDoubleBuffer();
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , Integer.BYTES * 2 , column.size() );
+    DoubleBuffer doubleBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( Integer.BYTES * 2 + column.size() ) , ( column.size() * Double.BYTES ) ).asDoubleBuffer();
     int rowCount = 0;
     boolean hasNull = false;
     Double min = Double.MAX_VALUE;
@@ -109,8 +109,8 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      rawLength = column.size() * PrimitiveByteLength.DOUBLE_LENGTH;
-      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() , column.size() * PrimitiveByteLength.DOUBLE_LENGTH );
+      rawLength = column.size() * Double.BYTES;
+      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( Integer.BYTES * 2 ) + column.size() , column.size() * Double.BYTES );
 
       binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
@@ -119,16 +119,16 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       wrapBuffer.putInt( 1 );
       wrapBuffer.put( compressBinaryRaw );
     }
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.DOUBLE , rowCount , rawLength , rowCount * PrimitiveByteLength.DOUBLE_LENGTH , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.DOUBLE , rowCount , rawLength , rowCount * Double.BYTES , -1 , binary , 0 , binary.length , null );
   }
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
-      return PrimitiveByteLength.DOUBLE_LENGTH;
+      return Double.BYTES;
     }
     else if( analizeResult.getNullCount() == 0 ){
-      return analizeResult.getColumnSize() * PrimitiveByteLength.DOUBLE_LENGTH;
+      return analizeResult.getColumnSize() * Double.BYTES;
     }
     else{
       return super.calcBinarySize( analizeResult );
@@ -170,7 +170,7 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    wrapBuffer.position( PrimitiveByteLength.DOUBLE_LENGTH * 2 );
+    wrapBuffer.position( Double.BYTES * 2 );
     int type = wrapBuffer.getInt();
     if( type == 0 ){
       loadInMemoryStorage( columnBinary , columnBinary.binaryStart + HEADER_SIZE , columnBinary.binaryLength - HEADER_SIZE , allocator );
@@ -244,6 +244,7 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeDoubleDicManager( primitiveObjectConnector , ByteBuffer.wrap( binary ).asDoubleBuffer() );
       column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
+      column.setIndex( new SequentialNumberCellIndex( ColumnType.DOUBLE , dicManager ) );
 
       isCreate = true;
     }

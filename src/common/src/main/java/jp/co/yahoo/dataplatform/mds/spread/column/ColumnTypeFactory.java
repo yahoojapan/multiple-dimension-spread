@@ -249,29 +249,29 @@ public final class ColumnTypeFactory{
       case BOOLEAN:
         return PrimitiveByteLength.BOOLEAN_LENGTH;
       case BYTE:
-        return PrimitiveByteLength.BYTE_LENGTH;
+        return Byte.BYTES;
       case BYTES:
         byte[] targetBytes = object.getBytes();
         if( targetBytes == null ){
-          return PrimitiveByteLength.INT_LENGTH;
+          return Integer.BYTES;
         }
-        return PrimitiveByteLength.INT_LENGTH + targetBytes.length;
+        return Integer.BYTES + targetBytes.length;
       case DOUBLE:
-        return PrimitiveByteLength.DOUBLE_LENGTH;
+        return Double.BYTES;
       case FLOAT:
-        return PrimitiveByteLength.FLOAT_LENGTH;
+        return Float.BYTES;
       case INTEGER:
-        return PrimitiveByteLength.INT_LENGTH;
+        return Integer.BYTES;
       case LONG:
-        return PrimitiveByteLength.LONG_LENGTH;
+        return Long.BYTES;
       case SHORT:
-        return PrimitiveByteLength.SHORT_LENGTH;
+        return Short.BYTES;
       case STRING:
         String targetStr = object.getString();
         if( targetStr == null ){
-          return PrimitiveByteLength.INT_LENGTH;
+          return Integer.BYTES;
         }
-        return PrimitiveByteLength.INT_LENGTH + targetStr.length() * PrimitiveByteLength.CHAR_LENGTH;
+        return Integer.BYTES + targetStr.length() * Character.BYTES;
 
       default:
         return 0;

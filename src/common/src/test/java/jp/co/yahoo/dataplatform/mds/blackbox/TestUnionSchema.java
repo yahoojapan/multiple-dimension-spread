@@ -332,7 +332,7 @@ public class TestUnionSchema{
     Map<String,Object> d = new HashMap<String,Object>();
     d.put( "d" , new ShortObj( (short)1 ) );
     s.addRow( d );
-    d.put( "d" , new ByteObj( (byte)1 ) );
+    d.put( "d" , new ByteObj( (byte)2 ) );
     s.addRow( d );
     writer.append( s );
     writer.close();
@@ -361,9 +361,9 @@ public class TestUnionSchema{
     Map<String,Object> d = new HashMap<String,Object>();
     d.put( "d" , new ShortObj( (short)1 ) );
     s.addRow( d );
-    d.put( "d" , new ByteObj( (byte)1 ) );
+    d.put( "d" , new ByteObj( (byte)2 ) );
     s.addRow( d );
-    d.put( "d" , new IntegerObj( 1 ) );
+    d.put( "d" , new IntegerObj( 3 ) );
     s.addRow( d );
     writer.append( s );
     writer.close();

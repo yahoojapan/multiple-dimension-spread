@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -47,15 +46,15 @@ public class BlockSkipPredicateBlockReader extends PredicateBlockReader{
   @Override
   public void setStream( final InputStream in , final int blockSize ) throws IOException{
     super.clear();
-    byte[] compressorClassLengthBytes = new byte[PrimitiveByteLength.INT_LENGTH]; 
-    InputStreamUtils.read( in , compressorClassLengthBytes , 0 , PrimitiveByteLength.INT_LENGTH );
+    byte[] compressorClassLengthBytes = new byte[Integer.BYTES]; 
+    InputStreamUtils.read( in , compressorClassLengthBytes , 0 , Integer.BYTES );
     int compressorClassLength = ByteBuffer.wrap( compressorClassLengthBytes ).getInt();
     byte[] compressorClassBytes = new byte[ compressorClassLength ];
     InputStreamUtils.read( in , compressorClassBytes , 0 , compressorClassBytes.length );
     compressor = FindCompressor.get( CompressorNameShortCut.getClassName( new String( compressorClassBytes , "UTF-8" ) ) );
 
-    byte[] blockIndexLengthBytes = new byte[PrimitiveByteLength.INT_LENGTH]; 
-    InputStreamUtils.read( in , blockIndexLengthBytes , 0 , PrimitiveByteLength.INT_LENGTH );
+    byte[] blockIndexLengthBytes = new byte[Integer.BYTES]; 
+    InputStreamUtils.read( in , blockIndexLengthBytes , 0 , Integer.BYTES );
     int blockIndexLength = ByteBuffer.wrap( blockIndexLengthBytes ).getInt();
     byte[] blockIndexBinary = new byte[ blockIndexLength ];
     InputStreamUtils.read( in , blockIndexBinary , 0 , blockIndexBinary.length );

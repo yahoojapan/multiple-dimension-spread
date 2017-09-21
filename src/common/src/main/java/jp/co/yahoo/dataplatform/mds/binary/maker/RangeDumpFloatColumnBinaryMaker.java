@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -49,7 +48,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
 
-  private static final int HEADER_SIZE = ( PrimitiveByteLength.FLOAT_LENGTH * 2 ) + PrimitiveByteLength.INT_LENGTH;
+  private static final int HEADER_SIZE = ( Float.BYTES * 2 ) + Integer.BYTES;
 
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
@@ -57,13 +56,13 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
     }
-    byte[] parentsBinaryRaw = new byte[ ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() + ( column.size() * PrimitiveByteLength.FLOAT_LENGTH ) ];
+    byte[] parentsBinaryRaw = new byte[ ( Integer.BYTES * 2 ) + column.size() + ( column.size() * Float.BYTES ) ];
     ByteBuffer lengthBuffer = ByteBuffer.wrap( parentsBinaryRaw );
     lengthBuffer.putInt( column.size() );
-    lengthBuffer.putInt( column.size() * PrimitiveByteLength.FLOAT_LENGTH );
+    lengthBuffer.putInt( column.size() * Float.BYTES );
 
-    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
-    FloatBuffer floatBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.FLOAT_LENGTH ) ).asFloatBuffer();
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( parentsBinaryRaw , Integer.BYTES * 2 , column.size() );
+    FloatBuffer floatBuffer = ByteBuffer.wrap( parentsBinaryRaw , ( Integer.BYTES * 2 + column.size() ) , ( column.size() * Float.BYTES ) ).asFloatBuffer();
     int rowCount = 0;
     boolean hasNull = false;
     Float min = Float.MAX_VALUE;
@@ -109,8 +108,8 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      rawLength = column.size() * PrimitiveByteLength.FLOAT_LENGTH;
-      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 ) + column.size() , column.size() * PrimitiveByteLength.FLOAT_LENGTH );
+      rawLength = column.size() * Float.BYTES;
+      byte[] compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , ( Integer.BYTES * 2 ) + column.size() , column.size() * Float.BYTES );
 
       binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
@@ -119,16 +118,16 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
       wrapBuffer.putInt( 1 );
       wrapBuffer.put( compressBinaryRaw );
     }
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.FLOAT , rowCount , rawLength , rowCount * PrimitiveByteLength.FLOAT_LENGTH , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.FLOAT , rowCount , rawLength , rowCount * Float.BYTES , -1 , binary , 0 , binary.length , null );
   }
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
-      return PrimitiveByteLength.FLOAT_LENGTH;
+      return Float.BYTES;
     }
     else if( analizeResult.getNullCount() == 0 ){
-      return analizeResult.getColumnSize() * PrimitiveByteLength.FLOAT_LENGTH;
+      return analizeResult.getColumnSize() * Float.BYTES;
     }
     else{
       return super.calcBinarySize( analizeResult );
@@ -170,7 +169,7 @@ public class RangeDumpFloatColumnBinaryMaker extends DumpFloatColumnBinaryMaker{
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    wrapBuffer.position( PrimitiveByteLength.FLOAT_LENGTH * 2 );
+    wrapBuffer.position( Float.BYTES * 2 );
     int type = wrapBuffer.getInt();
     if( type == 0 ){
       loadInMemoryStorage( columnBinary , columnBinary.binaryStart + HEADER_SIZE , columnBinary.binaryLength - HEADER_SIZE , allocator );

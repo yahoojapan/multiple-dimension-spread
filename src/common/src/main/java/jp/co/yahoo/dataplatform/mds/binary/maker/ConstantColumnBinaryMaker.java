@@ -38,7 +38,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.UTF8BytesLinkObj;
@@ -335,61 +334,61 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     switch( value.getPrimitiveType() ){
       case BOOLEAN:
         type = ColumnType.BOOLEAN;
-        valueBinary = new byte[PrimitiveByteLength.BYTE_LENGTH];
+        valueBinary = new byte[Byte.BYTES];
         if( value.getBoolean() ){
           valueBinary[0] = 1;
         }
-        logicalDataSize = PrimitiveByteLength.BYTE_LENGTH * size;
+        logicalDataSize = Byte.BYTES * size;
         break;
       case BYTE:
         type = ColumnType.BYTE;
-        valueBinary = new byte[PrimitiveByteLength.BYTE_LENGTH];
+        valueBinary = new byte[Byte.BYTES];
         valueBinary[0] = value.getByte();
-        logicalDataSize = PrimitiveByteLength.BYTE_LENGTH * size;
+        logicalDataSize = Byte.BYTES * size;
         break;
       case SHORT:
         type = ColumnType.SHORT;
-        valueBinary = new byte[PrimitiveByteLength.SHORT_LENGTH];
+        valueBinary = new byte[Short.BYTES];
         ByteBuffer.wrap( valueBinary ).putShort( value.getShort() );
-        logicalDataSize = PrimitiveByteLength.SHORT_LENGTH * size;
+        logicalDataSize = Short.BYTES * size;
         break;
       case INTEGER:
         type = ColumnType.INTEGER;
-        valueBinary = new byte[PrimitiveByteLength.INT_LENGTH];
+        valueBinary = new byte[Integer.BYTES];
         ByteBuffer.wrap( valueBinary ).putInt( value.getInt() );
-        logicalDataSize = PrimitiveByteLength.INT_LENGTH * size;
+        logicalDataSize = Integer.BYTES * size;
         break;
       case LONG:
         type = ColumnType.LONG;
-        valueBinary = new byte[PrimitiveByteLength.LONG_LENGTH];
+        valueBinary = new byte[Long.BYTES];
         ByteBuffer.wrap( valueBinary ).putLong( value.getLong() );
-        logicalDataSize = PrimitiveByteLength.LONG_LENGTH * size;
+        logicalDataSize = Long.BYTES * size;
         break;
       case FLOAT:
         type = ColumnType.FLOAT;
-        valueBinary = new byte[PrimitiveByteLength.FLOAT_LENGTH];
+        valueBinary = new byte[Float.BYTES];
         ByteBuffer.wrap( valueBinary ).putFloat( value.getFloat() );
-        logicalDataSize = PrimitiveByteLength.FLOAT_LENGTH * size;
+        logicalDataSize = Float.BYTES * size;
         break;
       case DOUBLE:
         type = ColumnType.DOUBLE;
-        valueBinary = new byte[PrimitiveByteLength.DOUBLE_LENGTH];
+        valueBinary = new byte[Double.BYTES];
         ByteBuffer.wrap( valueBinary ).putDouble( value.getDouble() );
-        logicalDataSize = PrimitiveByteLength.DOUBLE_LENGTH * size;
+        logicalDataSize = Double.BYTES * size;
         break;
       case STRING:
         type = ColumnType.STRING;
         byte[] stringBytes = value.getBytes();
-        valueBinary = new byte[PrimitiveByteLength.INT_LENGTH + stringBytes.length];
+        valueBinary = new byte[Integer.BYTES + stringBytes.length];
         ByteBuffer stringWrapBuffer = ByteBuffer.wrap( valueBinary );
         stringWrapBuffer.putInt( stringBytes.length );
         stringWrapBuffer.put( stringBytes );
-        logicalDataSize = ( stringBytes.length * PrimitiveByteLength.CHAR_LENGTH ) * size;
+        logicalDataSize = ( stringBytes.length * Character.BYTES ) * size;
         break;
       case BYTES:
         type = ColumnType.BYTES;
         byte[] bytes = value.getBytes();
-        valueBinary = new byte[PrimitiveByteLength.INT_LENGTH + bytes.length];
+        valueBinary = new byte[Integer.BYTES + bytes.length];
         ByteBuffer wrapBuffer = ByteBuffer.wrap( valueBinary );
         wrapBuffer.putInt( bytes.length );
         wrapBuffer.put( bytes );

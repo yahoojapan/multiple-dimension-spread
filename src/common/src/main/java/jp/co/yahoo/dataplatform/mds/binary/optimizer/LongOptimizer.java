@@ -55,7 +55,7 @@ public class LongOptimizer implements IOptimizer{
       int dump = rangeDumpColumnBinaryMaker.calcBinarySize( analizeResult );
       int uniq = uniqColumnBinaryMaker.calcBinarySize( analizeResult );
       if( dump < uniq ){
-        makerClass = rangeUniqColumnBinaryMaker;
+        makerClass = rangeDumpColumnBinaryMaker;
       }
       else{
         makerClass = uniqColumnBinaryMaker;

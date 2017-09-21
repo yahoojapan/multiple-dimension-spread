@@ -28,7 +28,6 @@ import java.util.Collections;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.maker.DefaultPrimitiveObjectConnector;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -138,21 +137,21 @@ public class PredicateBlockReader implements IBlockReader{
     columnBinaryTree.clear();
     columnBinaryTree.setColumnFilter( columnFilterNode );
 
-    byte[] spreadSizeLengthBytes = new byte[PrimitiveByteLength.INT_LENGTH];
+    byte[] spreadSizeLengthBytes = new byte[Integer.BYTES];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( spreadSizeLengthBytes );
-    InputStreamUtils.read( in , spreadSizeLengthBytes , 0 , PrimitiveByteLength.INT_LENGTH );
+    InputStreamUtils.read( in , spreadSizeLengthBytes , 0 , Integer.BYTES );
     int spreadSizeLength = wrapBuffer.getInt(0);
 
-    byte[] spreadSizeBytes = new byte[ PrimitiveByteLength.INT_LENGTH * spreadSizeLength ];
+    byte[] spreadSizeBytes = new byte[ Integer.BYTES * spreadSizeLength ];
     wrapBuffer = ByteBuffer.wrap( spreadSizeBytes );
-    InputStreamUtils.read( in , spreadSizeBytes , 0 , PrimitiveByteLength.INT_LENGTH * spreadSizeLength );
+    InputStreamUtils.read( in , spreadSizeBytes , 0 , Integer.BYTES * spreadSizeLength );
     for( int i = 0 ; i < spreadSizeLength ; i++ ){
       spreadSizeList.add( wrapBuffer.getInt() );
     }
 
-    byte[] lengthBytes = new byte[PrimitiveByteLength.INT_LENGTH];
+    byte[] lengthBytes = new byte[Integer.BYTES];
     wrapBuffer = ByteBuffer.wrap( lengthBytes );
-    InputStreamUtils.read( in , lengthBytes , 0 , PrimitiveByteLength.INT_LENGTH );
+    InputStreamUtils.read( in , lengthBytes , 0 , Integer.BYTES );
 
     int metaLength = wrapBuffer.getInt( 0 );
     byte[] metaBytes = new byte[metaLength];
@@ -166,7 +165,7 @@ public class PredicateBlockReader implements IBlockReader{
 
     block.setColumnBinaryTree( columnBinaryTree );
 
-    int dataBufferLength = blockSize - metaLength - PrimitiveByteLength.INT_LENGTH - PrimitiveByteLength.INT_LENGTH - PrimitiveByteLength.INT_LENGTH * spreadSizeLength;
+    int dataBufferLength = blockSize - metaLength - Integer.BYTES - Integer.BYTES - Integer.BYTES * spreadSizeLength;
     List<BlockReadOffset> readOffsetList = columnBinaryTree.getBlockReadOffset();
     Collections.sort( readOffsetList );
 

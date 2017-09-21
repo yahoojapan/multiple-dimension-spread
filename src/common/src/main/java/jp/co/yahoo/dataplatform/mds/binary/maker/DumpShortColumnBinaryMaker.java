@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -48,7 +47,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
   private int getBinaryLength( final int columnSize ){
-    return ( PrimitiveByteLength.INT_LENGTH * 2 ) + columnSize + ( columnSize * PrimitiveByteLength.SHORT_LENGTH );
+    return ( Integer.BYTES * 2 ) + columnSize + ( columnSize * Short.BYTES );
   }
 
   @Override
@@ -60,10 +59,10 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] binaryRaw = new byte[ getBinaryLength( column.size() ) ];
     ByteBuffer lengthBuffer = ByteBuffer.wrap( binaryRaw );
     lengthBuffer.putInt( column.size() );
-    lengthBuffer.putInt( column.size() * PrimitiveByteLength.SHORT_LENGTH );
+    lengthBuffer.putInt( column.size() * Short.BYTES );
 
-    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 , column.size() );
-    ShortBuffer shortBuffer = ByteBuffer.wrap( binaryRaw , ( PrimitiveByteLength.INT_LENGTH * 2 + column.size() ) , ( column.size() * PrimitiveByteLength.SHORT_LENGTH ) ).asShortBuffer();
+    ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES * 2 , column.size() );
+    ShortBuffer shortBuffer = ByteBuffer.wrap( binaryRaw , ( Integer.BYTES * 2 + column.size() ) , ( column.size() * Short.BYTES ) ).asShortBuffer();
 
     int rowCount = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
@@ -82,7 +81,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
 
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , binaryRaw.length , rowCount * PrimitiveByteLength.SHORT_LENGTH , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SHORT , rowCount , binaryRaw.length , rowCount * Short.BYTES , -1 , binary , 0 , binary.length , null );
   }
 
   @Override
@@ -106,7 +105,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
     int nullFlagBinaryLength = wrapBuffer.getInt();
     int shortBinaryLength = wrapBuffer.getInt();
-    int nullFlagBinaryStart = PrimitiveByteLength.INT_LENGTH * 2; 
+    int nullFlagBinaryStart = Integer.BYTES * 2; 
     int shortBinaryStart = nullFlagBinaryStart + nullFlagBinaryLength;
 
     ByteBuffer nullFlagBuffer = ByteBuffer.wrap( binary , nullFlagBinaryStart , nullFlagBinaryLength );
@@ -188,7 +187,7 @@ public class DumpShortColumnBinaryMaker implements IColumnBinaryMaker{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );
       int nullFlagBinaryLength = wrapBuffer.getInt();
       int shortBinaryLength = wrapBuffer.getInt();
-      int nullFlagBinaryStart = PrimitiveByteLength.INT_LENGTH * 2;
+      int nullFlagBinaryStart = Integer.BYTES * 2;
       int shortBinaryStart = nullFlagBinaryStart + nullFlagBinaryLength;
 
       ShortBuffer shortBuffer = ByteBuffer.wrap( binary , shortBinaryStart , shortBinaryLength ).asShortBuffer();

@@ -17,7 +17,6 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class StringColumnAnalizeResult implements IColumnAnalizeResult{

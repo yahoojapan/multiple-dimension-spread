@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -85,7 +84,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       byte[] obj = strObj.getBytes( "UTF-8" );
       rowCount++;
       totalLength += obj.length;
-      logicalDataLength += strObj.length() * PrimitiveByteLength.CHAR_LENGTH;
+      logicalDataLength += strObj.length() * Character.BYTES;
       objList.add( obj );
       if( max.compareTo( strObj ) < 0 ){
         max = strObj;
@@ -102,9 +101,9 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
     byte[] binary;
     int rawLength;
 
-    int minLength = PrimitiveByteLength.CHAR_LENGTH * min.length();
-    int maxLength = PrimitiveByteLength.CHAR_LENGTH * max.length();
-    int headerSize = PrimitiveByteLength.INT_LENGTH + minLength + PrimitiveByteLength.INT_LENGTH + maxLength + PrimitiveByteLength.INT_LENGTH;
+    int minLength = Character.BYTES * min.length();
+    int maxLength = Character.BYTES * max.length();
+    int headerSize = Integer.BYTES + minLength + Integer.BYTES + maxLength + Integer.BYTES;
 
     if( hasNull ){
       byte[] binaryRaw = convertBinary( nullFlagBytes , objList , currentConfig , totalLength );
@@ -123,7 +122,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       wrapBuffer.put( compressBinaryRaw );
     }
     else{
-      rawLength = totalLength + PrimitiveByteLength.INT_LENGTH * objList.size();
+      rawLength = totalLength + Integer.BYTES * objList.size();
       byte[] binaryRaw = new byte[rawLength];
       ByteBuffer objBuffer = ByteBuffer.wrap( binaryRaw );
       for( byte[] obj : objList ){
@@ -153,7 +152,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       return stringAnalizeResult.getUniqUtf8ByteSize();
     }
     else if( analizeResult.getNullCount() == 0 ){
-      return analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH + stringAnalizeResult.getTotalUtf8ByteSize();
+      return analizeResult.getColumnSize() * Integer.BYTES + stringAnalizeResult.getTotalUtf8ByteSize();
     }
     else{
       return super.calcBinarySize( analizeResult );
@@ -177,7 +176,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
     String max = new String( maxCharArray );
 
     int type = wrapBuffer.getInt();
-    int headerSize = PrimitiveByteLength.INT_LENGTH + minLength + PrimitiveByteLength.INT_LENGTH + maxLength + PrimitiveByteLength.INT_LENGTH;
+    int headerSize = Integer.BYTES + minLength + Integer.BYTES + maxLength + Integer.BYTES;
     if( type == 0 ){
       return new HeaderIndexLazyColumn( 
         columnBinary.columnName , 
@@ -212,7 +211,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
     int maxLength = wrapBuffer.getInt();
     wrapBuffer.position( wrapBuffer.position() + maxLength );
     int type = wrapBuffer.getInt();
-    int headerSize = PrimitiveByteLength.INT_LENGTH + minLength + PrimitiveByteLength.INT_LENGTH + maxLength + PrimitiveByteLength.INT_LENGTH;
+    int headerSize = Integer.BYTES + minLength + Integer.BYTES + maxLength + Integer.BYTES;
 
     if( type == 0 ){
       loadInMemoryStorage( columnBinary , columnBinary.binaryStart + headerSize , columnBinary.binaryLength - headerSize , allocator );

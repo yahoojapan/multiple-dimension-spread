@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.GZIPInputStream;
 
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
 
 public class GzipCompressor implements ICompressor{
@@ -42,7 +41,7 @@ public class GzipCompressor implements ICompressor{
     out.flush();
     out.finish();
     byte[] compressByte = bOut.toByteArray();
-    byte[] retVal = new byte[ PrimitiveByteLength.INT_LENGTH + compressByte.length ];
+    byte[] retVal = new byte[ Integer.BYTES + compressByte.length ];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( retVal );
     wrapBuffer.putInt( length );
     wrapBuffer.put( compressByte );
@@ -73,7 +72,7 @@ public class GzipCompressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
 
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     byte[] retVal = new byte[dataLength];
@@ -87,7 +86,7 @@ public class GzipCompressor implements ICompressor{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
 
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     GZIPInputStream in = new GZIPInputStream( bIn , 1024 * 256 );
 
     InputStreamUtils.read( in , buffer , 0 , dataLength );
@@ -99,7 +98,7 @@ public class GzipCompressor implements ICompressor{
   public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     int dataLength = wrapBuffer.getInt();
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + PrimitiveByteLength.INT_LENGTH , length );
+    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     return new BufferedInputStream( new GZIPInputStream( bIn , 1024 * 256 ) , 1024 * 256 );
   }
 

@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import jp.co.yahoo.dataplatform.config.FindClass;
@@ -82,24 +81,24 @@ public class MDSReader implements AutoCloseable{
       throw new IOException( "Invalid binary." );
     }
 
-    byte[] blockSize = new byte[PrimitiveByteLength.INT_LENGTH];
+    byte[] blockSize = new byte[Integer.BYTES];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( blockSize );
-    InputStreamUtils.read( in , blockSize , 0 , PrimitiveByteLength.INT_LENGTH );
+    InputStreamUtils.read( in , blockSize , 0 , Integer.BYTES );
 
-    byte[] blockClassLength = new byte[PrimitiveByteLength.INT_LENGTH];
+    byte[] blockClassLength = new byte[Integer.BYTES];
     ByteBuffer wrapLengthBuffer = ByteBuffer.wrap( blockClassLength );
-    InputStreamUtils.read( in , blockClassLength , 0 , PrimitiveByteLength.INT_LENGTH );
+    InputStreamUtils.read( in , blockClassLength , 0 , Integer.BYTES );
     int classNameSize = wrapLengthBuffer.getInt( 0 );
 
     byte[] blockClass = new byte[classNameSize];
     InputStreamUtils.read( in , blockClass , 0 , classNameSize );
     ByteBuffer classNameBuffer = ByteBuffer.wrap( blockClass );
     CharBuffer viewCharBuffer = classNameBuffer.asCharBuffer();
-    char[] classNameChars = new char[ classNameSize / PrimitiveByteLength.CHAR_LENGTH ];
+    char[] classNameChars = new char[ classNameSize / Character.BYTES ];
     viewCharBuffer.get( classNameChars );
     String blockReaderClass = new String( classNameChars );
 
-    return new FileHeaderMeta( wrapBuffer.getInt( 0 ) , blockReaderClass , ( MAGIC.length + PrimitiveByteLength.INT_LENGTH + PrimitiveByteLength.INT_LENGTH + classNameSize ) );
+    return new FileHeaderMeta( wrapBuffer.getInt( 0 ) , blockReaderClass , ( MAGIC.length + ( Integer.BYTES * 2 ) + classNameSize ) );
   }
 
   public void setBlockSkipIndex( final IExpressionNode blockSkipIndex ){

@@ -39,7 +39,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
-import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
@@ -56,12 +55,12 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
     Map<Byte,Integer> dicMap = new HashMap<Byte,Integer>();
-    int columnIndexLength = column.size() * PrimitiveByteLength.INT_LENGTH;
-    int dicBufferSize = ( column.size() + 1 ) * PrimitiveByteLength.BYTE_LENGTH;
-    byte[] binaryRaw = new byte[ PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength + dicBufferSize ];
-    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , PrimitiveByteLength.INT_LENGTH + columnIndexLength );
-    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH + columnIndexLength , PrimitiveByteLength.INT_LENGTH );
-    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+    int columnIndexLength = column.size() * Integer.BYTES;
+    int dicBufferSize = ( column.size() + 1 ) * Byte.BYTES;
+    byte[] binaryRaw = new byte[ Integer.BYTES * 2 + columnIndexLength + dicBufferSize ];
+    ByteBuffer indexWrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , Integer.BYTES + columnIndexLength );
+    ByteBuffer dicLengthBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES + columnIndexLength , Integer.BYTES );
+    ByteBuffer dicWrapBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES * 2 + columnIndexLength , dicBufferSize );
     indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
@@ -88,27 +87,27 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     if( ! hasNull && dicMap.size() == 2 ){
-      ByteBuffer dicBuffer = ByteBuffer.wrap( binaryRaw , PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength , dicBufferSize );
+      ByteBuffer dicBuffer = ByteBuffer.wrap( binaryRaw , Integer.BYTES * 2 + columnIndexLength , dicBufferSize );
       dicBuffer.get();
       return ConstantColumnBinaryMaker.createColumnBinary( new ByteObj( dicBuffer.get() ) , column.getColumnName() , column.size() );
     }
 
-    int dicLength = dicMap.size() * PrimitiveByteLength.BYTE_LENGTH;
+    int dicLength = dicMap.size() * Byte.BYTES;
     int dataLength = binaryRaw.length - ( dicBufferSize - dicLength );
     dicLengthBuffer.putInt( dicLength );
     byte[] binary = currentConfig.compressorClass.compress( binaryRaw , 0 , dataLength );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BYTE , rowCount , dataLength , rowCount * PrimitiveByteLength.BYTE_LENGTH , dicMap.size() , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.BYTE , rowCount , dataLength , rowCount * Byte.BYTES , dicMap.size() , binary , 0 , binary.length , null );
   }
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
     if( analizeResult.getNullCount() == 0 && analizeResult.getUniqCount() == 1 ){
-      return PrimitiveByteLength.BYTE_LENGTH;
+      return Byte.BYTES;
     }
-    int columnIndexLength = analizeResult.getColumnSize() * PrimitiveByteLength.INT_LENGTH;
-    int dicSize = ( analizeResult.getUniqCount() + 1 ) * PrimitiveByteLength.BYTE_LENGTH;
-    return PrimitiveByteLength.INT_LENGTH * 2 + columnIndexLength + dicSize;
+    int columnIndexLength = analizeResult.getColumnSize() * Integer.BYTES;
+    int dicSize = ( analizeResult.getUniqCount() + 1 ) * Byte.BYTES;
+    return Integer.BYTES * 2 + columnIndexLength + dicSize;
   }
 
   @Override
@@ -126,11 +125,11 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] decompressBuffer = compressor.decompress( columnBinary.binary , start , length );
     ByteBuffer wrapBuffer = ByteBuffer.wrap( decompressBuffer , 0 , decompressBuffer.length );
     int indexListSize = wrapBuffer.getInt();
-    IntBuffer indexIntBuffer = ByteBuffer.wrap( decompressBuffer , PrimitiveByteLength.INT_LENGTH , indexListSize ).asIntBuffer();
+    IntBuffer indexIntBuffer = ByteBuffer.wrap( decompressBuffer , Integer.BYTES , indexListSize ).asIntBuffer();
 
-    wrapBuffer.position( PrimitiveByteLength.INT_LENGTH + indexListSize );
+    wrapBuffer.position( Integer.BYTES + indexListSize );
     int dicSize = wrapBuffer.getInt();
-    int dicStart = PrimitiveByteLength.INT_LENGTH * 2 + indexListSize;
+    int dicStart = Integer.BYTES * 2 + indexListSize;
     int size = indexIntBuffer.capacity();
     for( int i = 0 ; i < size ; i++ ){
       int dicIndex = indexIntBuffer.get();
@@ -195,14 +194,14 @@ public class UniqByteColumnBinaryMaker implements IColumnBinaryMaker{
       byte[] decompressBuffer = compressor.decompress( columnBinary.binary , binaryStart , binaryLength );
       ByteBuffer wrapBuffer = ByteBuffer.wrap( decompressBuffer , 0 , decompressBuffer.length );
       int indexListSize = wrapBuffer.getInt();
-      IntBuffer indexIntBuffer = ByteBuffer.wrap( decompressBuffer , PrimitiveByteLength.INT_LENGTH , indexListSize ).asIntBuffer();
-      wrapBuffer.position( PrimitiveByteLength.INT_LENGTH + indexListSize );
+      IntBuffer indexIntBuffer = ByteBuffer.wrap( decompressBuffer , Integer.BYTES , indexListSize ).asIntBuffer();
+      wrapBuffer.position( Integer.BYTES + indexListSize );
 
       int dicSize = wrapBuffer.getInt();
-      int dicStart = PrimitiveByteLength.INT_LENGTH * 2 + indexListSize;
+      int dicStart = Integer.BYTES * 2 + indexListSize;
       ByteBuffer dicWrapBuffer = ByteBuffer.wrap( decompressBuffer , dicStart , dicSize );
       dicWrapBuffer.get();
-      PrimitiveObject[] dicArray = new PrimitiveObject[dicSize/PrimitiveByteLength.BYTE_LENGTH];
+      PrimitiveObject[] dicArray = new PrimitiveObject[dicSize/Byte.BYTES];
       for( int i = 1 ; i < dicArray.length ; i++ ){
         dicArray[i] = primitiveObjectConnector.convert( PrimitiveType.BYTE , new ByteObj( dicWrapBuffer.get() ) );
       }
