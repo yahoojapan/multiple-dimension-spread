@@ -28,6 +28,8 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 
+import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
+
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -138,6 +140,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 2 );
@@ -184,6 +187,20 @@ public class TestRangeDumpStringColumnBinaryMaker {
   }
 
   @Test
+  public void T_toBinary_3() throws IOException{
+    IColumn column = new PrimitiveColumn( ColumnType.STRING , "STRING" );
+    column.add( ColumnType.STRING , new StringObj( "" ) , 0 );
+    column.add( ColumnType.STRING , new StringObj( "a" ) , 1 );
+
+    ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
+
+    IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
+  }
+
+  @Test
   public void T_loadInMemoryStorage_1() throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "STRING" );
     column.add( ColumnType.STRING , new StringObj( "a" ) , 0 );
@@ -218,6 +235,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 3 );

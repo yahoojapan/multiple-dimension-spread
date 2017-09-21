@@ -63,7 +63,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
     int logicalDataLength = 0;
     int rowCount = 0;
     boolean hasNull = false;
-    String min = "";
+    String min = null;
     String max = "";
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
@@ -89,7 +89,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
       if( max.compareTo( strObj ) < 0 ){
         max = strObj;
       }
-      if( min.isEmpty() || 0 < min.compareTo( strObj ) ){
+      if( min == null || 0 < min.compareTo( strObj ) ){
         min = strObj;
       }
     }
@@ -163,12 +163,12 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
   public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     int minLength = wrapBuffer.getInt();
-    char[] minCharArray = new char[minLength];
+    char[] minCharArray = new char[minLength / Character.BYTES];
     wrapBuffer.asCharBuffer().get( minCharArray );
     wrapBuffer.position( wrapBuffer.position() + minLength );
 
     int maxLength = wrapBuffer.getInt();
-    char[] maxCharArray = new char[maxLength];
+    char[] maxCharArray = new char[maxLength / Character.BYTES];
     wrapBuffer.asCharBuffer().get( maxCharArray );
     wrapBuffer.position( wrapBuffer.position() + maxLength );
 
@@ -230,12 +230,12 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
   public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     int minLength = wrapBuffer.getInt();
-    char[] minCharArray = new char[minLength];
+    char[] minCharArray = new char[minLength / Character.BYTES];
     wrapBuffer.asCharBuffer().get( minCharArray );
     wrapBuffer.position( wrapBuffer.position() + minLength );
 
     int maxLength = wrapBuffer.getInt();
-    char[] maxCharArray = new char[maxLength];
+    char[] maxCharArray = new char[maxLength / Character.BYTES];
     wrapBuffer.asCharBuffer().get( maxCharArray );
     wrapBuffer.position( wrapBuffer.position() + maxLength );
 
