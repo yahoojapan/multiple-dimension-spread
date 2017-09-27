@@ -42,7 +42,7 @@ public interface ICellManager{
 
   void setIndex( final ICellIndex index );
 
-  List<Integer> filter( final IFilter filter ) throws IOException;
+  boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException;
 
   PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length );
 

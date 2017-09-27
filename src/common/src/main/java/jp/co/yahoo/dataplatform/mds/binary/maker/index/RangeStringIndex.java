@@ -43,7 +43,7 @@ public class RangeStringIndex implements ICellIndex{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case STRING:
         IStringFilter stringFilter = (IStringFilter)filter;
@@ -53,12 +53,12 @@ public class RangeStringIndex implements ICellIndex{
             if( min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
               return null;
             }
-            return new ArrayList<Integer>();
+            return filterArray;
           case FORWARD:
             if( targetStr.startsWith( min ) && min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
               return null;
             }
-            return new ArrayList<Integer>();
+            return filterArray;
           default:
             return null;
         }
@@ -66,7 +66,7 @@ public class RangeStringIndex implements ICellIndex{
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
         if( comparator.isOutOfRange( min , max ) ){
-          return new ArrayList<Integer>();
+          return filterArray;
         }
         return null;
       case STRING_DICTIONARY:
@@ -77,7 +77,7 @@ public class RangeStringIndex implements ICellIndex{
             return null;
           }
         }
-        return new ArrayList<Integer>();
+        return filterArray;
       default:
         return null;
     }

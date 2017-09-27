@@ -66,6 +66,9 @@ public final class ColumnBinaryMakerNameShortCut{
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker"   , "O1" );
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker"   , "O2" );
 
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker"   , "X0" );
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker"   , "X1" );
+
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.binary.maker.ConstantColumnBinaryMaker"   , "C0" );
   }
 

@@ -153,8 +153,8 @@ public class LazyColumn implements IColumn{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
-    return columnManager.get().filter( filter );
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
+    return columnManager.get().filter( filter , filterArray );
   }
 
   @Override

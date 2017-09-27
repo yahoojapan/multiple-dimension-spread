@@ -73,12 +73,11 @@ public class MDSSchemaReader implements IStreamReader {
     if( currentSpread.size() == 0 ){
       return nextReader();
     }
-    List<Integer> indexList = node.exec( currentSpread );
-    if( indexList != null && indexList.isEmpty() ){
+    currentIndexList = IndexFactory.toExpressionIndex( currentSpread , node.exec( currentSpread ) );
+    currentIndex = 0;
+    if( currentIndexList.size() == 0 ){
       return nextReader();
     }
-    currentIndexList = IndexFactory.toExpressionIndex( currentSpread , indexList );
-    currentIndex = 0;
 
     spreadColumn.setSpread( currentSpread );
     currentParser = MDSParserFactory.get( spreadColumn , currentIndexList.get( currentIndex ) );

@@ -33,7 +33,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
-import jp.co.yahoo.dataplatform.mds.spread.expression.FilterdExpressionIndex;
+import jp.co.yahoo.dataplatform.mds.spread.expression.ListIndexExpressionIndex;
 
 public class ExpandColumn implements IColumn{
 
@@ -171,24 +171,18 @@ public class ExpandColumn implements IColumn{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
-    List<Integer> searchResult = original.filter( filter );
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
+    boolean[] searchResult = original.filter( filter , new boolean[original.size()] );
     if( searchResult == null ){
       return null;
     }
 
-    int currentIndex = 0;
-    List<Integer> result = new ArrayList<Integer>();
-    for( Integer innerIndex : searchResult ){
-      while( currentIndex < columnIndexArray.length && columnIndexArray[currentIndex] < innerIndex.intValue() ){
-        currentIndex++;
-      }
-      while( currentIndex < columnIndexArray.length && innerIndex.equals( columnIndexArray[currentIndex] ) ){
-        result.add( currentIndex );
-        currentIndex++;
+    for( int i = 0 ; i < filterArray.length ; i++ ){
+      if( searchResult[ columnIndexArray[i] ] ){
+        filterArray[i] = true;
       }
     }
-    return result;
+    return filterArray;
   }
 
   @Override
@@ -204,7 +198,7 @@ public class ExpandColumn implements IColumn{
         maxIndex = columnIndexArray[target];
       }
     }
-    PrimitiveObject[] originalResult = original.getPrimitiveObjectArray( new FilterdExpressionIndex( originalIndexList ) , 0 , originalIndexList.size() );
+    PrimitiveObject[] originalResult = original.getPrimitiveObjectArray( new ListIndexExpressionIndex( originalIndexList ) , 0 , originalIndexList.size() );
     maxIndex = -1;
     int originalArrayIndex = -1;
     for( int i = start,index = 0  ; i < ( start + length ) ; i++,index++ ){
@@ -229,7 +223,7 @@ public class ExpandColumn implements IColumn{
         maxIndex = columnIndexArray[target];
       }
     }
-    PrimitiveObject[] originalResult = original.getPrimitiveObjectArray( new FilterdExpressionIndex( originalIndexList ) , 0 , originalIndexList.size() );
+    PrimitiveObject[] originalResult = original.getPrimitiveObjectArray( new ListIndexExpressionIndex( originalIndexList ) , 0 , originalIndexList.size() );
     maxIndex = -1;
     int originalArrayIndex = -1;
     for( int i = start,index = 0  ; i < ( start + length ) ; i++,index++ ){

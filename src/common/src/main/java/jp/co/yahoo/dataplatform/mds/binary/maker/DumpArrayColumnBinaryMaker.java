@@ -188,24 +188,22 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public List<Integer> filter( final IFilter filter ) throws IOException{
+    public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
       switch( filter.getFilterType() ){
         case NOT_NULL:
-          List<Integer> notNullResult = new ArrayList<Integer>( cellArray.length );
           for( int i = 0 ; i < cellArray.length ; i++ ){
             if( cellArray[i] != null ){
-              notNullResult.add( i );
+              filterArray[i] = true;
             }
           }
-          return notNullResult;
+          return filterArray;
         case NULL:
-          List<Integer> nullResult = new ArrayList<Integer>( cellArray.length );
           for( int i = 0 ; i < cellArray.length ; i++ ){
             if( cellArray == null ){
-              nullResult.add( i );
+              filterArray[i] = true;
             }
           }
-          return nullResult;
+          return filterArray;
         default:
           return null;
       }

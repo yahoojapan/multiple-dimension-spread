@@ -182,7 +182,7 @@ public class SpreadColumn implements IColumn{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     return null;
   }
 

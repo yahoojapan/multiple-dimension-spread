@@ -70,50 +70,50 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case NUMBER:
         NumberFilter numberFilter = (NumberFilter)filter;
         switch( numberFilter.getNumberFilterType() ){
           case EQUAL:
-            return toColumnList( comparator.getEqual( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getEqual( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           case NOT_EQUAL:
-            return toColumnList( comparator.getNotEqual( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getNotEqual( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           case LT:
-            return toColumnList( comparator.getLt( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getLt( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           case LE:
-            return toColumnList( comparator.getLe( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getLe( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           case GT:
-            return toColumnList( comparator.getGt( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getGt( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           case GE:
-            return toColumnList( comparator.getGe( dicManager , dicIndexIntBuffer , numberFilter ) );
+            return toColumnList( comparator.getGe( dicManager , dicIndexIntBuffer , numberFilter ) , filterArray );
           default:
             return null;
         }
       case NUMBER_RANGE:
         NumberRangeFilter numberRangeFilter = (NumberRangeFilter)filter;
-        return toColumnList( comparator.getRange( dicManager , dicIndexIntBuffer , numberRangeFilter ) );
+        return toColumnList( comparator.getRange( dicManager , dicIndexIntBuffer , numberRangeFilter ) , filterArray );
       default:
         return null;
     }
   }
 
-  private List<Integer> toColumnList( final Set<Integer> targetDicSet ){
+  private boolean[] toColumnList( final Set<Integer> targetDicSet , final boolean[] filterArray ){
     if( targetDicSet == null ){
       return null;
     }
     if( targetDicSet.isEmpty() ){
-      return new ArrayList<Integer>();
+      return filterArray;
     }
     int length = dicIndexIntBuffer.capacity();
     List<Integer> result = new ArrayList<Integer>( length );
     for( int i = 0 ; i < length ; i++ ){
       Integer dicIndex = Integer.valueOf( dicIndexIntBuffer.get(i) );
       if( targetDicSet.contains( dicIndex ) ){
-        result.add( Integer.valueOf( i ) );
+        filterArray[i] = true;
       }
     }
-    return result;
+    return filterArray;
   }
 
   public interface IComparator{

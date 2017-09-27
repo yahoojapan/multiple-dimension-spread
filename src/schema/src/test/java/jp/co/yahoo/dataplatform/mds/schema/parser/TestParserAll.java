@@ -27,7 +27,7 @@ import java.io.InputStreamReader;
 import static org.testng.Assert.assertEquals;
 
 import jp.co.yahoo.dataplatform.mds.MDSWriter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.BackwardMatchStringFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
 import jp.co.yahoo.dataplatform.mds.spread.expression.AndExpressionNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
@@ -181,7 +181,7 @@ public class TestParserAll{
     MDSSchemaReader reader = new MDSSchemaReader();
     IExpressionNode node = new AndExpressionNode();
     StringExtractNode dNode = new StringExtractNode( "z" );
-    node.addChildNode( new ExecuterNode( new StringExtractNode( "col3" , dNode ) , new BackwardMatchStringFilter( "a" ) ) );
+    node.addChildNode( new ExecuterNode( new StringExtractNode( "col3" , dNode ) , new PerfectMatchStringFilter( "a" ) ) );
     reader.setExpressionNode( node );
     Configuration config = new Configuration();
     reader.setNewStream( createFile() , 1024 * 1024 * 2 , config );

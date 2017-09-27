@@ -38,7 +38,7 @@ public class RangeIntegerIndex implements ICellIndex{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case NUMBER:
         NumberFilter numberFilter = (NumberFilter)filter;
@@ -51,27 +51,27 @@ public class RangeIntegerIndex implements ICellIndex{
         switch( numberFilter.getNumberFilterType() ){
           case EQUAL:
             if( setNumber < min || max < setNumber  ){
-              return new ArrayList<Integer>();
+              return filterArray;
             }
             return null;
           case LT:
             if( setNumber <= min ){
-              return new ArrayList<Integer>();
+              return filterArray;
             }
             return null;
           case LE:
             if( setNumber < min ){
-              return new ArrayList<Integer>();
+              return filterArray;
             }
             return null;
           case GT:
             if( max <= setNumber ){
-              return new ArrayList<Integer>();
+              return filterArray;
             }
             return null;
           case GE:
             if( max < setNumber ){
-              return new ArrayList<Integer>();
+              return filterArray;
             }
             return null;
           default:
@@ -92,25 +92,25 @@ public class RangeIntegerIndex implements ICellIndex{
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
           if( ( setMax < min || max < setMin ) != invert ){
-            return new ArrayList<Integer>();
+            return filterArray;
           }
           return null;
         }
         else if( minHasEquals ){
           if( ( setMax < min || max <= setMin ) != invert ){
-            return new ArrayList<Integer>();
+            return filterArray;
           }
           return null;
         }
         else if( maxHasEquals ){
           if( ( setMax <= min || max < setMin ) != invert ){
-            return new ArrayList<Integer>();
+            return filterArray;
           }
           return null;
         }
         else{
           if( ( setMax <= min || max <= setMin ) != invert ){
-            return new ArrayList<Integer>();
+            return filterArray;
           }
           return null;
         }

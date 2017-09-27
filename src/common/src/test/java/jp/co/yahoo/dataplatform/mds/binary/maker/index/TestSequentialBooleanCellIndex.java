@@ -43,11 +43,17 @@ public class TestSequentialBooleanCellIndex{
       data[i] = (byte)( i % 2 );
     }
     SequentialBooleanCellIndex index = new SequentialBooleanCellIndex( data );
-    List<Integer> result = index.filter( new BooleanFilter( true ) );
-    assertEquals( result.size() , 5 );
-    for( int i = 0 , n = 0 ; i < 10 ; i+=2,n++ ){
-      assertEquals( result.get(n).intValue() , i+1 );
-    }
+    boolean[] result = index.filter( new BooleanFilter( true ) , new boolean[10] );
+    assertEquals( false , result[0] );
+    assertEquals( true , result[1] );
+    assertEquals( false , result[2] );
+    assertEquals( true , result[3] );
+    assertEquals( false , result[4] );
+    assertEquals( true , result[5] );
+    assertEquals( false , result[6] );
+    assertEquals( true , result[7] );
+    assertEquals( false , result[8] );
+    assertEquals( true , result[9] );
   }
 
   @Test
@@ -57,11 +63,17 @@ public class TestSequentialBooleanCellIndex{
       data[i] = (byte)( i % 2 );
     }
     SequentialBooleanCellIndex index = new SequentialBooleanCellIndex( data );
-    List<Integer> result = index.filter( new BooleanFilter( false ) );
-    assertEquals( result.size() , 5 );
-    for( int i = 0 , n = 0 ; i < 10 ; i+=2,n++ ){
-      assertEquals( result.get(n).intValue() , i );
-    }
+    boolean[] result = index.filter( new BooleanFilter( false ) , new boolean[10] );
+    assertEquals( true , result[0] );
+    assertEquals( false , result[1] );
+    assertEquals( true , result[2] );
+    assertEquals( false , result[3] );
+    assertEquals( true , result[4] );
+    assertEquals( false , result[5] );
+    assertEquals( true , result[6] );
+    assertEquals( false , result[7] );
+    assertEquals( true , result[8] );
+    assertEquals( false , result[9] );
   }
 
   @Test
@@ -71,7 +83,7 @@ public class TestSequentialBooleanCellIndex{
       data[i] = (byte)( i % 2 );
     }
     SequentialBooleanCellIndex index = new SequentialBooleanCellIndex( data );
-    List<Integer> result = index.filter( null );
+    boolean[] result = index.filter( null , new boolean[10] );
     assertEquals( result , null );
   }
 
@@ -82,7 +94,7 @@ public class TestSequentialBooleanCellIndex{
       data[i] = (byte)( i % 2 );
     }
     SequentialBooleanCellIndex index = new SequentialBooleanCellIndex( data );
-    List<Integer> result = index.filter( new NullFilter() );
+    boolean[] result = index.filter( new NullFilter() , new boolean[10] );
     assertEquals( result , null );
   }
 

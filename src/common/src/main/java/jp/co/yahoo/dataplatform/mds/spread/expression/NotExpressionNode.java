@@ -29,28 +29,12 @@ import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 public class NotExpressionNode implements IExpressionNode {
 
   private IExpressionNode childNode;
-  private final long denominator;
 
   public NotExpressionNode(){
-    denominator = 2;
   }
 
   public NotExpressionNode( final IExpressionNode childNode ){
     this.childNode = childNode;
-    denominator = 2;
-  }
-
-  public NotExpressionNode( final IExpressionNode childNode , final double pushdownRate ){
-    this.childNode = childNode;
-    if( pushdownRate <= (double)0 ){
-      denominator = 0;
-    }
-    else if( (double)1 <= pushdownRate ){
-      denominator  = 1;
-    }
-    else{
-      denominator = Double.valueOf( (double)1 / pushdownRate ).longValue();
-    }
   }
 
   @Override
@@ -59,76 +43,22 @@ public class NotExpressionNode implements IExpressionNode {
   }
 
   @Override
-  public List<Integer> exec( final Spread spread ) throws IOException{
-    return exec( spread , null );
-  }
-
-  @Override
-  public List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException{
-    if( denominator == 0 ){
-      return null;
-    }
-    List<Integer> childCollection = null;
-    if( childNode == null ){
-      return null;
-    }
-    long min = spread.size() / denominator;
-    childCollection = childNode.exec( spread );
-    if( childCollection != null && min < ( spread.size() - childCollection.size() ) ){
-      childCollection = null;
-    }
-    
+  public boolean[] exec( final Spread spread ) throws IOException{
+    boolean[] childCollection = childNode.exec( spread );
     if( childCollection == null ){
       return null;
     }
 
-    if( parentList == null ){
-      return createNewReverseList( childCollection , spread.size() );
+    for( int i = 0 ; i < childCollection.length ; i++ ){
+      childCollection[i] = ! childCollection[i];
     }
-    else{
-      return createReverseList( childCollection , parentList );
-    }
+
+    return childCollection;
   }
 
   @Override
   public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
     return false;
-  }
-
-  private List<Integer> createNewReverseList( final List<Integer> childCollection , final int spreadSize ){
-    List<Integer> result = new ArrayList<Integer>();
-    int offset = 0;
-    for( Integer removeNumber : childCollection ){
-      for( int i = offset ; i < removeNumber.intValue() ; i++ ){
-        result.add( Integer.valueOf( i ) );
-      }
-      offset = removeNumber.intValue() + 1;
-    }
-    for( int i = offset ; i < spreadSize ; i++ ){
-      result.add( Integer.valueOf( i ) );
-    }
-
-    return result;
-  }
-
-  private List<Integer> createReverseList( final List<Integer> childCollection , final List<Integer> parentList ){
-    List<Integer> result = new ArrayList<Integer>();
-    int childOffset = 0;
-    int childCollectionSize = childCollection.size();
-    for( Integer parentIndexObj : parentList ){
-      int parentIndex = parentIndexObj.intValue();
-      while( childOffset < childCollectionSize && childCollection.get( childOffset ).intValue() < parentIndex ){
-        childOffset++;
-      }
-      if( childOffset == childCollectionSize ){
-        result.add( parentIndexObj );
-      }
-      else if( ! parentIndexObj.equals( childCollection.get( childOffset ) ) ){
-        result.add( parentIndexObj );
-      }
-    }
-
-    return result;
   }
 
 }

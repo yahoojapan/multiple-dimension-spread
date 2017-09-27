@@ -98,13 +98,12 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
     }
     Spread spread = currentReader.next();
     readSpreadCount++;
-    List<Integer> indexList = node.exec( spread );
-    if( indexList != null && indexList.isEmpty() ){
-      return false;
-    }
-    currentIndexList = IndexFactory.toExpressionIndex( spread , indexList );
+    currentIndexList = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );
     indexSize = currentIndexList.size();
     currentIndex = 0;
+    if( indexSize == 0 ){
+      return false;
+    }
     for( int colIndex : needColumnIds ){
       String columnName = columnNames[colIndex];
       assignors[colIndex].setColumn( indexSize , spread.getColumn( columnName ) );

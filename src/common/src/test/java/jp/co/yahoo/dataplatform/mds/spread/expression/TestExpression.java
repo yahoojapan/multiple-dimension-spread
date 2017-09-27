@@ -130,7 +130,7 @@ public class TestExpression {
     StringExtractNode col21Node = new StringExtractNode( "col2-1" );
     StringExtractNode col2Node = new StringExtractNode( "col2" , col21Node );
 
-    IExpressionNode node = new NotExpressionNode( null , (double)1 );
+    IExpressionNode node = new NotExpressionNode();
     node.addChildNode( new ExecuterNode( col1Node , new PerfectMatchStringFilter( "a" ) ) );
 
     IExpressionIndex result = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );

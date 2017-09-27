@@ -294,14 +294,14 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public List<Integer> filter( final IFilter filter ) throws IOException{
+    public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
       switch( filter.getFilterType() ){
         case NOT_NULL:
           return null;
         case NULL:
-          return new ArrayList<Integer>();
+          return filterArray;
         default:
-          return index.filter( filter );
+          return index.filter( filter , filterArray );
       }
     }
 

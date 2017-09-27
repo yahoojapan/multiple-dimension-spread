@@ -30,23 +30,6 @@ import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 public class AndExpressionNode implements IExpressionNode {
 
   private final List<IExpressionNode> childNode = new ArrayList<IExpressionNode>();
-  private final long denominator;
-
-  public AndExpressionNode(){
-    denominator = 2;
-  }
-
-  public AndExpressionNode( final double pushdownRate ){
-    if( pushdownRate <= (double)0 ){
-      denominator = 0;
-    }
-    else if( (double)1 <= pushdownRate ){
-      denominator  = 1;
-    }
-    else{
-      denominator = Double.valueOf( (double)1 / pushdownRate ).longValue();
-    }
-  }
 
   @Override
   public void addChildNode( final IExpressionNode node ){
@@ -54,32 +37,25 @@ public class AndExpressionNode implements IExpressionNode {
   }
 
   @Override
-  public List<Integer> exec( final Spread spread ) throws IOException{
-    return exec( spread , null );
-  }
-
-  @Override
-  public List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException{
-    if( denominator == 0 ){
-      return null;
-    }
-    List<Integer> intersection = parentList;
-    long min = spread.size() / denominator;
+  public boolean[] exec( final Spread spread ) throws IOException{
+    boolean[] intersection = null;
     for( IExpressionNode node : childNode ){
-      List<Integer> result = node.exec( spread , intersection );
-      if( result != null && min < result.size() ){
-        result = null;
-      }
+      boolean[] result = node.exec( spread );
       if( result != null ){
         if( intersection == null ){
           intersection = result;
         }
         else{
-          intersection = CollectionUtils.intersectionFromSortedCollection( intersection , result ); 
-        }
-
-        if( intersection.isEmpty() ){
-          return intersection;
+          boolean isEmpty = true;
+          for( int i = 0 ; i < intersection.length ; i++ ){
+            intersection[i] = intersection[i] && result[i];
+            if( intersection[i] ){
+              isEmpty = false;
+            }
+          }
+          if( isEmpty ){
+            return intersection;
+          }
         }
       }
     }

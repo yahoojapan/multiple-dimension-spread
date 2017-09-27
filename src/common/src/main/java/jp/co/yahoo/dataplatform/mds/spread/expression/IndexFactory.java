@@ -25,7 +25,7 @@ public final class IndexFactory{
 
   private IndexFactory(){}
 
-  public static IExpressionIndex toExpressionIndex(final Spread spread , final List<Integer> index ){
+  public static IExpressionIndex toExpressionIndex( final Spread spread , final boolean[] index ){
     if( index == null ){
       return new AllExpressionIndex( spread.size() );
     }

@@ -96,7 +96,7 @@ public class TestGetPrimitiveObjectArray{
     InputStream fileIn = new ByteArrayInputStream( data );
     reader.setNewStream( fileIn , data.length , readerConfig );
     while( reader.hasNext() ) {
-      IExpressionNode node = new AndExpressionNode((double) 1);
+      IExpressionNode node = new AndExpressionNode();
       node.addChildNode(new ExecuterNode(new StringExtractNode("key1"), new PerfectMatchStringFilter("a")));
       Spread spread = reader.next();
       IExpressionIndex indexList = IndexFactory.toExpressionIndex(spread, node.exec(spread));
@@ -121,7 +121,7 @@ public class TestGetPrimitiveObjectArray{
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
-        IExpressionNode node = new AndExpressionNode((double) 1);
+        IExpressionNode node = new AndExpressionNode();
         node.addChildNode(new ExecuterNode(new StringExtractNode("key1"), new PerfectMatchStringFilter("a")));
         Spread spread = reader.next();
         IExpressionIndex indexList = IndexFactory.toExpressionIndex(spread, node.exec(spread));
@@ -150,7 +150,7 @@ public class TestGetPrimitiveObjectArray{
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
-        IExpressionNode node = new AndExpressionNode((double) 1);
+        IExpressionNode node = new AndExpressionNode();
         //node.addChildNode( new ExecuterNode( new StringExtractNode( "key1" ) , new PerfectMatchStringFilter( "a" ) ) );
         Spread spread = reader.next();
         IExpressionIndex indexList = IndexFactory.toExpressionIndex(spread, node.exec(spread));
@@ -185,7 +185,7 @@ public class TestGetPrimitiveObjectArray{
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
-        IExpressionNode node = new AndExpressionNode((double) 1);
+        IExpressionNode node = new AndExpressionNode();
         node.addChildNode(new ExecuterNode(new StringExtractNode("key1"), new PerfectMatchStringFilter("a")));
         Spread spread = reader.next();
         IExpressionIndex indexList = IndexFactory.toExpressionIndex(spread, node.exec(spread));

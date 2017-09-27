@@ -93,26 +93,24 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case NOT_NULL:
-        List<Integer> notNullResult = new ArrayList<Integer>( size() );
         for( int i = 0 ; i < size() ; i++ ){
           if( dicIndexIntBuffer.get(i) != 0 ){
-            notNullResult.add( i );
+            filterArray[i] = true;
           }
         }
-        return notNullResult;
+        return filterArray;
       case NULL:
-        List<Integer> nullResult = new ArrayList<Integer>( size() );
         for( int i = 0 ; i < size() ; i++ ){
           if( dicIndexIntBuffer.get(i) == 0 ){
-            nullResult.add( i );
+            filterArray[i] = true;
           }
         }
-        return nullResult;
+        return filterArray;
       default:
-        return index.filter( filter );
+        return index.filter( filter , filterArray );
     }
   }
 
