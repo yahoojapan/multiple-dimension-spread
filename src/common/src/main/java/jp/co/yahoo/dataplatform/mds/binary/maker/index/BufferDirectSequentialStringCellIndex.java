@@ -44,51 +44,50 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case STRING:
         IStringFilter stringFilter = (IStringFilter)filter;
         String targetStr = stringFilter.getSearchString(); 
         switch( stringFilter.getStringFilterType() ){
           case PERFECT:
-            return toColumnList( perfectMatch( targetStr ) );
+            return toColumnList( perfectMatch( targetStr ) , filterArray );
           case PARTIAL:
-            return toColumnList( partialMatch( targetStr ) );
+            return toColumnList( partialMatch( targetStr ) , filterArray );
           case FORWARD:
-            return toColumnList( forwardMatch( targetStr ) );
+            return toColumnList( forwardMatch( targetStr ) , filterArray );
           case BACKWARD:
-            return toColumnList( backwardMatch( targetStr ) );
+            return toColumnList( backwardMatch( targetStr ) , filterArray );
           case REGEXP:
-            return toColumnList( regexpMatch( targetStr ) );
+            return toColumnList( regexpMatch( targetStr ) , filterArray );
           default:
             return null;
         }
       case STRING_COMPARE:
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
-        return toColumnList( compareString( comparator ) );
+        return toColumnList( compareString( comparator ) , filterArray );
       case STRING_DICTIONARY:
         IStringDictionaryFilter stringDictionaryFilter = (IStringDictionaryFilter)filter;
         Set<String> dictionary = stringDictionaryFilter.getDictionary();
-        return toColumnList( dictionaryString( dictionary ) );
+        return toColumnList( dictionaryString( dictionary ) , filterArray );
       default:
         return null;
     }
   }
 
-  private List<Integer> toColumnList( final Set<Integer> targetDicSet ){
+  private boolean[] toColumnList( final Set<Integer> targetDicSet , final boolean[] filterArray ){
     if( targetDicSet.isEmpty() ){
-      return new ArrayList<Integer>();
+      return filterArray;
     }
     int length = dicIndexIntBuffer.capacity();
-    List<Integer> result = new ArrayList<Integer>( length );
     for( int i = 0 ; i < length ; i++ ){
       Integer dicIndex = Integer.valueOf( dicIndexIntBuffer.get(i) );
       if( targetDicSet.contains( dicIndex ) ){
-        result.add( Integer.valueOf( i ) );
+        filterArray[i] = true;
       }
     }
-    return result;
+    return filterArray;
   }
 
   private Set<Integer> dictionaryString( final Set<String> dictionary ) throws IOException{

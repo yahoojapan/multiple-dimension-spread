@@ -34,7 +34,6 @@ import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 public final class NullColumn implements IColumn {
 
   private static final NullColumn NULL_COLUMN = new NullColumn();
-  private static final List<Integer> EMPTY_LIST = new ArrayList<Integer>();
 
   private IColumn parentsColumn = NullColumn.getInstance();
   private ICell defaultCell = NullCell.getInstance();
@@ -147,8 +146,8 @@ public final class NullColumn implements IColumn {
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
-    return EMPTY_LIST;
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
+    return filterArray;
   }
 
   @Override
@@ -158,7 +157,7 @@ public final class NullColumn implements IColumn {
   }
 
   @Override
-  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
     return;
   }
 

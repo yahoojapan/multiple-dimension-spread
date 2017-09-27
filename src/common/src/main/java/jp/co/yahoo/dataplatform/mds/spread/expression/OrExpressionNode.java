@@ -30,23 +30,6 @@ import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 public class OrExpressionNode implements IExpressionNode {
 
   private final List<IExpressionNode> childNode = new ArrayList<IExpressionNode>();
-  private final long denominator;
-
-  public OrExpressionNode(){
-    denominator = 2;
-  }
-
-  public OrExpressionNode( final double pushdownRate ){
-    if( pushdownRate <= (double)0 ){
-      denominator = 0;
-    }
-    else if( (double)1 <= pushdownRate ){
-      denominator  = 1;
-    }
-    else{
-      denominator = Double.valueOf( (double)1 / pushdownRate ).longValue();
-    }
-  }
 
   @Override
   public void addChildNode( final IExpressionNode node ){
@@ -54,22 +37,10 @@ public class OrExpressionNode implements IExpressionNode {
   }
 
   @Override
-  public List<Integer> exec( final Spread spread ) throws IOException{
-    return exec( spread , null );
-  }
-
-  @Override
-  public List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException{
-    if( denominator == 0 ){
-      return null;
-    }
-    List<Integer> union = parentList;
-    long min = spread.size() / denominator;
+  public boolean[] exec( final Spread spread ) throws IOException{
+    boolean[] union = null;
     for( IExpressionNode node : childNode ){
-      List<Integer> result = node.exec( spread , null );
-      if( result != null && min < result.size() ){
-        result = null;
-      }
+      boolean[] result = node.exec( spread );
       if( result == null ){
         return null;
       }
@@ -77,11 +48,16 @@ public class OrExpressionNode implements IExpressionNode {
         union = result;
       }
       else{
-        union = CollectionUtils.unionFromSortedCollection( union , result );
-      }
-
-      if( spread.size() == union.size() ){
-        return union;
+        boolean isAll = true;
+        for( int i = 0 ; i < union.length ; i++ ){
+          union[i] = union[i] || result[i];
+          if( ! union[i] ){
+            isAll = false;
+          }
+        }
+        if( isAll ){
+          return union;
+        }
       }
     }
 

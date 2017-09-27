@@ -36,7 +36,7 @@ public class SequentialBooleanCellIndex implements ICellIndex{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     if( filter == null ){
       return null;
     }
@@ -48,13 +48,12 @@ public class SequentialBooleanCellIndex implements ICellIndex{
       else{
         target = 0;
       }
-      List<Integer> result = new ArrayList<Integer>();
       for( int i = 0 ; i < buffer.length ; i++ ){
         if( buffer[i] == target ){
-          result.add( Integer.valueOf( i ) );
+          filterArray[i] = true;
         }
       }
-      return result;
+      return filterArray;
     }
     return null;
   }

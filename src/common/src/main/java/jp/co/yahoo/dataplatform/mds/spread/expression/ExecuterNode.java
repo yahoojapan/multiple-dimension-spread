@@ -42,13 +42,9 @@ public class ExecuterNode implements IExpressionNode{
   }
 
   @Override
-  public List<Integer> exec( final Spread spread ) throws IOException{
-    return exec( spread , null );
-  }
-
-  public List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException{
+  public boolean[] exec( final Spread spread ) throws IOException{
     IColumn column = columnExtractNode.get( spread );
-    return column.filter( filter );
+    return column.filter( filter , new boolean[spread.size()] );
   }
 
   @Override

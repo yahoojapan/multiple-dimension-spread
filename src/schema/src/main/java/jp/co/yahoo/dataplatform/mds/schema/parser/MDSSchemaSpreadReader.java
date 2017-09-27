@@ -41,8 +41,7 @@ public class MDSSchemaSpreadReader implements IStreamReader {
     spreadColumn.setSpread( spread );
 
     IExpressionNode node = new AndExpressionNode();
-    List<Integer> indexList = node.exec( spread );
-    currentIndexList = IndexFactory.toExpressionIndex( spread , indexList );
+    currentIndexList = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );
     currentIndex = 0;
     currentParser = MDSParserFactory.get( spreadColumn , currentIndexList.get( currentIndex ) );
   }
@@ -55,8 +54,7 @@ public class MDSSchemaSpreadReader implements IStreamReader {
     SpreadColumn spreadColumn = new SpreadColumn( "root" );
     spreadColumn.setSpread( spread );
 
-    List<Integer> indexList = node.exec( spread );
-    currentIndexList = IndexFactory.toExpressionIndex( spread , indexList );
+    currentIndexList = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );
     currentIndex = 0;
     currentParser = MDSParserFactory.get( spreadColumn , currentIndexList.get( currentIndex ) );
   }

@@ -15,16 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.column.index;
-
-import java.io.IOException;
+package jp.co.yahoo.dataplatform.mds.spread.expression;
 
 import java.util.List;
+import java.util.ArrayList;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+public class ListIndexExpressionIndex implements IExpressionIndex{
 
-public interface ICellIndex{
+  private final List<Integer> indexList;
 
-  boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException;
+  public ListIndexExpressionIndex( final List<Integer> indexList ){
+    this.indexList = indexList;
+  }
+
+  @Override
+  public int size(){
+    return indexList.size();
+  }
+
+  @Override
+  public int get( final int index ){
+    return indexList.get( index );
+  }
 
 }

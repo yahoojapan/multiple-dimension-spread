@@ -22,21 +22,28 @@ import java.util.ArrayList;
 
 public class FilterdExpressionIndex implements IExpressionIndex{
 
-  private final List<Integer> indexList;
+  private final int[] indexList;
+  private int size;
 
-  public FilterdExpressionIndex( final List<Integer> indexCollection ){
-    indexList = new ArrayList<Integer>();
-    indexList.addAll( indexCollection );
+  public FilterdExpressionIndex( final boolean[] filterArray ){
+    size = 0;
+    indexList = new int[filterArray.length];
+    for( int i = 0 ; i < filterArray.length ; i++ ){
+      if( filterArray[i] ){
+        indexList[size] = i;
+        size++;
+      }
+    }
   }
 
   @Override
   public int size(){
-    return indexList.size();
+    return size;
   }
 
   @Override
   public int get( final int index ){
-    return indexList.get( index ).intValue();
+    return indexList[index];
   }
 
 }

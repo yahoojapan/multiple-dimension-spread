@@ -86,18 +86,17 @@ public class CellManager implements ICellManager{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case NOT_NULL:
-        List<Integer> result = new ArrayList<Integer>();
         for( CellIndex index : cellIndex ){
-          index.addIndex( result );
+          index.setFilter( filterArray );
         }
-        return result;
+        return filterArray;
       case NULL:
         return null;
       default:
-        return index.filter( filter );
+        return index.filter( filter , filterArray );
     }
   }
 
@@ -160,9 +159,9 @@ public class CellManager implements ICellManager{
       }
     }
 
-    public void addIndex( final List<Integer> list ){
+    public void setFilter( final boolean[] filterArray ){
       for( int i = 0 ; i < cellList.size() ; i++ ){
-        list.add( Integer.valueOf( i + startIndex ) );
+        filterArray[ i + startIndex ] = true;
       }
     }
 

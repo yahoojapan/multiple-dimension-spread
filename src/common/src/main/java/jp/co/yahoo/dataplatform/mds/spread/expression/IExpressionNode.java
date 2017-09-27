@@ -29,9 +29,7 @@ public interface IExpressionNode {
 
   void addChildNode( final IExpressionNode node );
 
-  List<Integer> exec( final Spread spread ) throws IOException;
-
-  List<Integer> exec( final Spread spread , final List<Integer> parentList ) throws IOException;
+  boolean[] exec( final Spread spread ) throws IOException;
 
   boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException;
 

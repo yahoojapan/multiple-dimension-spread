@@ -35,12 +35,12 @@ public class HeaderIndexLazyColumn extends LazyColumn{
   }
  
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
-    List<Integer> indexList = rangeIndex.filter( filter );
-    if( indexList != null ){
-      return indexList;
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
+    boolean[] result = rangeIndex.filter( filter , filterArray );
+    if( result != null ){
+      return result;
     }
-    return super.filter( filter );
+    return super.filter( filter , filterArray );
   }
 
 }

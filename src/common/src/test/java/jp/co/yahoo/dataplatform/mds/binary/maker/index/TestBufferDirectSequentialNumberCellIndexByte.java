@@ -33,6 +33,7 @@ import static org.testng.Assert.assertNull;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.*;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
+import jp.co.yahoo.dataplatform.mds.spread.expression.*;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -75,10 +76,10 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte) 10 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
+      assertEquals( result.get(i) , n );
     }
   }
 
@@ -97,13 +98,13 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.NOT_EQUAL , new ByteObj( (byte) 10 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 80 );
     for( int i = 0,n=0 ; n < 100 ; i+=4,n+=5 ){
-      assertEquals( result.get(i).intValue() , n + 1 );
-      assertEquals( result.get(i+1).intValue() , n + 2 );
-      assertEquals( result.get(i+2).intValue() , n + 3 );
-      assertEquals( result.get(i+3).intValue() , n + 4 );
+      assertEquals( result.get(i) , n + 1 );
+      assertEquals( result.get(i+1) , n + 2 );
+      assertEquals( result.get(i+2) , n + 3 );
+      assertEquals( result.get(i+3) , n + 4 );
     }
   }
 
@@ -122,10 +123,10 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.LT , new ByteObj( (byte) 20 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
+      assertEquals( result.get(i) , n );
     }
   }
 
@@ -144,11 +145,11 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.LE , new ByteObj( (byte) 20 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 40 );
     for( int i = 0,n=0 ; n < 100 ; i+=2,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
-      assertEquals( result.get(i+1).intValue() , n+1 );
+      assertEquals( result.get(i) , n );
+      assertEquals( result.get(i+1) , n+1 );
     }
   }
 
@@ -167,10 +168,10 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.GT , new ByteObj( (byte) 40 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n+4 );
+      assertEquals( result.get(i) , n+4 );
     }
   }
 
@@ -189,11 +190,11 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.GE , new ByteObj( (byte) 40 ) );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 40 );
     for( int i = 0,n=0 ; n < 100 ; i+=2,n+=5 ){
-      assertEquals( result.get(i).intValue() , n+3 );
-      assertEquals( result.get(i+1).intValue() , n+4 );
+      assertEquals( result.get(i) , n+3 );
+      assertEquals( result.get(i+1) , n+4 );
     }
   }
 
@@ -212,8 +213,7 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.GE , new LongObj( Long.valueOf( Byte.MAX_VALUE ) + (long)1 ) );
 
-    List<Integer> result = index.filter( filter );
-    assertEquals( result , null );
+    assertEquals( null , index.filter( filter , new boolean[100] ) );
   }
 
   @Test
@@ -231,8 +231,7 @@ public class TestBufferDirectSequentialNumberCellIndexByte{
     ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.BYTE , new TestDicManager( dic ) , buffer );
     IFilter filter = new NumberFilter( NumberFilterType.GE , new LongObj( Long.valueOf( Byte.MIN_VALUE ) - (long)1 ) );
 
-    List<Integer> result = index.filter( filter );
-    assertEquals( result , null );
+    assertEquals( null , index.filter( filter , new boolean[100] ) );
   }
 
 }

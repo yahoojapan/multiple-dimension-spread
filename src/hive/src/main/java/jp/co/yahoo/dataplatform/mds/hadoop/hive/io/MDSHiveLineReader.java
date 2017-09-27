@@ -108,12 +108,11 @@ public class MDSHiveLineReader implements RecordReader<NullWritable, ColumnAndIn
       return nextReader();
     }
     spreadCounter.increment();
-    List<Integer> indexList = node.exec( currentSpread );
-    if( indexList != null && indexList.isEmpty() ){
+    currentIndexList = IndexFactory.toExpressionIndex( currentSpread , node.exec( currentSpread ) );
+    currentIndex = 0;
+    if( currentIndexList.size() == 0 ){
       return nextReader();
     }
-    currentIndexList = IndexFactory.toExpressionIndex( currentSpread , indexList );
-    currentIndex = 0;
     return true;
   }
 

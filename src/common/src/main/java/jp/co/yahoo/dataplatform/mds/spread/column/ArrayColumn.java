@@ -201,8 +201,8 @@ public class ArrayColumn implements IColumn{
   }
 
   @Override
-  public List<Integer> filter( final IFilter filter ) throws IOException{
-    return cellManager.filter( filter );
+  public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
+    return cellManager.filter( filter , filterArray );
   }
 
   @Override

@@ -32,6 +32,7 @@ import static org.testng.Assert.assertNull;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
+import jp.co.yahoo.dataplatform.mds.spread.expression.*;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -79,10 +80,10 @@ public class TestBufferDirectSequentialStringCellIndex{
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
     IFilter filter = new PerfectMatchStringFilter( "abc" );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
+      assertEquals( result.get(i) , n );
     }
   }
 
@@ -101,11 +102,11 @@ public class TestBufferDirectSequentialStringCellIndex{
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
     IFilter filter = new PartialMatchStringFilter( "b" );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 40 );
     for( int i = 0,n=0 ; n < 100 ; i+=2,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
-      assertEquals( result.get(i+1).intValue() , n+1 );
+      assertEquals( result.get(i) , n );
+      assertEquals( result.get(i+1) , n+1 );
     }
   }
 
@@ -124,10 +125,10 @@ public class TestBufferDirectSequentialStringCellIndex{
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
     IFilter filter = new ForwardMatchStringFilter( "bc" );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n+1 );
+      assertEquals( result.get(i) , n+1 );
     }
   }
 
@@ -146,10 +147,10 @@ public class TestBufferDirectSequentialStringCellIndex{
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
     IFilter filter = new BackwardMatchStringFilter( "bc" );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
+      assertEquals( result.get(i) , n );
     }
   }
 
@@ -168,10 +169,10 @@ public class TestBufferDirectSequentialStringCellIndex{
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
     IFilter filter = new RegexpMatchStringFilter( "e.g" );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 20 );
     for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i).intValue() , n+4 );
+      assertEquals( result.get(i) , n+4 );
     }
   }
 
@@ -188,7 +189,7 @@ public class TestBufferDirectSequentialStringCellIndex{
       buffer.put( i % 5 );
     }
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    List<Integer> result = index.filter( new NullFilter() );
+    boolean[] result = index.filter( new NullFilter() , new boolean[100] );
     assertEquals( result , null );
   }
 
@@ -210,11 +211,11 @@ public class TestBufferDirectSequentialStringCellIndex{
     filterDic.add( "bcd" );
     IFilter filter = new StringDictionaryFilter( filterDic );
 
-    List<Integer> result = index.filter( filter );
+    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
     assertEquals( result.size() , 40 );
     for( int i = 0,n=0 ; n < 100 ; i+=2,n+=5 ){
-      assertEquals( result.get(i).intValue() , n );
-      assertEquals( result.get(i+1).intValue() , n+1 );
+      assertEquals( result.get(i) , n );
+      assertEquals( result.get(i+1) , n+1 );
     }
   }
 
