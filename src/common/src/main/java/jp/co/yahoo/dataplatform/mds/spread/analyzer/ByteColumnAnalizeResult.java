@@ -49,7 +49,7 @@ public class ByteColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.BOOLEAN;
+    return ColumnType.BYTE;
   }
 
   @Override

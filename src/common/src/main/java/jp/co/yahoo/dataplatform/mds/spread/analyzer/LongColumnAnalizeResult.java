@@ -49,7 +49,7 @@ public class LongColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.BOOLEAN;
+    return ColumnType.LONG;
   }
 
   @Override
