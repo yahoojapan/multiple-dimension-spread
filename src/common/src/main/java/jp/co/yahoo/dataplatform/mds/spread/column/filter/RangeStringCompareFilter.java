@@ -89,9 +89,9 @@ public class RangeStringCompareFilter implements IStringCompareFilter{
     @Override
     public boolean isOutOfRange( final String min , final String max ){
       if( minComparator.isFilterString( max ) || maxComparator.isFilterString( min ) ){
-        return true;
+        return filter;
       }
-      return false;
+      return through;
     }
 
   }

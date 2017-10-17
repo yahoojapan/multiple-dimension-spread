@@ -19,44 +19,44 @@ package jp.co.yahoo.dataplatform.mds.util;
 
 public class ByteArrayData{
 
-	public static final int DEFAULT_BUFFER_SIZE = 1024 * 1024;
+  public static final int DEFAULT_BUFFER_SIZE = 1024 * 1024;
 
-	public static final int UP_DATA_SIZE_INTERVAL = 1024 * 1024;
+  public static final int UP_DATA_SIZE_INTERVAL = 1024 * 1024;
 
-	private byte[] data;
-	private int length;
+  private byte[] data;
+  private int length;
 
-	public ByteArrayData(){
-		data = new byte[ DEFAULT_BUFFER_SIZE ];
-		length = 0;
-	}
+  public ByteArrayData(){
+    data = new byte[ DEFAULT_BUFFER_SIZE ];
+    length = 0;
+  }
 
-	public ByteArrayData( final int bufferSize ){
-		data = new byte[bufferSize];
-		length = 0;
-	}
+  public ByteArrayData( final int bufferSize ){
+    data = new byte[bufferSize];
+    length = 0;
+  }
 
-	public void clear(){
-		length = 0;
-	}
+  public void clear(){
+    length = 0;
+  }
 
-	public int getLength(){
-		return length;
-	}
+  public int getLength(){
+    return length;
+  }
 
-	@SuppressWarnings("PMD") 
-	public byte[] getBytes(){
-		return data;
-	}
+  @SuppressWarnings("PMD") 
+  public byte[] getBytes(){
+    return data;
+  }
 
-	@Override
-	public int hashCode(){
-		int hash = 1;
-		for (int i = 0; i < length; i++){
-			hash = (31 * hash) + (int)data[i];
-		}
-		return hash;
-	}
+  @Override
+  public int hashCode(){
+    int hash = 1;
+    for (int i = 0; i < length; i++){
+      hash = (31 * hash) + (int)data[i];
+    }
+    return hash;
+  }
 
   @Override
   public boolean equals( final Object obj ){
@@ -77,40 +77,40 @@ public class ByteArrayData{
     return true;
   }
 
-	public void append( final ByteArrayData target ){
-		if( target == null ){
-			return;
-		}
+  public void append( final ByteArrayData target ){
+    if( target == null ){
+      return;
+    }
 
-		append( target.getBytes() , 0 , target.getLength() );
-	}
-	
-	public void append( final byte targetByte ){
-		checkSize( 1 );
-		data[length] = targetByte;
-		length += 1;
-	}
+    append( target.getBytes() , 0 , target.getLength() );
+  }
+  
+  public void append( final byte targetByte ){
+    checkSize( 1 );
+    data[length] = targetByte;
+    length += 1;
+  }
 
-	public void append( final byte[] targetBytes ){
-		append( targetBytes , 0 , targetBytes.length );
-	}
+  public void append( final byte[] targetBytes ){
+    append( targetBytes , 0 , targetBytes.length );
+  }
 
-	public void append( final byte[] targetBytes , final int targetStart , final int targetLength ){
-		checkSize( targetLength );
-		System.arraycopy( targetBytes , targetStart , data , length , targetLength );
-		length += targetLength;
-	}
+  public void append( final byte[] targetBytes , final int targetStart , final int targetLength ){
+    checkSize( targetLength );
+    System.arraycopy( targetBytes , targetStart , data , length , targetLength );
+    length += targetLength;
+  }
 
-	private void checkSize( final int addLength ){
-		if( data.length < ( length + addLength ) ){
-			int newDataSize = data.length + UP_DATA_SIZE_INTERVAL;
-			while( newDataSize < ( length + addLength ) ){
-				newDataSize += UP_DATA_SIZE_INTERVAL;
-			}
-			byte[] newBytes = new byte[ newDataSize ];
-			System.arraycopy( data , 0 , newBytes , 0 , length );
-			data = newBytes;
-		}
-	}
+  private void checkSize( final int addLength ){
+    if( data.length < ( length + addLength ) ){
+      int newDataSize = data.length + UP_DATA_SIZE_INTERVAL;
+      while( newDataSize < ( length + addLength ) ){
+        newDataSize += UP_DATA_SIZE_INTERVAL;
+      }
+      byte[] newBytes = new byte[ newDataSize ];
+      System.arraycopy( data , 0 , newBytes , 0 , length );
+      data = newBytes;
+    }
+  }
 
 }

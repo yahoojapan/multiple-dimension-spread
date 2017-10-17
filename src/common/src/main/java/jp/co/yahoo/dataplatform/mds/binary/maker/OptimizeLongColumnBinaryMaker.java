@@ -52,6 +52,25 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
+  public static ColumnType getDiffColumnType( final long min , final long max ){
+    long diff = max - min;
+    if( diff < 0 ){
+      return ColumnType.LONG;
+    }
+
+    if( diff <= Byte.MAX_VALUE ){
+      return ColumnType.BYTE;
+    }
+    else if( diff <= Short.MAX_VALUE ){
+      return ColumnType.SHORT;
+    }
+    else if( diff <= Integer.MAX_VALUE ){
+      return ColumnType.INTEGER;
+    }
+
+    return ColumnType.LONG;
+  }
+
   public static PrimitiveObject createConstObject( final ColumnType type , final long num ) throws IOException{
     switch( type ){
       case BYTE:
@@ -66,14 +85,25 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   public static IDictionaryMaker chooseDictionaryMaker( final long min , final long max ){
+    ColumnType diffType = getDiffColumnType( min , max );
+
     if( Byte.valueOf( Byte.MIN_VALUE ).longValue() <= min && max <= Byte.valueOf( Byte.MAX_VALUE ).longValue() ){
       return new ByteDictionaryMaker();
+    }
+    else if( diffType == ColumnType.BYTE ){
+      return new DiffByteDictionaryMaker( min );
     }
     else if( Short.valueOf( Short.MIN_VALUE ).longValue() <= min && max <= Short.valueOf( Short.MAX_VALUE ).longValue() ){
       return new ShortDictionaryMaker();
     }
+    else if( diffType == ColumnType.SHORT ){
+      return new DiffShortDictionaryMaker( min );
+    }
     else if( Integer.valueOf( Integer.MIN_VALUE ).longValue() <= min && max <= Integer.valueOf( Integer.MAX_VALUE ).longValue() ){
       return new IntDictionaryMaker();
+    }
+    else if( diffType == ColumnType.INTEGER ){
+      return new DiffIntDictionaryMaker( min );
     }
     else{
       return new LongDictionaryMaker();
@@ -139,6 +169,47 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   }
 
+  public static class DiffByteDictionaryMaker implements IDictionaryMaker{
+
+    private final long min;
+
+    public DiffByteDictionaryMaker( final long min ){
+      this.min = min;
+    }
+
+    @Override
+    public int getLogicalSize( final int indexLength ){
+      return Byte.BYTES * indexLength;
+    }
+
+    @Override
+    public int calcBinarySize( final int dicSize ){
+      return Byte.BYTES * dicSize;
+    }
+
+    @Override
+    public void create( final List<PrimitiveObject> objList , final byte[] buffer , final int start , final int length ) throws IOException{
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      for( PrimitiveObject obj : objList ){
+        wrapBuffer.put( (byte)( obj.getLong() - min ) );
+      }
+    }
+
+    @Override
+    public PrimitiveObject[] getDicPrimitiveArray( final byte[] buffer , final int start , final int length ) throws IOException{
+      int size = length / Byte.BYTES;
+      PrimitiveObject[] result = new PrimitiveObject[size];
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      wrapBuffer.get();
+      for( int i = 1 ; i < size ; i++ ){
+        result[i] = new LongObj( (long)wrapBuffer.get() + min );
+      }
+
+      return result;
+    }
+
+  }
+
   public static class ShortDictionaryMaker implements IDictionaryMaker{
 
     @Override
@@ -173,6 +244,47 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   }
 
+  public static class DiffShortDictionaryMaker implements IDictionaryMaker{
+
+    private final long min;
+
+    public DiffShortDictionaryMaker( final long min ){
+      this.min = min;
+    }
+
+    @Override
+    public int getLogicalSize( final int indexLength ){
+      return Short.BYTES * indexLength;
+    }
+
+    @Override
+    public int calcBinarySize( final int dicSize ){
+      return Short.BYTES * dicSize;
+    }
+
+    @Override
+    public void create( final List<PrimitiveObject> objList , final byte[] buffer , final int start , final int length ) throws IOException{
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      for( PrimitiveObject obj : objList ){
+        wrapBuffer.putShort( (short)( obj.getLong() - min ) );
+      }
+    }
+
+    @Override
+    public PrimitiveObject[] getDicPrimitiveArray( final byte[] buffer , final int start , final int length ) throws IOException{
+      int size = length / Short.BYTES;
+      PrimitiveObject[] result = new PrimitiveObject[size];
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      wrapBuffer.getShort();
+      for( int i = 1 ; i < size ; i++ ){
+        result[i] = new LongObj( (long)wrapBuffer.getShort() + min );
+      }
+
+      return result;
+    }
+
+  }
+
   public static class IntDictionaryMaker implements IDictionaryMaker{
 
     @Override
@@ -200,6 +312,46 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       wrapBuffer.getInt();
       for( int i = 1 ; i < size ; i++ ){
         result[i] = new IntegerObj( wrapBuffer.getInt() );
+      }
+
+      return result;
+    }
+
+  }
+
+  public static class DiffIntDictionaryMaker implements IDictionaryMaker{
+
+    private final long min;
+
+    public DiffIntDictionaryMaker( final long min ){
+      this.min = min;
+    }
+
+    @Override
+    public int getLogicalSize( final int indexLength ){
+      return Integer.BYTES * indexLength;
+    }
+
+    @Override
+    public int calcBinarySize( final int dicSize ){
+      return Integer.BYTES * dicSize;
+    }
+
+    @Override
+    public void create( final List<PrimitiveObject> objList , final byte[] buffer , final int start , final int length ) throws IOException{
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      for( PrimitiveObject obj : objList ){
+        wrapBuffer.putInt( (int)( obj.getLong() - min ) );
+      }
+    }
+
+    @Override                                                                                                      public PrimitiveObject[] getDicPrimitiveArray( final byte[] buffer , final int start , final int length ) throws IOException{
+      int size = length / Integer.BYTES;
+      PrimitiveObject[] result = new PrimitiveObject[size];
+      ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
+      wrapBuffer.getInt();
+      for( int i = 1 ; i < size ; i++ ){
+        result[i] = new LongObj( (long)wrapBuffer.getInt() + min );
       }
 
       return result;

@@ -49,7 +49,7 @@ public class FloatColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.BOOLEAN;
+    return ColumnType.FLOAT;
   }
 
   @Override

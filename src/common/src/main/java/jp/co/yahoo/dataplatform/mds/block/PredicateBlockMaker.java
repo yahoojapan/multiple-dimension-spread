@@ -36,6 +36,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.Analyzer;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
@@ -69,6 +70,10 @@ public class PredicateBlockMaker implements IBlockMaker{
     spreadSizeList.clear();
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
+    if( config.containsKey( "spread.column.maker.default.compress.class" ) ){
+      defaultConfig.compressorClass = FindCompressor.get( config.get( "spread.column.maker.default.compress.class" ) ); 
+    }
+ 
     if( config.containsKey( "spread.column.maker.setting" ) ){
       JacksonMessageReader jsonReader = new JacksonMessageReader();
       IParser jsonParser = jsonReader.create( config.get( "spread.column.maker.setting" ) );

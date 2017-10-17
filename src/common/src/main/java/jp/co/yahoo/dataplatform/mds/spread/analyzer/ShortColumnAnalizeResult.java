@@ -49,7 +49,7 @@ public class ShortColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.BOOLEAN;
+    return ColumnType.SHORT;
   }
 
   @Override

@@ -49,7 +49,7 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.BOOLEAN;
+    return ColumnType.DOUBLE;
   }
 
   @Override

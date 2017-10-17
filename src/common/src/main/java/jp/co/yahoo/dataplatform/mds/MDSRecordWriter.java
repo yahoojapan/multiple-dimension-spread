@@ -38,7 +38,12 @@ public class MDSRecordWriter implements AutoCloseable{
   private int currentDataSize;
   private int currentRows;
   private int spreadSize;
+  
   private Spread currentSpread;
+
+  public MDSRecordWriter( final OutputStream out ) throws IOException{
+    this( out , new Configuration() );
+  }
 
   public MDSRecordWriter( final OutputStream out , final Configuration config ) throws IOException{
     fileWriter = new MDSWriter( out , config );
