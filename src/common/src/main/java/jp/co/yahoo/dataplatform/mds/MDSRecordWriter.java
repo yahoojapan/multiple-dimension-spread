@@ -30,8 +30,8 @@ import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
 public class MDSRecordWriter implements AutoCloseable{
 
-  public static final int DEFAULT_SPREAD_SIZE = 1024 * 1024 * 128;
-  public static final int DEFAULT_MAX_RECORDS = 500000;
+  public static final int DEFAULT_SPREAD_SIZE = 1024 * 1024 * 224;
+  public static final int DEFAULT_MAX_RECORDS = 1000000;
   public static final int DEFAULT_MIN_SIZE = 1024 * 1024 * 16;
   public static final int DEFAULT_MIN_RECORDS = 1000;
 

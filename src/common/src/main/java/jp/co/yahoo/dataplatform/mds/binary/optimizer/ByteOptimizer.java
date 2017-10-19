@@ -24,47 +24,22 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.DumpByteColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpByteColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.UniqByteColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexByteColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.ByteColumnAnalizeResult;
 
 public class ByteOptimizer implements IOptimizer{
 
-  private final IColumnBinaryMaker rangeDumpColumnBinaryMaker;
-  private final IColumnBinaryMaker uniqColumnBinaryMaker;
-  private final IColumnBinaryMaker rangeUniqColumnBinaryMaker;
+  private final IColumnBinaryMaker maker;
 
   public ByteOptimizer( final Configuration config ) throws IOException{
-    rangeDumpColumnBinaryMaker = FindColumnBinaryMaker.get( RangeDumpByteColumnBinaryMaker.class.getName() );
-    uniqColumnBinaryMaker = FindColumnBinaryMaker.get( UniqByteColumnBinaryMaker.class.getName() );
-    rangeUniqColumnBinaryMaker = FindColumnBinaryMaker.get( RangeIndexByteColumnBinaryMaker.class.getName() );
+    maker = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
   }
 
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     ColumnBinaryMakerConfig currentConfig = new ColumnBinaryMakerConfig( commonConfig );
-    ByteColumnAnalizeResult castColumnAnalizeResult = (ByteColumnAnalizeResult)analizeResult;
-    IColumnBinaryMaker makerClass;
-    if( castColumnAnalizeResult.maybeSorted() ){
-      makerClass = rangeUniqColumnBinaryMaker;
-    }
-    else{
-      int dump = rangeDumpColumnBinaryMaker.calcBinarySize( analizeResult );
-      int uniq = uniqColumnBinaryMaker.calcBinarySize( analizeResult );
-      if( dump < uniq ){
-        makerClass = rangeDumpColumnBinaryMaker;
-      }
-      else{
-        makerClass = uniqColumnBinaryMaker;
-      }
-    }
-    if( currentConfig.byteMakerClass.getClass().getName().equals( makerClass.getClass().getName() ) ){
-      return null;
-    }
-    currentConfig.byteMakerClass = makerClass;
+    currentConfig.byteMakerClass = maker;
     return currentConfig;
   }
 

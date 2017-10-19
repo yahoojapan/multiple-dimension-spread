@@ -79,7 +79,7 @@ public class PredicateBlockMaker implements IBlockMaker{
       IParser jsonParser = jsonReader.create( config.get( "spread.column.maker.setting" ) );
       configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser ); 
     }
-    else if( config.get( "spread.column.maker.use.auto.optimizer" , "false" ).equals( "true" ) ){
+    else if( config.get( "spread.column.maker.use.auto.optimizer" , "true" ).equals( "true" ) ){
       makeCustomConfig = true;
       optimizerFactory = FindOptimizerFactory.get( config.get( "spread.column.maker.use.auto.optimizer.factory.class" , "jp.co.yahoo.dataplatform.mds.binary.optimizer.DefaultOptimizerFactory" ) , config );
       configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );

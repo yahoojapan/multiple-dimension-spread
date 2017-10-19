@@ -58,6 +58,10 @@ public class MDSHiveParserOutputFormat extends FileOutputFormat<NullWritable,Par
       }catch( Exception e ){
       }
     }
+    if( tableProperties.containsKey( "mds.compression.class" ) ){
+      String compressionClass = tableProperties.getProperty( "mds.compression.class" );
+      config.set( "spread.column.maker.default.compress.class" , compressionClass );
+    }
     return new MDSHiveRecordWriter( out , config );
   }
 
