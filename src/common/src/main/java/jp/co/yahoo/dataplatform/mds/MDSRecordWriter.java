@@ -30,11 +30,13 @@ import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
 public class MDSRecordWriter implements AutoCloseable{
 
-  public static final int DEFAULT_SPREAD_SIZE = 1024 * 1024 * 64;
+  public static final int DEFAULT_SPREAD_SIZE = 1024 * 1024 * 128;
+  public static final int DEFAULT_MAX_RECORDS = 500000;
   public static final int DEFAULT_MIN_SIZE = 1024 * 1024 * 16;
+  public static final int DEFAULT_MIN_RECORDS = 1000;
 
   private final MDSWriter fileWriter;
-  private final int maxRows;
+  private int maxRows;
   private int currentDataSize;
   private int currentRows;
   private int spreadSize;
@@ -52,7 +54,10 @@ public class MDSRecordWriter implements AutoCloseable{
     if( spreadSize < DEFAULT_MIN_SIZE ){
       spreadSize = DEFAULT_MIN_SIZE;
     }
-    maxRows = config.getInt( "record.writer.max.rows" , 200000 );
+    maxRows = config.getInt( "record.writer.max.rows" , DEFAULT_MAX_RECORDS );
+    if( maxRows < DEFAULT_MIN_RECORDS ){
+      maxRows = DEFAULT_MIN_RECORDS;
+    }
   }
 
   public void addRow( final Map<String,Object> row ) throws IOException{
