@@ -35,7 +35,6 @@ import jp.co.yahoo.dataplatform.schema.objects.StringObj;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
-import jp.co.yahoo.dataplatform.mds.binary.maker.cache.ByteBufferCache;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStringCellIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -52,7 +51,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
@@ -166,7 +165,7 @@ public class UniqStringColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 

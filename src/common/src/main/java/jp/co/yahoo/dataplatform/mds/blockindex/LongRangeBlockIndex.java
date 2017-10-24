@@ -21,6 +21,8 @@ import java.io.IOException;
 
 import java.nio.ByteBuffer;
 
+import java.util.List;
+import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
@@ -83,7 +85,7 @@ public class LongRangeBlockIndex implements IBlockIndex{
   }
 
   @Override
-  public boolean canBlockSkip( final IFilter filter ){
+  public List<Integer> getBlockSpreadIndex( final IFilter filter ){
     switch( filter.getFilterType() ){
       case NUMBER:
         NumberFilter numberFilter = (NumberFilter)filter;
@@ -91,36 +93,36 @@ public class LongRangeBlockIndex implements IBlockIndex{
         try{
           setNumber = numberFilter.getNumberObject().getLong();
         }catch( NumberFormatException|IOException e ){
-          return false;
+          return null;
         }
         switch( numberFilter.getNumberFilterType() ){
           case EQUAL:
             if( setNumber < min || max < setNumber  ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case LT:
             if( setNumber <= min ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case LE:
             if( setNumber < min ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case GT:
             if( max <= setNumber ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case GE:
             if( max < setNumber ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           default:
-            return false;
+            return null;
         }
       case NUMBER_RANGE:
         NumberRangeFilter numberRangeFilter = (NumberRangeFilter)filter;
@@ -130,37 +132,37 @@ public class LongRangeBlockIndex implements IBlockIndex{
           setMin = numberRangeFilter.getMinObject().getLong();
           setMax = numberRangeFilter.getMaxObject().getLong();
         }catch( NumberFormatException|IOException e ){
-          return false;
+          return null;
         }
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
           if( ( setMax < min || max < setMin ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else if( minHasEquals ){
           if( ( setMax < min || max <= setMin ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else if( maxHasEquals ){
           if( ( setMax <= min || max < setMin ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else{
           if( ( setMax <= min || max <= setMin ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
       default:
-        return false;
+        return null;
     }
   }
 

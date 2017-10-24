@@ -25,29 +25,29 @@ public class TestBlockReadOffset{
 
   @Test
   public void T_newInstance_1(){
-    new BlockReadOffset( 0 , 1 , new byte[0] );
+    new BlockReadOffset( 0 , 0 , 1 , new byte[0] );
   }
 
   @Test
   public void T_compareTo_1(){
-    BlockReadOffset o1 = new BlockReadOffset( 100 , 20 , new byte[0] );
-    BlockReadOffset o2 = new BlockReadOffset( 100 , 20 , new byte[0] );
+    BlockReadOffset o1 = new BlockReadOffset( 100 , 0 , 20 , new byte[0] );
+    BlockReadOffset o2 = new BlockReadOffset( 100 , 0 , 20 , new byte[0] );
 
     assertEquals( o1.compareTo( o2 ) , 0 );
   }
 
   @Test
   public void T_compareTo_2(){
-    BlockReadOffset o1 = new BlockReadOffset( 100 , 20 , new byte[0] );
-    BlockReadOffset o2 = new BlockReadOffset( 200 , 20 , new byte[0] );
+    BlockReadOffset o1 = new BlockReadOffset( 100 , 0 , 20 , new byte[0] );
+    BlockReadOffset o2 = new BlockReadOffset( 200 , 0 , 20 , new byte[0] );
 
     assertEquals( o1.compareTo( o2 ) , -1 );
   }
 
   @Test
   public void T_compareTo_3(){
-    BlockReadOffset o1 = new BlockReadOffset( 100 , 20 , new byte[0] );
-    BlockReadOffset o2 = new BlockReadOffset( 50 , 20 , new byte[0] );
+    BlockReadOffset o1 = new BlockReadOffset( 100 , 0 , 20 , new byte[0] );
+    BlockReadOffset o2 = new BlockReadOffset( 50 , 0 , 20 , new byte[0] );
 
     assertEquals( o1.compareTo( o2 ) , 1 );
   }

@@ -21,6 +21,7 @@ public enum BlockIndexType{
 
   UNSUPPORTED,
 
+  FULL_RANGE,
   RANGE_STRING,
   RANGE_BYTE,
   RANGE_SHORT,

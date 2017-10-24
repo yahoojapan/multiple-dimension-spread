@@ -54,7 +54,7 @@ public class TestDumpSpreadColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new DumpSpreadColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "SPREAD" );
     assertEquals( columnBinary.rowCount , 2 );

@@ -136,7 +136,7 @@ public class TestUniqStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new UniqStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 2 );
@@ -164,7 +164,7 @@ public class TestUniqStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new UniqStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 3 );

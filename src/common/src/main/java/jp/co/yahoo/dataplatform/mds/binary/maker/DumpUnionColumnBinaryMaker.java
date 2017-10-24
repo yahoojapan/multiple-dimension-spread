@@ -85,7 +85,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
-  private ColumnBinary mergeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache , final List<IColumn> childColumnList ) throws IOException {
+  private ColumnBinary mergeColumn(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final List<IColumn> childColumnList ) throws IOException {
     int max = -1;
     IColumnBinaryMaker maker = null;
     ColumnType type = null;
@@ -105,11 +105,11 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     PrimitiveColumn primitiveColumn = new PrimitiveColumn( type , column.getColumnName() );
     primitiveColumn.setCellManager( column.getCellManager() );
       
-    return maker.toBinary( commonConfig , currentConfigNode , primitiveColumn , makerCache );
+    return maker.toBinary( commonConfig , currentConfigNode , primitiveColumn );
   }
 
   @Override
-  public ColumnBinary toBinary( final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary( final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
@@ -117,7 +117,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
     List<IColumn> childColumnList = column.getListColumn();
     MargeType mergeType = checkMargeType( childColumnList );
     if( mergeType != MargeType.MIX ){
-      return mergeColumn( commonConfig , currentConfigNode , column , makerCache , childColumnList );
+      return mergeColumn( commonConfig , currentConfigNode , column , childColumnList );
     }
     List<ColumnBinary> columnBinaryList = new ArrayList<ColumnBinary>();
     for( IColumn childColumn : childColumnList ){
@@ -129,7 +129,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
           maker = childNode.getCurrentConfig().getColumnMaker( childColumn.getColumnType() );
         }
       }
-      columnBinaryList.add( maker.toBinary( commonConfig , childNode , childColumn , makerCache.getChild( childColumn.getColumnType().toString() ) ) );
+      columnBinaryList.add( maker.toBinary( commonConfig , childNode , childColumn ) );
     }
 
     byte[] rawBinary = new byte[ column.size() ];
@@ -168,7 +168,7 @@ public class DumpUnionColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 

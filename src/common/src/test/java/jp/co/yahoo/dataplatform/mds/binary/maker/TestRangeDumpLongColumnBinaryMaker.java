@@ -136,7 +136,7 @@ public class TestRangeDumpLongColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpLongColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "LONG" );
     assertEquals( columnBinary.rowCount , 2 );
@@ -164,7 +164,7 @@ public class TestRangeDumpLongColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpLongColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "LONG" );
     assertEquals( columnBinary.rowCount , 3 );
@@ -193,7 +193,7 @@ public class TestRangeDumpLongColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpLongColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "LONG" );
     assertEquals( columnBinary.rowCount , 3 );
@@ -221,7 +221,7 @@ public class TestRangeDumpLongColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpLongColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "LONG" );
     assertEquals( columnBinary.rowCount , 2 );

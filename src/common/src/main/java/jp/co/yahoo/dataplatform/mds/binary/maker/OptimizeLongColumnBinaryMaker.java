@@ -483,7 +483,7 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
@@ -603,12 +603,15 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       if( dicIndex != 0 ){
         allocator.setLong( i , dicArray[dicIndex].getLong() );
       }
+      else{
+        allocator.setNull( i );
+      }
     }
     allocator.setValueCount( loopCount );
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     Long min = Long.valueOf( wrapBuffer.getLong() );
     Long max = Long.valueOf( wrapBuffer.getLong() );

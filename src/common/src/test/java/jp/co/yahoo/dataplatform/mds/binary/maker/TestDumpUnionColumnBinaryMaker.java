@@ -53,7 +53,7 @@ public class TestDumpUnionColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new DumpUnionColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "UNION" );
     assertEquals( columnBinary.rowCount , 2 );

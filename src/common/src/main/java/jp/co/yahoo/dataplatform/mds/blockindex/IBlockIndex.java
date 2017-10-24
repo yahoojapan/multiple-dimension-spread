@@ -17,6 +17,8 @@
  */
 package jp.co.yahoo.dataplatform.mds.blockindex;
 
+import java.util.List;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public interface IBlockIndex{
@@ -31,7 +33,7 @@ public interface IBlockIndex{
 
   void setFromBinary( final byte[] buffer , final int start , final int length );
 
-  boolean canBlockSkip( final IFilter filter );
+  List<Integer> getBlockSpreadIndex( final IFilter filter );
 
   IBlockIndex getNewInstance();
 

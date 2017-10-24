@@ -170,7 +170,12 @@ public class TestStringRangeBlockIndex{
 
   @Test( dataProvider = "T_canBlockSkip_1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
-    assertEquals( result , bIndex.canBlockSkip( filter ) );
+    if( result ){
+      assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );
+    }
+    else{
+      assertTrue( bIndex.getBlockSpreadIndex( filter ) == null );
+    }
   }
 
 }

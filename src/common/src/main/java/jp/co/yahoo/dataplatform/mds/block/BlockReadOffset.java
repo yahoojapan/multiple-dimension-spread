@@ -20,22 +20,24 @@ package jp.co.yahoo.dataplatform.mds.block;
 
 public class BlockReadOffset implements Comparable<BlockReadOffset>{
 
-  public final int start;
+  public final int streamStart;
+  public final int bufferStart;
   public final int length;
   public final byte[] buffer;
 
-  public BlockReadOffset( final int start , final int length , final byte[] buffer ){
-    this.start = start;
+  public BlockReadOffset( final int streamStart , final int bufferStart, final int length , final byte[] buffer ){
+    this.streamStart = streamStart;
+    this.bufferStart = bufferStart;
     this.length = length;
     this.buffer = buffer;
   }
 
   @Override
   public int compareTo( final BlockReadOffset target ){
-    if( this.start > target.start ){
+    if( this.streamStart > target.streamStart ){
       return 1;
     }
-    else if( this.start < target.start ){
+    else if( this.streamStart < target.streamStart ){
       return -1;
     }
 

@@ -48,9 +48,9 @@ public class ExecuterNode implements IExpressionNode{
   }
 
   @Override
-  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+  public List<Integer> getBlockSpreadIndex( final BlockIndexNode indexNode ) throws IOException{
     BlockIndexNode currentNode = columnExtractNode.get( indexNode );
-    return currentNode.getBlockIndex().canBlockSkip( filter );
+    return currentNode.getBlockIndex().getBlockSpreadIndex( filter );
   }
 
 }

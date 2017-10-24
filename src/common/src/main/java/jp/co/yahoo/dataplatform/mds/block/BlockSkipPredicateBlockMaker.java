@@ -68,7 +68,7 @@ public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
     for( ColumnBinary columnBinary : binaryList ){
       if( columnBinary != null ){
         IColumnBinaryMaker maker = FindColumnBinaryMaker.get( columnBinary.makerClassName );
-        maker.setBlockIndexNode( blockIndexNode , columnBinary );
+        maker.setBlockIndexNode( blockIndexNode , columnBinary , getRegisterSpreadCount() );
       }
     }
     super.append( spreadSize , binaryList );

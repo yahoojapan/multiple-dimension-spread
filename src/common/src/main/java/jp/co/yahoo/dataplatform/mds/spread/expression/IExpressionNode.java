@@ -31,6 +31,6 @@ public interface IExpressionNode {
 
   boolean[] exec( final Spread spread ) throws IOException;
 
-  boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException;
+  List<Integer> getBlockSpreadIndex( final BlockIndexNode indexNode ) throws IOException;
 
 }

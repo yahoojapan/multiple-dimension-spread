@@ -64,17 +64,29 @@ public class AndExpressionNode implements IExpressionNode {
   }
 
   @Override
-  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+  public List<Integer> getBlockSpreadIndex( final BlockIndexNode indexNode ) throws IOException{
     if( childNode.isEmpty() ){
-      return false;
+      return null;
     }
+    List<Integer> currentNode = null; 
     for( IExpressionNode node : childNode ){
-      if( node.canBlockSkip( indexNode ) ){
-        return true;
+      List<Integer> childResult = node.getBlockSpreadIndex( indexNode );
+      if( childResult == null ){
+        continue;
+      }
+
+      if( currentNode == null ){
+        currentNode = childResult;
+      }
+      else{
+        currentNode = CollectionUtils.intersectionFromSortedCollection( currentNode , childResult );
+      }
+      if( currentNode != null && currentNode.isEmpty() ){
+        return currentNode;
       }
     }
 
-    return false;
+    return currentNode;
   }
 
 }

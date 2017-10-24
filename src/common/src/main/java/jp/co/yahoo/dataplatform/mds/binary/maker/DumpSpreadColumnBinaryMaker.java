@@ -43,7 +43,7 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
@@ -60,7 +60,7 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
           maker = childNode.getCurrentConfig().getColumnMaker( childColumn.getColumnType() );
         }
       }
-      columnBinaryList.add( maker.toBinary( commonConfig , childNode , childColumn , makerCache.getChild( childColumn.getColumnName() ) ) );
+      columnBinaryList.add( maker.toBinary( commonConfig , childNode , childColumn ) );
     }
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.SPREAD , column.size() , 0 , 0 , -1 , new byte[0] , 0 , 0 , columnBinaryList );
@@ -91,7 +91,7 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 

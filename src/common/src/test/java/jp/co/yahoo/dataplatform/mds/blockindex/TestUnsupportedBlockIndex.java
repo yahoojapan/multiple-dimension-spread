@@ -56,7 +56,7 @@ public class TestUnsupportedBlockIndex{
   }
 
   public void T_canBlockSkip_1(){
-    assertFalse( UnsupportedBlockIndex.INSTANCE.canBlockSkip( null ) );
+    assertEquals( UnsupportedBlockIndex.INSTANCE.getBlockSpreadIndex( null ) , null );
   }
 
 }

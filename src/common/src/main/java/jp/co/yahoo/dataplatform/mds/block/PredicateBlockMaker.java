@@ -40,7 +40,6 @@ import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.util.ByteArrayData;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
-import jp.co.yahoo.dataplatform.mds.binary.maker.MakerCache;
 import jp.co.yahoo.dataplatform.mds.binary.optimizer.IOptimizerFactory;
 import jp.co.yahoo.dataplatform.mds.binary.optimizer.FindOptimizerFactory;
 import jp.co.yahoo.dataplatform.mds.binary.optimizer.BinaryMakerOptimizer;
@@ -49,7 +48,6 @@ public class PredicateBlockMaker implements IBlockMaker{
 
   private static final int META_BUFFER_SIZE = 1024 * 1024 * 1;
 
-  private final MakerCache makerCache = new MakerCache();
   private final List<Integer> spreadSizeList = new ArrayList<Integer>();
 
   private ColumnBinaryMakerCustomConfigNode configNode;
@@ -137,7 +135,7 @@ public class PredicateBlockMaker implements IBlockMaker{
       if( childConfigNode != null ){
         maker = childConfigNode.getCurrentConfig().getColumnMaker( column.getColumnType() );
       }
-      result.add( maker.toBinary( commonConfig , childConfigNode , column , makerCache ) );
+      result.add( maker.toBinary( commonConfig , childConfigNode , column ) );
     }
     return result;
   }
@@ -217,6 +215,10 @@ public class PredicateBlockMaker implements IBlockMaker{
     metaBuffer.clear();
     columnTree.clear();
     bufferSize = 0;
+  }
+
+  public int getRegisterSpreadCount(){
+    return spreadSizeList.size();
   }
 
 }

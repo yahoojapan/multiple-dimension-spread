@@ -17,6 +17,8 @@
  */
 package jp.co.yahoo.dataplatform.mds.blockindex;
 
+import java.util.List;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class UnsupportedBlockIndex implements IBlockIndex{
@@ -48,8 +50,8 @@ public class UnsupportedBlockIndex implements IBlockIndex{
   }
 
   @Override
-  public boolean canBlockSkip( final IFilter filter ){
-    return false;
+  public List<Integer> getBlockSpreadIndex( final IFilter filter ){
+    return null;
   }
 
   @Override

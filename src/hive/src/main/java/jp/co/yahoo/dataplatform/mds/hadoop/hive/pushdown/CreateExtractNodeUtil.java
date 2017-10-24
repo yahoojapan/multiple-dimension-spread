@@ -47,6 +47,9 @@ public final class CreateExtractNodeUtil{
       return getExtractNodeFromField( (ExprNodeFieldDesc)target  );
     }
     else if( target instanceof ExprNodeColumnDesc ){
+      if( ( (ExprNodeColumnDesc)target ).getIsPartitionColOrVirtualCol() ){
+        return null;
+      }
       return getExtractNodeFromColumn( (ExprNodeColumnDesc)target  );
     }
     return null;

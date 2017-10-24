@@ -39,7 +39,7 @@ public class TestUnsupportedColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new UnsupportedColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , NullColumn.getInstance() , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , NullColumn.getInstance() );
     IColumn result = maker.toColumn( columnBinary );
     assertTrue( result instanceof NullColumn );
   }

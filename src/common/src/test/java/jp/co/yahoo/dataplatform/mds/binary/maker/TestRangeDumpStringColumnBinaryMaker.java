@@ -139,8 +139,8 @@ public class TestRangeDumpStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
-    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary , 0 );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 2 );
@@ -168,7 +168,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 3 );
@@ -196,8 +196,8 @@ public class TestRangeDumpStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
-    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary , 0 );
   }
 
   @Test
@@ -210,7 +210,7 @@ public class TestRangeDumpStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 2 );
@@ -234,8 +234,8 @@ public class TestRangeDumpStringColumnBinaryMaker {
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
     IColumnBinaryMaker maker = new RangeDumpStringColumnBinaryMaker();
-    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column , new MakerCache() );
-    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary );
+    ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
+    maker.setBlockIndexNode( new BlockIndexNode() , columnBinary , 0 );
 
     assertEquals( columnBinary.columnName , "STRING" );
     assertEquals( columnBinary.rowCount , 3 );

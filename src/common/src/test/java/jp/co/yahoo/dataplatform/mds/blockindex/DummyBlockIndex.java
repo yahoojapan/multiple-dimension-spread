@@ -19,6 +19,9 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -63,8 +66,8 @@ public class DummyBlockIndex implements IBlockIndex{
   }
 
   @Override
-  public boolean canBlockSkip( final IFilter filter ){
-    return true;
+  public List<Integer> getBlockSpreadIndex( final IFilter filter ){
+    return new ArrayList<Integer>();
   }
 
   @Override
