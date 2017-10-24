@@ -31,6 +31,8 @@ public final class RangeBlockIndexNameShortCut{
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex"    , "R4" );
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex"   , "R5" );
     classNamePair.set( "jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex"   , "R6" );
+
+    classNamePair.set( "jp.co.yahoo.dataplatform.mds.blockindex.FullRangeBlockIndex"   , "FR0" );
   }
 
   private RangeBlockIndexNameShortCut(){}

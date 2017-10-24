@@ -21,6 +21,9 @@ import java.io.IOException;
 
 import java.nio.ByteBuffer;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberRangeFilter;
@@ -82,7 +85,7 @@ public class FloatRangeBlockIndex implements IBlockIndex{
   }
 
   @Override
-  public boolean canBlockSkip( final IFilter filter ){
+  public List<Integer> getBlockSpreadIndex( final IFilter filter ){
     switch( filter.getFilterType() ){
       case NUMBER:
         NumberFilter numberFilter = (NumberFilter)filter;
@@ -90,36 +93,36 @@ public class FloatRangeBlockIndex implements IBlockIndex{
         try{
           setNumber = Float.valueOf( numberFilter.getNumberObject().getFloat() );
         }catch( NumberFormatException|IOException e ){
-          return false;
+          return null;
         }
         switch( numberFilter.getNumberFilterType() ){
           case EQUAL:
             if( 0 < min.compareTo( setNumber ) || max.compareTo( setNumber ) < 0 ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case LT:
             if( 0 <= min.compareTo( setNumber ) ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case LE:
             if( 0 < min.compareTo( setNumber ) ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case GT:
             if( max.compareTo( setNumber ) <= 0 ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           case GE:
             if( max.compareTo( setNumber ) < 0 ){
-              return true;
+              return new ArrayList<Integer>();
             }
-            return false;
+            return null;
           default:
-            return false;
+            return null;
         }
       case NUMBER_RANGE:
         NumberRangeFilter numberRangeFilter = (NumberRangeFilter)filter;
@@ -129,37 +132,37 @@ public class FloatRangeBlockIndex implements IBlockIndex{
           setMin = Float.valueOf( numberRangeFilter.getMinObject().getFloat() );
           setMax = Float.valueOf( numberRangeFilter.getMaxObject().getFloat() );
         }catch( NumberFormatException|IOException e ){
-            return false;
+            return null;
         }
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( minHasEquals && maxHasEquals ){
           if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else if( minHasEquals ){
           if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else if( maxHasEquals ){
           if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
         else{
           if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
-            return true;
+            return new ArrayList<Integer>();
           }
-          return false;
+          return null;
         }
       default:
-        return false;
+        return null;
     }
   }
 

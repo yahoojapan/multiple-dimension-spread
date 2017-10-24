@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,6 +129,10 @@ public class PredicateBlockReader implements IBlockReader{
 
   @Override
   public void setStream( final InputStream in , final int blockSize ) throws IOException{
+    setStream( in , blockSize , null );
+  }
+
+  public void setStream( final InputStream in , final int blockSize , final Set<Integer> spreadIndexDict ) throws IOException{
     spreadSizeList.clear();
     columnBinaryTree.clear();
     columnBinaryTree.setColumnFilter( columnFilterNode );
@@ -156,7 +161,7 @@ public class PredicateBlockReader implements IBlockReader{
     int decompressSize = compressor.getDecompressSize( metaBytes , 0 , metaLength );
     byte[] metaBinary = new byte[decompressSize];
     int binaryLength = compressor.decompressAndSet(  metaBytes , 0 , metaLength , metaBinary );
-    columnBinaryTree.toColumnBinaryTree( metaBinary , 0 );
+    columnBinaryTree.toColumnBinaryTree( metaBinary , 0 , spreadIndexDict );
 
     block.setColumnBinaryTree( columnBinaryTree );
 
@@ -166,9 +171,9 @@ public class PredicateBlockReader implements IBlockReader{
 
     int inOffset = 0;
     for( BlockReadOffset blockReadOffset : readOffsetList ){
-      inOffset += InputStreamUtils.skip( in , blockReadOffset.start - inOffset );
-      inOffset = blockReadOffset.start;
-      inOffset += InputStreamUtils.read( in , blockReadOffset.buffer , 0 , blockReadOffset.length );
+      inOffset += InputStreamUtils.skip( in , blockReadOffset.streamStart - inOffset );
+      inOffset = blockReadOffset.streamStart;
+      inOffset += InputStreamUtils.read( in , blockReadOffset.buffer , blockReadOffset.bufferStart , blockReadOffset.length );
     }
     if( inOffset < dataBufferLength ){
       inOffset += InputStreamUtils.skip( in , dataBufferLength - inOffset );

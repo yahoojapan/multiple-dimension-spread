@@ -61,7 +61,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     throw new UnsupportedOperationException( "Constant binary maker not support column to binary." );
   }
 
@@ -205,7 +205,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     BlockIndexNode currentNode = parentNode.getChildNode( columnBinary.columnName );
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
     switch( columnBinary.columnType ){
@@ -308,8 +308,8 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     @Override
     public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
       PrimitiveObject[] result = new PrimitiveObject[length];
-      for( PrimitiveObject obj : result ){
-        obj = value;
+      for( int i = 0 ; i < result.length ; i++ ){
+        result[i] = value;
       }
       return result;
     }

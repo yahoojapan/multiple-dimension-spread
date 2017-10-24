@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
@@ -63,11 +67,19 @@ public class BlockSkipPredicateBlockReader extends PredicateBlockReader{
     expandFunction.expandIndexNode( blockIndexNode );
     flattenFunction.flattenIndexNode( blockIndexNode );
 
-    if( blockSkipIndex != null && blockSkipIndex.canBlockSkip( blockIndexNode ) ){
+    List<Integer> blockIndexList = null;
+    if( blockSkipIndex != null ){
+      blockIndexList = blockSkipIndex.getBlockSpreadIndex( blockIndexNode );
+    }
+    if( blockIndexList != null && blockIndexList.isEmpty() ){
       InputStreamUtils.skip( in , blockSize - ( 4 + compressorClassLength + 4 + blockIndexBinary.length ) );
     }
     else{
-      super.setStream( in , blockSize - ( 4 + compressorClassLength + 4 + blockIndexBinary.length ) );
+      Set<Integer> spreadIndexDict = null;
+      if( blockIndexList != null ){
+        spreadIndexDict = new HashSet<Integer>( blockIndexList );
+      }
+      super.setStream( in , blockSize - ( 4 + compressorClassLength + 4 + blockIndexBinary.length ) , spreadIndexDict );
     }
   }
 

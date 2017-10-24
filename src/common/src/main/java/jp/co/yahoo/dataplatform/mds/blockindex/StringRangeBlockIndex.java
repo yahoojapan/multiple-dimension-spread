@@ -21,6 +21,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringFilter;
@@ -96,8 +98,7 @@ public class StringRangeBlockIndex implements IBlockIndex{
     max = new String( maxChars );
   }
 
-  @Override
-  public boolean canBlockSkip( final IFilter filter ){
+  public List<Integer> getBlockSpreadIndex( final IFilter filter ){
     switch( filter.getFilterType() ){
       case STRING:
         IStringFilter stringFilter = (IStringFilter)filter;
@@ -105,35 +106,35 @@ public class StringRangeBlockIndex implements IBlockIndex{
         switch( stringFilter.getStringFilterType() ){
           case PERFECT:
             if( min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
-              return false;
+              return null;
             }
-            return true;
+            return new ArrayList<Integer>();
           case FORWARD:
             if( targetStr.startsWith( min ) && min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
-              return false;
+              return null;
             }
-            return true;
+            return new ArrayList<Integer>();
           default:
-            return false;
+            return null;
         }
       case STRING_COMPARE:
         IStringCompareFilter stringCompareFilter = (IStringCompareFilter)filter;
         IStringComparator comparator = stringCompareFilter.getStringComparator();
         if( comparator.isOutOfRange( min , max ) ){
-          return true;
+          return new ArrayList<Integer>();
         }
-        return false;
+        return null;
       case STRING_DICTIONARY:
         IStringDictionaryFilter stringDictionaryFilter = (IStringDictionaryFilter)filter;
         Set<String> dictionary = stringDictionaryFilter.getDictionary();
         for( String str : dictionary ){
           if( min.compareTo( str ) <= 0 && 0 <= max.compareTo( str ) ){
-            return false;
+            return null;
           }
         }
-        return true;
+        return new ArrayList<Integer>();
       default:
-        return false;
+        return null;
     }
   }
 

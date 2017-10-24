@@ -17,6 +17,7 @@
  */
 package jp.co.yahoo.dataplatform.mds.block;
 
+import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,9 +35,9 @@ public class ColumnBinaryTree{
 
   private final List<ColumnBinary> currentColumnBinaryList = new ArrayList<ColumnBinary>();
   private final Map<String,ColumnBinaryTree> childTreeMap = new HashMap<String,ColumnBinaryTree>();
+  private final List<BlockReadOffset> blockReadOffsetList = new ArrayList<BlockReadOffset>();
 
   private ColumnNameNode columnNameNode;
-  private BlockReadOffset blockReadOffset;
   private int currentCount;
   private int childCount;
   private int metaLength;
@@ -108,15 +109,13 @@ public class ColumnBinaryTree{
   }
 
   public List<BlockReadOffset> getBlockReadOffset(){
-    List<BlockReadOffset> blockReadOffsetList = new ArrayList<BlockReadOffset>();
-    if( blockReadOffset != null ){
-      blockReadOffsetList.add( blockReadOffset );
-    }
+    List<BlockReadOffset> result = new ArrayList<BlockReadOffset>();
+    result.addAll( blockReadOffsetList );
     for( Map.Entry<String,ColumnBinaryTree> entry : childTreeMap.entrySet() ){
-      blockReadOffsetList.addAll( entry.getValue().getBlockReadOffset() );
+      result.addAll( entry.getValue().getBlockReadOffset() );
     }
 
-    return blockReadOffsetList;
+    return result;
   }
 
   public void setColumnFilter( final ColumnNameNode columnNameNode ){
@@ -126,11 +125,11 @@ public class ColumnBinaryTree{
     this.columnNameNode = columnNameNode;
   }
 
-  public int toColumnBinaryTree( final byte[] metaBinary , final int start ) throws IOException{
-    return toColumnBinaryTree( metaBinary , start , columnNameNode.isNeedAllChild() );
+  public int toColumnBinaryTree( final byte[] metaBinary , final int start , final Set<Integer> spreadIndexDict ) throws IOException{
+    return toColumnBinaryTree( metaBinary , start , columnNameNode.isNeedAllChild() , spreadIndexDict );
   }
 
-  public int toColumnBinaryTree( final byte[] metaBinary , final int start , final boolean isNeedAllChild ) throws IOException{
+  public int toColumnBinaryTree( final byte[] metaBinary , final int start , final boolean isNeedAllChild , final Set<Integer> spreadIndexDict ) throws IOException{
     ByteBuffer byteBuffer = ByteBuffer.wrap( metaBinary , start , ( metaBinary.length - start ) );
     int offset = start;
     int childSize =  byteBuffer.getInt( offset );
@@ -162,7 +161,7 @@ public class ColumnBinaryTree{
           isAppend = false;
         }
       }
-      offset = childColumnBinary.toColumnBinaryTree( metaBinary , offset ); 
+      offset = childColumnBinary.toColumnBinaryTree( metaBinary , offset , spreadIndexDict ); 
       if( isAppend ){
         childCount = childColumnBinary.size();
         childTreeMap.put( childName , childColumnBinary );
@@ -181,7 +180,6 @@ public class ColumnBinaryTree{
         childBuffer = new byte[allBinaryLength];
       }
       for( int startOffset = offset ; offset < startOffset + currentMetaBinaryLength ; ){
-        currentCount++; 
         int index = byteBuffer.getInt( offset );
         offset += Integer.BYTES;
         int metaBinaryLength = byteBuffer.getInt( offset );
@@ -198,14 +196,24 @@ public class ColumnBinaryTree{
             }
           }
           ColumnBinary childColumnBinary = ColumnBinary.newInstanceFromMetaBinary( metaBinary , offset , metaBinaryLength , childBuffer , childList );
+          if( spreadIndexDict == null || spreadIndexDict.contains( Integer.valueOf( currentCount ) ) ){
+            if( allBinaryLength != 0 ){
+              blockReadOffsetList.add( new BlockReadOffset( childColumnBinary.binaryStart , childStartDataOffset , childColumnBinary.binaryLength , childBuffer ) );
+            }
+            currentColumnBinaryList.add( childColumnBinary );
+          }
+          else{
+            currentColumnBinaryList.add( null );
+          }
           childColumnBinary.binaryStart = childStartDataOffset;
           childStartDataOffset += childColumnBinary.binaryLength;
-          if( allBinaryLength != 0 ){
-            blockReadOffset = new BlockReadOffset( allBinaryStart , allBinaryLength , childBuffer );
-          }
-          currentColumnBinaryList.add( childColumnBinary );
         }
         offset += metaBinaryLength;
+        currentCount++; 
+      }
+      if( allBinaryLength != 0 && currentCount == blockReadOffsetList.size() ){
+        blockReadOffsetList.clear();
+        blockReadOffsetList.add( new BlockReadOffset( allBinaryStart , 0 , allBinaryLength , childBuffer ) );
       }
     }
 
@@ -278,7 +286,7 @@ public class ColumnBinaryTree{
     currentColumnBinaryList.clear();
     childTreeMap.clear();
     columnNameNode = null;
-    blockReadOffset = null;
+    blockReadOffsetList.clear();
     currentCount = 0;
     childCount = 0;
     metaLength = 0;

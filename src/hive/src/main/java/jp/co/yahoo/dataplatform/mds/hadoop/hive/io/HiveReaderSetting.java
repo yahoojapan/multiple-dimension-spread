@@ -35,7 +35,9 @@ import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
+import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.apache.hadoop.hive.ql.plan.MapWork;
+import org.apache.hadoop.hive.ql.plan.TableScanDesc;
 import org.apache.hadoop.hive.ql.plan.PartitionDesc;
 import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
@@ -59,6 +61,10 @@ public class HiveReaderSetting implements IReaderSetting{
 
     Set<String> pathNameSet= createPathSet( split.getPath() );
     List<ExprNodeGenericFuncDesc> filterExprs = new ArrayList<ExprNodeGenericFuncDesc>();
+    String filterExprSerialized = job.get( TableScanDesc.FILTER_EXPR_CONF_STR );
+    if( filterExprSerialized != null ){
+      filterExprs.add( SerializationUtilities.deserializeExpression(filterExprSerialized) );
+    }
 
     MapWork mapWork;
     try{
@@ -73,17 +79,6 @@ public class HiveReaderSetting implements IReaderSetting{
       return;
     }
 
-    for( Map.Entry<String, ArrayList<String>> pathsAndAliases :  mapWork.getPathToAliases().entrySet() ){
-      if( ! pathNameSet.contains( pathsAndAliases.getKey() ) ){
-        continue;
-      }
-      for( String work : pathsAndAliases.getValue() ){
-        Operator<? extends Serializable> operator = mapWork.getAliasToWork().get( work );
-        if( operator instanceof TableScanOperator ){
-          filterExprs.add( ( (TableScanOperator)operator ).getConf().getFilterExpr() );
-        }
-      }
-    }
     node = createExpressionNode( filterExprs );
 
     for( Map.Entry<String,PartitionDesc> pathsAndParts: mapWork.getPathToPartitionInfo().entrySet() ){

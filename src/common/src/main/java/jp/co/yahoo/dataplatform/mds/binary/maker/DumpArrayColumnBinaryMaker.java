@@ -51,7 +51,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
-  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column , final MakerCache makerCache ) throws IOException{
+  public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();
@@ -85,7 +85,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
         maker = childColumnConfigNode.getCurrentConfig().getColumnMaker( childColumn.getColumnType() );
       }
     }
-    columnBinaryList.add( maker.toBinary( commonConfig , childColumnConfigNode , childColumn , makerCache.getChild( childColumn.getColumnName() ) ) );
+    columnBinaryList.add( maker.toBinary( commonConfig , childColumnConfigNode , childColumn ) );
     
     return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binaryRaw.length , 0 , -1 , compressData , 0 , compressData.length , columnBinaryList );
   }
@@ -129,7 +129,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   @Override
-  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary ) throws IOException{
+  public void setBlockIndexNode( final BlockIndexNode parentNode , final ColumnBinary columnBinary , final int spreadIndex ) throws IOException{
     parentNode.getChildNode( columnBinary.columnName ).disable();
   }
 

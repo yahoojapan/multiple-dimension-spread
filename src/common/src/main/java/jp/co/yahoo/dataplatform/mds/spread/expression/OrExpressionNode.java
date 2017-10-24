@@ -65,17 +65,26 @@ public class OrExpressionNode implements IExpressionNode {
   }
 
   @Override
-  public boolean canBlockSkip( final BlockIndexNode indexNode ) throws IOException{
+  public List<Integer> getBlockSpreadIndex( final BlockIndexNode indexNode ) throws IOException{
     if( childNode.isEmpty() ){
-      return false;
+      return null;
     }
+    List<Integer> currentNode = null;
     for( IExpressionNode node : childNode ){
-      if( ! node.canBlockSkip( indexNode ) ){
-        return false;
+      List<Integer> childResult = node.getBlockSpreadIndex( indexNode );
+      if( childResult == null ){
+        return null;
+      }
+
+      if( currentNode == null ){
+        currentNode = childResult;
+      }
+      else{
+        currentNode = CollectionUtils.unionFromSortedCollection( currentNode , childResult );
       }
     }
 
-    return true;
+    return currentNode;
   }
 
 }
