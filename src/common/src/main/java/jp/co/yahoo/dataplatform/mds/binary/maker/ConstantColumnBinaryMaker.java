@@ -299,7 +299,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
         case NOT_NULL:
           return null;
         case NULL:
-          return filterArray;
+          return new boolean[filterArray.length];
         default:
           return index.filter( filter , filterArray );
       }

@@ -55,7 +55,7 @@ public class RangeStringIndex implements ICellIndex{
             }
             return filterArray;
           case FORWARD:
-            if( targetStr.startsWith( min ) && min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
+            if( min.startsWith( targetStr ) || ( 0 <= targetStr.compareTo( min ) && targetStr.compareTo( max ) <= 0 ) ){
               return null;
             }
             return filterArray;

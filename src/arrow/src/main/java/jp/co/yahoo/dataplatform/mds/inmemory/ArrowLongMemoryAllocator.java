@@ -45,17 +45,17 @@ public class ArrowLongMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setByte( final int index , final byte value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setByte()" );
+    setLong( index , (long)value );
   }
 
   @Override
   public void setShort( final int index , final short value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setShort()" );
+    setLong( index , (long)value );
   }
 
   @Override
   public void setInteger( final int index , final int value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setInteger()" );
+    setLong( index , (long)value );
   }
 
   @Override

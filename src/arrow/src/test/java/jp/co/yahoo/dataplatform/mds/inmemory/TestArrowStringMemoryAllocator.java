@@ -84,7 +84,7 @@ public class TestArrowStringMemoryAllocator{
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new UniqStringColumnBinaryMaker();
+    IColumnBinaryMaker maker = new OptimizeDumpStringColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );

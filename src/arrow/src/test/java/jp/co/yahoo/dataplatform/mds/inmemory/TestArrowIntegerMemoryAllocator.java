@@ -84,7 +84,7 @@ public class TestArrowIntegerMemoryAllocator{
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new UniqIntegerColumnBinaryMaker();
+    IColumnBinaryMaker maker = new OptimizeLongColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );

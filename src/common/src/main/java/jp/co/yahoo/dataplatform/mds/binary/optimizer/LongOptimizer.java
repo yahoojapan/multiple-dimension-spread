@@ -25,6 +25,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.LongColumnAnalizeResult;
 
@@ -33,13 +34,13 @@ public class LongOptimizer implements IOptimizer{
   private final IColumnBinaryMaker maker;
 
   public LongOptimizer( final Configuration config ) throws IOException{
-    maker = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
+    maker = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
   }
 
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     ColumnBinaryMakerConfig currentConfig = new ColumnBinaryMakerConfig( commonConfig );
-    currentConfig.byteMakerClass = maker;
+    currentConfig.longMakerClass = maker;
     return currentConfig;
   }
 

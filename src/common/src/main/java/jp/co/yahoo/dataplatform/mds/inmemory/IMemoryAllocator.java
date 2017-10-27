@@ -26,67 +26,83 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 public interface IMemoryAllocator{
 
   default void setNull( final int index ){
-    throw new UnsupportedOperationException( "Unsuppored this method." );
   }
 
   default void setBoolean( final int index , final boolean value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setByte( final int index , final byte value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setShort( final int index , final short value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setInteger( final int index , final int value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setLong( final int index , final long value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setFloat( final int index , final float value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setDouble( final int index , final double value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setBytes( final int index , final byte[] value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setBytes( index , value , 0 , value.length );
   }
 
   default void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setString( final int index , final String value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setString( final int index , final char[] value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setString( index , new String( value ) );
   }
 
   default void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setString( index , new String( value , start , length ) );
   }
 
   default void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
+  }
+
+  default void setBytesAndLength( final byte[] value , final int start , final int length , final int[] startArray , final boolean[] isNullArray ) throws IOException{
+    for( int i = 0 ; i < isNullArray.length ; i++ ){
+      if( isNullArray[i] ){
+        setNull( i );
+      }
+      else{
+        int currentLength;
+        if( i == isNullArray.length - 1 ){
+          currentLength = length - startArray[i];
+        }
+        else{
+          currentLength = startArray[i+1] - startArray[i];
+        }
+        setBytes( i , value , startArray[i] + start , currentLength );
+      }
+    }
   }
 
   default void setArrayIndex( final int index , final int start , final int length ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    setNull( index );
   }
 
   default void setValueCount( final int index ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
   }
 
   default int getValueCount() throws IOException{

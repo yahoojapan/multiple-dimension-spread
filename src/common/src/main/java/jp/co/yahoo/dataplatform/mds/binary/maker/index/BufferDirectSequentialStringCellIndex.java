@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringFilter;
@@ -93,7 +95,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> dictionaryString( final Set<String> dictionary ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( dictionary.contains( dicManager.get( i ).getString() ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && dictionary.contains( obj.getString() ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -104,7 +107,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> compareString( final IStringComparator comparator ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( ! comparator.isFilterString( dicManager.get( i ).getString() ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && obj == null || ! comparator.isFilterString( obj.getString() ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -115,7 +119,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> perfectMatch( final String targetStr ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( targetStr.equals( dicManager.get( i ).getString() ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && targetStr.equals( obj.getString() ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -126,7 +131,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> partialMatch( final String targetStr ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( ( -1 < dicManager.get( i ).getString().indexOf( targetStr) ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && ( -1 < obj.getString().indexOf( targetStr) ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -137,7 +143,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> forwardMatch( final String targetStr ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( dicManager.get( i ).getString().startsWith( targetStr ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && obj.getString().startsWith( targetStr ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -148,7 +155,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> backwardMatch( final String targetStr ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( dicManager.get( i ).getString().endsWith( targetStr ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && obj.getString().endsWith( targetStr ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
@@ -159,7 +167,8 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
   private Set<Integer> regexpMatch( final String targetStr ) throws IOException{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-      if( dicManager.get( i ).getString().matches( targetStr ) ){
+      PrimitiveObject obj = dicManager.get( i );
+      if( obj != null && obj.getString().matches( targetStr ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }

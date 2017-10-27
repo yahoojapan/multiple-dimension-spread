@@ -186,10 +186,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
       }
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target != numObj.getLong() ){
+        if( numObj == null || target != numObj.getLong() ){
           filterArray[i] = true;
         }
       }
@@ -342,10 +339,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
       }
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target != numObj.getInt() ){
+        if( numObj == null || target != numObj.getInt() ){
           filterArray[i] = true;
         }
       }
@@ -498,10 +492,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
       }
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target != numObj.getShort() ){
+        if( numObj == null || target != numObj.getShort() ){
           filterArray[i] = true;
         }
       }
@@ -654,10 +645,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
       }
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target != numObj.getByte() ){
+        if( numObj == null || target != numObj.getByte() ){
           filterArray[i] = true;
         }
       }
@@ -781,44 +769,12 @@ public class SequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public boolean[] getEqual( final boolean[] filterArray , final IDicManager dicManager , final NumberFilter numberFilter ) throws IOException{
-      Float target;
-      try{
-        target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
-      }catch( NumberFormatException e ){
-        return filterArray;
-      }
-      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-        PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target.equals( numObj.getFloat() ) ){
-          filterArray[i] = true;
-        }
-      }
-
-      return filterArray;
+      return null;
     }
 
     @Override
     public boolean[] getNotEqual( final boolean[] filterArray , final IDicManager dicManager , final NumberFilter numberFilter ) throws IOException{
-      Float target;
-      try{
-        target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
-      }catch( NumberFormatException e ){
-        return null;
-      }
-      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-        PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( ! target.equals( numObj.getFloat() ) ){
-          filterArray[i] = true;
-        }
-      }
-
-      return filterArray;
+      return null;
     }
 
     @Override
@@ -937,44 +893,12 @@ public class SequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public boolean[] getEqual( final boolean[] filterArray , final IDicManager dicManager , final NumberFilter numberFilter ) throws IOException{
-      Double target;
-      try{
-        target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
-      }catch( NumberFormatException e ){
-        return filterArray;
-      }
-      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-        PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( target.equals( numObj.getDouble() ) ){
-          filterArray[i] = true;
-        }
-      }
-
-      return filterArray;
+      return null;
     }
 
     @Override
     public boolean[] getNotEqual( final boolean[] filterArray , final IDicManager dicManager , final NumberFilter numberFilter ) throws IOException{
-      Double target;
-      try{
-        target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
-      }catch( NumberFormatException e ){
-        return null;
-      }
-      for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
-        PrimitiveObject numObj = dicManager.get( i );
-        if( numObj == null ){
-          continue;
-        }
-        if( ! target.equals( numObj.getDouble() ) ){
-          filterArray[i] = true;
-        }
-      }
-
-      return filterArray;
+      return null;
     }
 
     @Override

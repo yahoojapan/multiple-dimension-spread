@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import static org.testng.Assert.assertTrue;
 
-import jp.co.yahoo.dataplatform.mds.binary.maker.DumpStringColumnBinaryMaker;
 import org.testng.annotations.Test;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
@@ -50,7 +49,6 @@ public class TestFindColumnBinaryMaker{
   @Test( expectedExceptions = { IOException.class } )
   public void T_get_4() throws IOException{
     IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "java.lang.String" );
-    assertTrue( maker instanceof DumpStringColumnBinaryMaker);
   }
 
   @Test( expectedExceptions = { IOException.class } )

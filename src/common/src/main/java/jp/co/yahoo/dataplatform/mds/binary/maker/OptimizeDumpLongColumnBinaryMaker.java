@@ -120,7 +120,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
     PrimitiveObject[] getPrimitiveArray( final byte[] buffer , final int start , final int length ) throws IOException;
 
-    void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException;
+    void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException;
 
   }
 
@@ -140,7 +140,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( long value : longArray ){
-        wrapBuffer.put( (byte)value );
+        wrapBuffer.put( Long.valueOf( value ).byteValue() );
       }
     }
 
@@ -156,14 +156,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Byte.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setByte( i , wrapBuffer.get() );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Byte.BYTES );
           allocator.setNull( i );
         }
       }
@@ -210,14 +210,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Byte.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setLong( i , (long)( wrapBuffer.get() ) + min );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Byte.BYTES );
           allocator.setNull( i );
         }
       }
@@ -241,7 +241,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( long value : longArray ){
-        wrapBuffer.putShort( (short)value );
+        wrapBuffer.putShort( Long.valueOf( value ).shortValue() );
       }
     }
 
@@ -257,14 +257,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Short.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0){
           allocator.setShort( i , wrapBuffer.getShort() );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Short.BYTES );
           allocator.setNull( i );
         }
       }
@@ -311,14 +311,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Short.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setLong( i , (long)( wrapBuffer.getShort() ) + min );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Short.BYTES );
           allocator.setNull( i );
         }
       }
@@ -342,7 +342,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( long value : longArray ){
-        wrapBuffer.putInt( (int)value );
+        wrapBuffer.putInt( Long.valueOf( value ).intValue() );
       }
     }
 
@@ -358,14 +358,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Integer.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setInteger( i , wrapBuffer.getInt() );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Integer.BYTES );
           allocator.setNull( i );
         }
       }
@@ -411,14 +411,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
       return result;
     }
 
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Integer.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setLong( i , (long)( wrapBuffer.getInt() ) + min );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Integer.BYTES );
           allocator.setNull( i );
         }
       }
@@ -458,14 +458,14 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray ) throws IOException{
-      int size = length / Long.BYTES;
+    public void loadInMemoryStorage( final byte[] buffer , final int start , final int length , final IMemoryAllocator allocator , final byte[] isNullArray , final int size ) throws IOException{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( isNullArray[i] == 0 ){
           allocator.setLong( i , wrapBuffer.getLong() );
         }
         else{
+          wrapBuffer.position( wrapBuffer.position() + Long.BYTES );
           allocator.setNull( i );
         }
       }
@@ -571,7 +571,10 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
     byte[] binary = compressor.decompress( columnBinary.binary , start , length );
 
-    binaryMaker.loadInMemoryStorage( columnBinary.binary , start , length , allocator , binary );
+    int isNullLength = columnBinary.rowCount;
+    int binaryLength = binaryMaker.calcBinarySize( columnBinary.rowCount );
+
+    binaryMaker.loadInMemoryStorage( binary , isNullLength , binaryLength , allocator , binary , columnBinary.rowCount );
 
     allocator.setValueCount( columnBinary.rowCount );
   }
@@ -588,14 +591,21 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
   public class DicManager implements IDicManager{
 
     private final PrimitiveObject[] dicArray;
+    private final byte[] nullArray;
 
-    public DicManager( final PrimitiveObject[] dicArray ) throws IOException{
+    public DicManager( final PrimitiveObject[] dicArray , final byte[] nullArray ) throws IOException{
       this.dicArray = dicArray;
+      this.nullArray = nullArray;
     }
 
     @Override
     public PrimitiveObject get( final int index ) throws IOException{
-      return dicArray[index];
+      if( nullArray[index] == 0 ){
+        return dicArray[index];
+      }
+      else{
+        return null;
+      }
     }
 
     @Override
@@ -633,7 +643,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
       PrimitiveObject[] dicArray = binaryMaker.getPrimitiveArray( binary , isNullLength , binaryLength );
 
-      IDicManager dicManager = new DicManager( dicArray );
+      IDicManager dicManager = new DicManager( dicArray , binary );
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
       column.setIndex( new SequentialNumberCellIndex( columnBinary.columnType , dicManager ) );

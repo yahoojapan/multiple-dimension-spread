@@ -147,7 +147,7 @@ public final class NullColumn implements IColumn {
 
   @Override
   public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
-    return filterArray;
+    return null;
   }
 
   @Override

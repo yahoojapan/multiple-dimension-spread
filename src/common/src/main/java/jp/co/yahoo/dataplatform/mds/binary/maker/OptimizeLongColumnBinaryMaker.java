@@ -426,6 +426,7 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < size ; i++ ){
         result.put( (int)( wrapBuffer.get() ) );
       }
+      result.position( 0 );
       return result;
     }
 
@@ -454,6 +455,7 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < size ; i++ ){
         result.put( (int)( wrapBuffer.getShort() ) );
       }
+      result.position( 0 );
       return result;
     }
 
