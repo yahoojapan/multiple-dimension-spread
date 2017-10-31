@@ -51,7 +51,7 @@ public class TestBooleanCellIndex{
     };
   }
 
-  private IColumn createBooleanTestData( final String targetClassName ) throws IOException{
+  public IColumn createBooleanTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BOOLEAN , "column" );
     column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 0 );
     column.add( ColumnType.BOOLEAN , new BooleanObj( false ) , 1 );
@@ -82,7 +82,7 @@ public class TestBooleanCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createStringTestData( final String targetClassName ) throws IOException{
+  public IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "true" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "false" ) , 1 );
@@ -113,7 +113,7 @@ public class TestBooleanCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  public IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "true".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "false".getBytes() ) , 1 );

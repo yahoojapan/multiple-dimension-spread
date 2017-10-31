@@ -69,7 +69,7 @@ public class TestStringCellIndex{
     };
   }
 
-  private IColumn createByteTestData( final String targetClassName ) throws IOException{
+  public IColumn createByteTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTE , "column" );
     column.add( ColumnType.BYTE , new ByteObj( (byte)0 ) , 0 );
     column.add( ColumnType.BYTE , new ByteObj( (byte)1 ) , 1 );
@@ -100,7 +100,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createShortTestData( final String targetClassName ) throws IOException{
+  public IColumn createShortTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.SHORT , "column" );
     column.add( ColumnType.SHORT , new ShortObj( (short)0 ) , 0 );
     column.add( ColumnType.SHORT , new ShortObj( (short)1 ) , 1 );
@@ -131,7 +131,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createIntTestData( final String targetClassName ) throws IOException{
+  public IColumn createIntTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.INTEGER , "column" );
     column.add( ColumnType.INTEGER , new IntegerObj( 0 ) , 0 );
     column.add( ColumnType.INTEGER , new IntegerObj( 1 ) , 1 );
@@ -162,7 +162,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createLongTestData( final String targetClassName ) throws IOException{
+  public IColumn createLongTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.LONG , "column" );
     column.add( ColumnType.LONG , new LongObj( 0 ) , 0 );
     column.add( ColumnType.LONG , new LongObj( 1 ) , 1 );
@@ -193,7 +193,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createFloatTestData( final String targetClassName ) throws IOException{
+  public IColumn createFloatTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.FLOAT , "column" );
     column.add( ColumnType.FLOAT , new FloatObj( 0.0f ) , 0 );
     column.add( ColumnType.FLOAT , new FloatObj( 1.0f ) , 1 );
@@ -224,7 +224,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createDoubleTestData( final String targetClassName ) throws IOException{
+  public IColumn createDoubleTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "column" );
     column.add( ColumnType.DOUBLE , new DoubleObj( 0.0d ) , 0 );
     column.add( ColumnType.DOUBLE , new DoubleObj( 1.0d ) , 1 );
@@ -255,7 +255,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createStringTestData( final String targetClassName ) throws IOException{
+  public IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "0" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "1" ) , 1 );
@@ -286,7 +286,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  public IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "0".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "1".getBytes() ) , 1 );

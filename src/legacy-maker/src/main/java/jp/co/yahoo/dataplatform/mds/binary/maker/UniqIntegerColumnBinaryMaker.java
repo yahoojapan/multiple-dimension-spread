@@ -64,7 +64,7 @@ public class UniqIntegerColumnBinaryMaker implements IColumnBinaryMaker{
     indexWrapBuffer.putInt( columnIndexLength );
 
     dicMap.put( null , Integer.valueOf(0) );
-    dicWrapBuffer.putInt( Integer.valueOf( (short)0 ) );
+    dicWrapBuffer.putInt( Integer.valueOf( 0 ) );
 
     int rowCount = 0;
     boolean hasNull = false;
@@ -81,7 +81,7 @@ public class UniqIntegerColumnBinaryMaker implements IColumnBinaryMaker{
       }
       if( ! dicMap.containsKey( target ) ){
         dicMap.put( target , dicMap.size() );
-        dicWrapBuffer.putInt( target.shortValue() );
+        dicWrapBuffer.putInt( target.intValue() );
       }
       indexWrapBuffer.putInt( dicMap.get( target ) );
     }

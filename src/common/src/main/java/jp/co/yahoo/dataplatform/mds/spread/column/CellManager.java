@@ -69,6 +69,9 @@ public class CellManager implements ICellManager{
 
   @Override
   public int size(){
+    if( cellIndex.isEmpty() ){
+      return 0;
+    }
     return maxIndex + 1;
   }
 
