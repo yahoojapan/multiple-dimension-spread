@@ -22,6 +22,15 @@ import java.io.IOException;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.NullableUInt4Vector;
 
+import jp.co.yahoo.dataplatform.schema.objects.BytesObj;
+import jp.co.yahoo.dataplatform.schema.objects.StringObj;
+import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
+import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
+import jp.co.yahoo.dataplatform.schema.objects.IntegerObj;
+import jp.co.yahoo.dataplatform.schema.objects.LongObj;
+import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
+import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowIntegerMemoryAllocator implements IMemoryAllocator{
@@ -45,12 +54,12 @@ public class ArrowIntegerMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setByte( final int index , final byte value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setByte()" );
+    setInteger( index , (int)value );
   }
 
   @Override
   public void setShort( final int index , final short value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setShort()" );
+    setInteger( index , (int)value );
   }
 
   @Override
@@ -60,7 +69,7 @@ public class ArrowIntegerMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setLong( final int index , final long value ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setLong()" );
+    setInteger( index , new LongObj( value ).getInt() );
   }
 
   @Override

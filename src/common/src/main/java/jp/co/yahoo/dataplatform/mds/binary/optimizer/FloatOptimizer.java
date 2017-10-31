@@ -24,7 +24,7 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.FloatColumnAnalizeResult;
 
@@ -33,7 +33,7 @@ public class FloatOptimizer implements IOptimizer{
   private final IColumnBinaryMaker maker;
 
   public FloatOptimizer( final Configuration config ) throws IOException{
-    maker = FindColumnBinaryMaker.get( OptimizeFloatColumnBinaryMaker.class.getName() );
+    maker = FindColumnBinaryMaker.get( RangeDumpFloatColumnBinaryMaker.class.getName() );
   }
 
   @Override

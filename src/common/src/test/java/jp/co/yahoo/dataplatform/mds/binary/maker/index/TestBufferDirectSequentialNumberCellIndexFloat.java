@@ -62,53 +62,6 @@ public class TestBufferDirectSequentialNumberCellIndexFloat{
   }
 
   @Test
-  public void T_float_filter_1() throws IOException{
-    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new FloatObj( (float) 1.00001 ) );
-    dic.add( new FloatObj( (float) 2.00001 ) );
-    dic.add( new FloatObj( (float) 3.00001 ) );
-    dic.add( new FloatObj( (float) 4.00001 ) );
-    dic.add( new FloatObj( (float) 5.00001 ) );
-    IntBuffer buffer = IntBuffer.allocate( 100 );
-    for( int i = 0 ; i < 100 ; i++ ){
-      buffer.put( i % 5 );
-    }
-    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.FLOAT , new TestDicManager( dic ) , buffer );
-    IFilter filter = new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float) 1.00001 ) );
-
-    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
-    assertEquals( result.size() , 20 );
-    for( int i = 0,n=0 ; n < 100 ; i++,n+=5 ){
-      assertEquals( result.get(i) , n );
-    }
-  }
-
-  @Test
-  public void T_float_filter_2() throws IOException{
-    List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
-    dic.add( new FloatObj( (float) 1.00001 ) );
-    dic.add( new FloatObj( (float) 2.00001 ) );
-    dic.add( new FloatObj( (float) 3.00001 ) );
-    dic.add( new FloatObj( (float) 4.00001 ) );
-    dic.add( new FloatObj( (float) 5.00001 ) );
-    IntBuffer buffer = IntBuffer.allocate( 100 );
-    for( int i = 0 ; i < 100 ; i++ ){
-      buffer.put( i % 5 );
-    }
-    ICellIndex index = new BufferDirectSequentialNumberCellIndex( ColumnType.FLOAT , new TestDicManager( dic ) , buffer );
-    IFilter filter = new NumberFilter( NumberFilterType.NOT_EQUAL , new FloatObj( (float) 1.00001 ) );
-
-    FilterdExpressionIndex result = new FilterdExpressionIndex( index.filter( filter , new boolean[100] ) );
-    assertEquals( result.size() , 80 );
-    for( int i = 0,n=0 ; n < 100 ; i+=4,n+=5 ){
-      assertEquals( result.get(i) , n + 1 );
-      assertEquals( result.get(i+1) , n + 2 );
-      assertEquals( result.get(i+2) , n + 3 );
-      assertEquals( result.get(i+3) , n + 4 );
-    }
-  }
-
-  @Test
   public void T_float_filter_3() throws IOException{
     List<PrimitiveObject> dic = new ArrayList<PrimitiveObject>();
     dic.add( new FloatObj( (float) 1.00001 ) );

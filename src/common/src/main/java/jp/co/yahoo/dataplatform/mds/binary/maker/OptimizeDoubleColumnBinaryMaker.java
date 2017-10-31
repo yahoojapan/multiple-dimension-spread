@@ -144,6 +144,7 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < size ; i++ ){
         result.put( (int)( wrapBuffer.get() ) );
       }
+      result.position( 0 );
       return result;
     }
 
@@ -172,6 +173,7 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < size ; i++ ){
         result.put( (int)( wrapBuffer.getShort() ) );
       }
+      result.position( 0 );
       return result;
     }
 
@@ -315,14 +317,13 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
     IntBuffer indexIntBuffer = indexMaker.getIndexIntBuffer( binary , 0 , indexLength );
     PrimitiveObject[] dicArray = dicMaker.getDicPrimitiveArray( binary , indexLength , dicLength );
 
-    int loopCount = indexIntBuffer.capacity();
-    for( int i = 0 ; i < loopCount ; i++ ){
+    for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
       int dicIndex = indexIntBuffer.get();
       if( dicIndex != 0 ){
         allocator.setDouble( i , dicArray[dicIndex].getDouble() );
       }
     }
-    allocator.setValueCount( loopCount );
+    allocator.setValueCount( columnBinary.rowCount );
   }
 
   @Override

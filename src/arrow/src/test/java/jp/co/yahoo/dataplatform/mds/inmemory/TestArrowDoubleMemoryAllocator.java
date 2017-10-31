@@ -84,7 +84,7 @@ public class TestArrowDoubleMemoryAllocator{
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
 
-    IColumnBinaryMaker maker = new UniqDoubleColumnBinaryMaker();
+    IColumnBinaryMaker maker = new OptimizeDoubleColumnBinaryMaker();
     ColumnBinary columnBinary = maker.toBinary( defaultConfig , null , column );
 
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );

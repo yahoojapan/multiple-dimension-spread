@@ -45,6 +45,9 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
 
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
+    if( column.size() == 0 ){
+      return new UnsupportedColumnBinaryMaker().toBinary( commonConfig , currentConfigNode , column );
+    }
     ColumnBinaryMakerConfig currentConfig = commonConfig;
     if( currentConfigNode != null ){
       currentConfig = currentConfigNode.getCurrentConfig();

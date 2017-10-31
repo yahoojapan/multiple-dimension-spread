@@ -199,7 +199,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
           return filterArray;
         case NULL:
           for( int i = 0 ; i < cellArray.length ; i++ ){
-            if( cellArray == null ){
+            if( cellArray[i] == null ){
               filterArray[i] = true;
             }
           }

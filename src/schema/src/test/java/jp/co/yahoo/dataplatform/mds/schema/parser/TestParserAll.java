@@ -176,22 +176,4 @@ public class TestParserAll{
     reader.close();
   }
 
-  @Test
-  public void T_parser_8() throws IOException{
-    MDSSchemaReader reader = new MDSSchemaReader();
-    IExpressionNode node = new AndExpressionNode();
-    StringExtractNode dNode = new StringExtractNode( "z" );
-    node.addChildNode( new ExecuterNode( new StringExtractNode( "col3" , dNode ) , new PerfectMatchStringFilter( "a" ) ) );
-    reader.setExpressionNode( node );
-    Configuration config = new Configuration();
-    reader.setNewStream( createFile() , 1024 * 1024 * 2 , config );
-    while( reader.hasNext() ){
-      IParser parser = reader.next();
-      IParser col3 = parser.getParser( "col3" );
-      PrimitiveObject a = col3.get( "z" );
-      assertEquals( "a" , a.getString() );
-    }
-    reader.close();
-  }
-
 }

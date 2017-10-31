@@ -80,16 +80,18 @@ public class TestRangeStringIndex{
       { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "09" , true , "09" , true ) , dummy },
       { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "21" , true , "21" , true ) , dummy },
 
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "05" , true , "15" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "20" , true , "21" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "15" , true , "25" , true , true ) , dummy },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , null },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "05" , true , "15" , true , true ) , null },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "20" , true , "21" , true , true ) , null },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "15" , true , "25" , true , true ) , null },
       { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "10" , true , "20" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "20" , true , "20" , true , true ) , dummy },
-      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "15" , true , "16" , true , true ) , dummy },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , null },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "20" , true , "20" , true , true ) , null },
+      { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "15" , true , "16" , true , true ) , null },
       { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "09" , true , "09" , true , true ) , null },
       { new RangeStringIndex( "10" , "20" , true ) , new RangeStringCompareFilter( "21" , true , "21" , true , true ) , null },
+
+      { new RangeStringIndex( "a__0" , "j__9" , true ) , new RangeStringCompareFilter( "b" , true , "b__1" , true , true ) , null },
     };
   }
 

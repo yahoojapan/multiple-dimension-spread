@@ -25,6 +25,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker;
+import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.ByteColumnAnalizeResult;
 
@@ -33,7 +34,7 @@ public class ByteOptimizer implements IOptimizer{
   private final IColumnBinaryMaker maker;
 
   public ByteOptimizer( final Configuration config ) throws IOException{
-    maker = FindColumnBinaryMaker.get( OptimizeLongColumnBinaryMaker.class.getName() );
+    maker = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
   }
 
   @Override

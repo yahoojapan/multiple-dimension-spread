@@ -60,6 +60,7 @@
 
   <modules>
     <module>common</module>
+    <module>legacy-maker</module>
     <module>schema</module>
     <module>hadoop</module>
     <module>hive</module>

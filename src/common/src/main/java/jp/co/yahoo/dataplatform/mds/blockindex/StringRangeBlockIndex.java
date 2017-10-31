@@ -110,7 +110,7 @@ public class StringRangeBlockIndex implements IBlockIndex{
             }
             return new ArrayList<Integer>();
           case FORWARD:
-            if( targetStr.startsWith( min ) && min.compareTo( targetStr ) <= 0 && 0 <= max.compareTo( targetStr ) ){
+            if( min.startsWith( targetStr ) || ( 0 <= targetStr.compareTo( min ) && targetStr.compareTo( max ) <= 0 ) ){
               return null;
             }
             return new ArrayList<Integer>();

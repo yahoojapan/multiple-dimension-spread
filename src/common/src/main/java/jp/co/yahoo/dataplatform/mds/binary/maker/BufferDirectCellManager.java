@@ -95,7 +95,7 @@ public class BufferDirectCellManager implements ICellManager {
       case NOT_NULL:
         return null;
       case NULL:
-        return filterArray;
+        return null;
       default:
         return index.filter( filter , filterArray );
     }
