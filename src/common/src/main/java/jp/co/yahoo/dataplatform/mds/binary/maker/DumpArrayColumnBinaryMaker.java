@@ -38,6 +38,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadArrayLink;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -191,19 +192,9 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
       switch( filter.getFilterType() ){
         case NOT_NULL:
-          for( int i = 0 ; i < cellArray.length ; i++ ){
-            if( cellArray[i] != null ){
-              filterArray[i] = true;
-            }
-          }
-          return filterArray;
+          return null;
         case NULL:
-          for( int i = 0 ; i < cellArray.length ; i++ ){
-            if( cellArray[i] == null ){
-              filterArray[i] = true;
-            }
-          }
-          return filterArray;
+          return null;
         default:
           return null;
       }

@@ -36,6 +36,7 @@ import jp.co.yahoo.dataplatform.mds.spread.expression.*;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
 public class TestBufferDirectSequentialStringCellIndex{
@@ -189,7 +190,7 @@ public class TestBufferDirectSequentialStringCellIndex{
       buffer.put( i % 5 );
     }
     ICellIndex index = new BufferDirectSequentialStringCellIndex( new TestDicManager( dic ) , buffer );
-    boolean[] result = index.filter( new NullFilter() , new boolean[100] );
+    boolean[] result = index.filter( new NullFilter( ColumnType.STRING ) , new boolean[100] );
     assertEquals( result , null );
   }
 

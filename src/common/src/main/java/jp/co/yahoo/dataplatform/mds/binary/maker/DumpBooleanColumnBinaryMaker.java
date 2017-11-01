@@ -35,6 +35,7 @@ import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
@@ -174,19 +175,9 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
     public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
       switch( filter.getFilterType() ){
         case NOT_NULL:
-          for( int i = 0 ; i < buffer.length ; i++ ){
-            if( buffer[i] != 2 ){
-              filterArray[i] = true;
-            }
-          }
-          return filterArray;
+          return null;
         case NULL:
-          for( int i = 0 ; i < buffer.length ; i++ ){
-            if( buffer[i] == 2 ){
-              filterArray[i] = true;
-            }
-          }
-          return filterArray;
+          return null;
         default:
           return index.filter( filter , filterArray );
       }

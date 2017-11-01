@@ -20,11 +20,13 @@ package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+
 public class TestNullFilter {
 
   @Test
   public void getFilterType() {
-      NullFilter target = new NullFilter();
+      NullFilter target = new NullFilter( ColumnType.NULL );
       assertEquals(target.getFilterType(), FilterType.NULL);
   }
 

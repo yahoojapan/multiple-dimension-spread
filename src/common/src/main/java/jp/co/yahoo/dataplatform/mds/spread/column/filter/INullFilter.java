@@ -17,7 +17,11 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+
 public interface INullFilter extends IFilter{
+
+  ColumnType getTargetColumnType();
 
   FilterType getFilterType();
 

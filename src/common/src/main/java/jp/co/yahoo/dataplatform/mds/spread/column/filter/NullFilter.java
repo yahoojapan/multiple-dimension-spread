@@ -17,7 +17,20 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+
 public class NullFilter implements INullFilter {
+
+  private final ColumnType type;
+
+  public NullFilter( final ColumnType type ){
+    this.type = type;
+  }
+
+  @Override
+  public ColumnType getTargetColumnType(){
+    return type;
+  }
 
   @Override
   public FilterType getFilterType(){
