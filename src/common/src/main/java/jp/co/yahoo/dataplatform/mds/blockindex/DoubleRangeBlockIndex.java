@@ -137,26 +137,29 @@ public class DoubleRangeBlockIndex implements IBlockIndex{
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
+        if( invert ){
+          return null;
+        }
         if( minHasEquals && maxHasEquals ){
-          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( minHasEquals ){
-          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( maxHasEquals ){
-          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else{
-          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) ){
             return new ArrayList<Integer>();
           }
           return null;

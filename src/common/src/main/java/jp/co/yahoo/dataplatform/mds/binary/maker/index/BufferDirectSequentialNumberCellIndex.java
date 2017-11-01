@@ -308,6 +308,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       long min;
       long max;
       try{
@@ -324,7 +327,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         long target = numObj.getLong();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }
@@ -468,6 +471,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       int min;
       int max;
       try{
@@ -484,7 +490,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         int target = numObj.getInt();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }
@@ -628,6 +634,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       short min;
       short max;
       try{
@@ -644,7 +653,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         short target = numObj.getShort();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }
@@ -788,6 +797,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       byte min;
       byte max;
       try{
@@ -804,7 +816,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         byte target = numObj.getByte();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }
@@ -917,6 +929,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       Float min;
       Float max;
       try{
@@ -933,7 +948,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         Float target = Float.valueOf( numObj.getFloat() );
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }
@@ -1046,6 +1061,9 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
       Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       Double min;
       Double max;
       try{
@@ -1062,7 +1080,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         Double target = Double.valueOf( numObj.getDouble() );
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           matchDicList.add( Integer.valueOf( i ) );
         }
       }

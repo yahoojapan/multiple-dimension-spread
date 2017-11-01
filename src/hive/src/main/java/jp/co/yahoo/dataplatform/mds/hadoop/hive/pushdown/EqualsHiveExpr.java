@@ -44,6 +44,7 @@ import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
@@ -51,6 +52,8 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilterType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
+
+import jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSColumnTypeUtil;
 
 public class EqualsHiveExpr implements IHiveExprNode{
 
@@ -60,7 +63,7 @@ public class EqualsHiveExpr implements IHiveExprNode{
     this.nodeDescList = nodeDescList;
   }
 
-  public static IExpressionNode getEqualsExecuter(final ExprNodeConstantDesc constDesc , final IExtractNode targetColumn ){
+  public static IExpressionNode getEqualsExecuter( final ExprNodeConstantDesc constDesc , final IExtractNode targetColumn , final ColumnType targetColumnType ){
     ObjectInspector objectInspector = constDesc.getWritableObjectInspector();
     if( objectInspector.getCategory() != ObjectInspector.Category.PRIMITIVE ){
       return null;
@@ -110,7 +113,7 @@ public class EqualsHiveExpr implements IHiveExprNode{
       case VOID:
         Object voidObj = ( (WritableVoidObjectInspector)primitiveObjectInspector ).getWritableConstantValue();
         if( voidObj == null ){
-          filter = new NullFilter();
+          filter = new NullFilter( targetColumnType );
         }
         else{
           filter = null;
@@ -159,7 +162,9 @@ public class EqualsHiveExpr implements IHiveExprNode{
       return null;
     }
 
-    return getEqualsExecuter( constantDesc , extractNode );
+    ColumnType targetColumnType = MDSColumnTypeUtil.typeInfoToColumnType( columnDesc.getTypeInfo() );
+
+    return getEqualsExecuter( constantDesc , extractNode , targetColumnType );
   }
 
 }

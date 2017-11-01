@@ -34,6 +34,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
@@ -247,6 +248,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
 
   public class ConstantCellManager implements ICellManager{
 
+    private final ColumnType columnType;
     private final ICell cell;
     private final PrimitiveObject value;
     private final int length;
@@ -254,6 +256,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     private ICellIndex index = new DefaultCellIndex();
 
     public ConstantCellManager( final ColumnType columnType , final PrimitiveObject value , final int length ){
+      this.columnType = columnType;
       this.value = value;
       this.length = length;
       cell = new PrimitiveCell( columnType , value );
@@ -299,6 +302,9 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
         case NOT_NULL:
           return null;
         case NULL:
+          if( columnType != ( (INullFilter)filter ).getTargetColumnType() ){
+            return null;
+          }
           return new boolean[filterArray.length];
         default:
           return index.filter( filter , filterArray );

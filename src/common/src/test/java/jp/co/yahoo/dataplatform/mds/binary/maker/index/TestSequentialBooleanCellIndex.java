@@ -27,6 +27,7 @@ import static org.testng.Assert.assertNull;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.BooleanFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NullFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import org.testng.annotations.Test;
 
 public class TestSequentialBooleanCellIndex{
@@ -94,7 +95,7 @@ public class TestSequentialBooleanCellIndex{
       data[i] = (byte)( i % 2 );
     }
     SequentialBooleanCellIndex index = new SequentialBooleanCellIndex( data );
-    boolean[] result = index.filter( new NullFilter() , new boolean[10] );
+    boolean[] result = index.filter( new NullFilter( ColumnType.BOOLEAN ) , new boolean[10] );
     assertEquals( result , null );
   }
 

@@ -29,6 +29,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IDictionaryCellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
@@ -96,6 +97,9 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
   public boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException{
     switch( filter.getFilterType() ){
       case NOT_NULL:
+        if( columnType != ( (INullFilter)filter ).getTargetColumnType() ){
+          return null;
+        }
         for( int i = 0 ; i < size() ; i++ ){
           if( dicIndexIntBuffer.get(i) != 0 ){
             filterArray[i] = true;
@@ -103,6 +107,9 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
         }
         return filterArray;
       case NULL:
+        if( columnType != ( (INullFilter)filter ).getTargetColumnType() ){
+          return null;
+        }
         for( int i = 0 ; i < size() ; i++ ){
           if( dicIndexIntBuffer.get(i) == 0 ){
             filterArray[i] = true;

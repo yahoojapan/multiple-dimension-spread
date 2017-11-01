@@ -383,7 +383,7 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public int getLogicalSize( final int columnSize ){
-      return Integer.BYTES * columnSize;
+      return Long.BYTES * columnSize;
     }
 
     @Override

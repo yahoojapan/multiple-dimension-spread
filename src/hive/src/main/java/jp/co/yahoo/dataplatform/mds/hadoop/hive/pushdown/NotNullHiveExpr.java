@@ -26,7 +26,10 @@ import org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.ExecuterNode;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
+import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NotNullFilter;
+
+import jp.co.yahoo.dataplatform.mds.hadoop.hive.MDSColumnTypeUtil;
 
 public class NotNullHiveExpr implements IHiveExprNode{
 
@@ -56,7 +59,10 @@ public class NotNullHiveExpr implements IHiveExprNode{
     if( extractNode == null ){
       return null;
     }
-    return new ExecuterNode( extractNode , new NotNullFilter() );
+
+    ColumnType targetColumnType = MDSColumnTypeUtil.typeInfoToColumnType( columnDesc.getTypeInfo() );
+
+    return new ExecuterNode( extractNode , new NotNullFilter( targetColumnType ) );
   }
 
 }
