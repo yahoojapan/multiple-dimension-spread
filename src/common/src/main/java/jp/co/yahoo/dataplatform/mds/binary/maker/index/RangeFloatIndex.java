@@ -90,26 +90,29 @@ public class RangeFloatIndex implements ICellIndex{
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
+        if( invert ){
+          return null;
+        }
         if( minHasEquals && maxHasEquals ){
-          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) ){
             return filterArray;
           }
           return null;
         }
         else if( minHasEquals ){
-          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
+          if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) ){
             return filterArray;
           }
           return null;
         }
         else if( maxHasEquals ){
-          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) ){
             return filterArray;
           }
           return null;
         }
         else{
-          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) != invert ){
+          if( ( 0 <= min.compareTo( setMax ) || max.compareTo( setMin ) <= 0 ) ){
             return filterArray;
           }
           return null;

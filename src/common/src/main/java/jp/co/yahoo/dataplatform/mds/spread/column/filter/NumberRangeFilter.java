@@ -27,6 +27,10 @@ public class NumberRangeFilter implements IFilter{
   private final PrimitiveObject maxObj;
   private final boolean maxHasEquals;
 
+  public NumberRangeFilter( final PrimitiveObject minObj , final boolean minHasEquals , final PrimitiveObject maxObj , final boolean maxHasEquals ){
+    this( false , minObj , minHasEquals , maxObj , maxHasEquals );
+  }
+
   public NumberRangeFilter( final boolean invert , final PrimitiveObject minObj , final boolean minHasEquals , final PrimitiveObject maxObj , final boolean maxHasEquals ){
     this.invert = invert;
     this.minObj = minObj;

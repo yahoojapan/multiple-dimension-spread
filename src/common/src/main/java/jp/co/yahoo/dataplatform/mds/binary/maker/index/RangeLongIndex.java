@@ -90,26 +90,29 @@ public class RangeLongIndex implements ICellIndex{
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
+        if( invert ){
+          return null;
+        }
         if( minHasEquals && maxHasEquals ){
-          if( ( setMax < min || max < setMin ) != invert ){
+          if( ( setMax < min || max < setMin ) ){
             return filterArray;
           }
           return null;
         }
         else if( minHasEquals ){
-          if( ( setMax < min || max <= setMin ) != invert ){
+          if( ( setMax < min || max <= setMin ) ){
             return filterArray;
           }
           return null;
         }
         else if( maxHasEquals ){
-          if( ( setMax <= min || max < setMin ) != invert ){
+          if( ( setMax <= min || max < setMin ) ){
             return filterArray;
           }
           return null;
         }
         else{
-          if( ( setMax <= min || max <= setMin ) != invert ){
+          if( ( setMax <= min || max <= setMin ) ){
             return filterArray;
           }
           return null;

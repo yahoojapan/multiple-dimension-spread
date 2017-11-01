@@ -654,4 +654,164 @@ public class TestNumberCellIndex{
     }
   }
 
+  @Test( dataProvider = "target_class" )
+  public void T_range_1( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 , 25 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( compareData1[i] , true , compareData2[i] , true );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_2( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 21 , 22 , 23 , 24 , 25 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( compareData1[i] , false , compareData2[i] , true );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_3( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( compareData1[i] , true , compareData2[i] , false );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_4( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 21 , 22 , 23 , 24  };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( compareData1[i] , false , compareData2[i] , false );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_5( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 26 , 27 , 28 , 29 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( true , compareData1[i] , true , compareData2[i] , true );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_6( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 26 , 27 , 28 , 29 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( true , compareData1[i] , false , compareData2[i] , true );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_7( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 25 , 26 , 27 , 28 , 29 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( true , compareData1[i] , true , compareData2[i] , false );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
+  @Test( dataProvider = "target_class" )
+  public void T_range_8( final IColumn column ) throws IOException{
+    int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 25 , 26 , 27 , 28 , 29 };
+    PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
+    PrimitiveObject[] compareData2 = new PrimitiveObject[]{ new ByteObj( (byte)25 ) , new ShortObj( (short)25 ) , new IntegerObj( 25 ) , new LongObj( 25 ) , new FloatObj( 25.0f ) , new DoubleObj( 25.0d ) };
+    for( int i = 0 ; i < compareData1.length ; i++ ){
+      IFilter filter = new NumberRangeFilter( true , compareData1[i] , false , compareData2[i] , false );
+      boolean[] filterResult = new boolean[30];
+      filterResult = column.filter( filter , filterResult );
+      if( filterResult == null ){
+        assertTrue( true );
+        return;
+      }
+      //dumpFilterResult( filterResult );
+      for( int ii = 0 ; ii < mustReadIndex.length ; ii++ ){
+        assertTrue( filterResult[mustReadIndex[ii]] );
+      }
+    }
+  }
+
 }

@@ -137,26 +137,29 @@ public class LongRangeBlockIndex implements IBlockIndex{
         boolean minHasEquals = numberRangeFilter.isMinHasEquals();
         boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
+        if( invert ){
+          return null;
+        }
         if( minHasEquals && maxHasEquals ){
-          if( ( setMax < min || max < setMin ) != invert ){
+          if( ( setMax < min || max < setMin ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( minHasEquals ){
-          if( ( setMax < min || max <= setMin ) != invert ){
+          if( ( setMax < min || max <= setMin ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else if( maxHasEquals ){
-          if( ( setMax <= min || max < setMin ) != invert ){
+          if( ( setMax <= min || max < setMin ) ){
             return new ArrayList<Integer>();
           }
           return null;
         }
         else{
-          if( ( setMax <= min || max <= setMin ) != invert ){
+          if( ( setMax <= min || max <= setMin ) ){
             return new ArrayList<Integer>();
           }
           return null;
@@ -177,6 +180,11 @@ public class LongRangeBlockIndex implements IBlockIndex{
 
   public long getMax(){
     return max;
+  }
+
+  @Override
+  public String toString(){
+    return String.format( "%s min=%d max=%d" , this.getClass().getName() , min , max );
   }
 
 }

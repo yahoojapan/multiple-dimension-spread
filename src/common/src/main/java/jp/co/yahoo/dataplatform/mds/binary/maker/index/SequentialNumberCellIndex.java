@@ -281,6 +281,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       long min;
       long max;
       try{
@@ -297,7 +300,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         long target = numObj.getLong();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
@@ -434,6 +437,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       int min;
       int max;
       try{
@@ -450,7 +456,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         int target = numObj.getInt();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
@@ -587,6 +593,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       short min;
       short max;
       try{
@@ -603,7 +612,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         short target = numObj.getShort();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
@@ -740,6 +749,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       byte min;
       byte max;
       try{
@@ -756,7 +768,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         byte target = numObj.getByte();
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
@@ -864,6 +876,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       Float min;
       Float max;
       try{
@@ -880,7 +895,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         Float target = Float.valueOf( numObj.getFloat() );
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
@@ -988,6 +1003,9 @@ public class SequentialNumberCellIndex implements ICellIndex{
     @Override
     public boolean[] getRange( final boolean[] filterArray , final IDicManager dicManager , final NumberRangeFilter numberRangeFilter ) throws IOException{
       boolean invert = numberRangeFilter.isInvert();
+      if( invert ){
+        return null;
+      }
       Double min;
       Double max;
       try{
@@ -1004,7 +1022,7 @@ public class SequentialNumberCellIndex implements ICellIndex{
           continue;
         }
         Double target = Double.valueOf( numObj.getDouble() );
-        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) != invert ){
+        if( NumberUtils.range( min , minHasEquals , max , maxHasEquals , target ) ){
           filterArray[i] = true;
         }
       }
