@@ -45,6 +45,7 @@ public class TestBooleanCellIndex{
     return new Object[][] {
       { createBooleanTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" ) },
 
+      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
 
       { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },

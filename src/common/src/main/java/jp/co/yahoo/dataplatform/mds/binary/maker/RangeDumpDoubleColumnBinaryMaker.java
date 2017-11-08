@@ -238,7 +238,6 @@ public class RangeDumpDoubleColumnBinaryMaker extends DumpDoubleColumnBinaryMake
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeDoubleDicManager( ByteBuffer.wrap( binary ).asDoubleBuffer() );
       column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
-      column.setIndex( new SequentialNumberCellIndex( ColumnType.DOUBLE , dicManager ) );
 
       isCreate = true;
     }

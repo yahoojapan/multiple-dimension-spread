@@ -203,6 +203,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
       default:
         throw new IOException( "Unknown primitive type." );
     }
+    allocator.setValueCount( columnBinary.rowCount );
   }
 
   @Override

@@ -20,9 +20,12 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
@@ -44,12 +47,12 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.UTF8BytesLinkObj;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeStringIndex;
-import jp.co.yahoo.dataplatform.mds.binary.maker.index.SequentialStringCellIndex;
+import jp.co.yahoo.dataplatform.mds.binary.maker.index.BufferDirectSequentialStringCellIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
-public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
+public class OptimizeStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   public static ColumnType getDiffColumnType( final int min , final int max ){
     int diff = max - min;
@@ -67,8 +70,8 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     return ColumnType.INTEGER;
   }
 
-  public static ILengthMaker chooseLengthMaker( boolean hasNull , final int min , final int max ){
-    if( min == max && ! hasNull ){
+  public static ILengthMaker chooseLengthMaker( final int min , final int max ){
+    if( min == max ){
       return new FixedLengthMaker( min );
     }
 
@@ -90,11 +93,23 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
   }
 
+  public static IDictionaryIndexMaker chooseDictionaryIndexMaker( final int dicIndexLength ){
+    if( dicIndexLength < Byte.valueOf( Byte.MAX_VALUE ).intValue() ){
+      return new ByteDictionaryIndexMaker();
+    }
+    else if( dicIndexLength < Short.valueOf( Short.MAX_VALUE ).intValue() ){
+      return new ShortDictionaryIndexMaker();
+    }
+    else{
+      return new IntDictionaryIndexMaker();
+    }
+  }
+
   public interface ILengthMaker{
 
     int calcBinarySize( final int columnSize );
 
-    void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException;
+    void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException;
 
     int[] getLengthArray( final ByteBuffer wrapBuffer , final int size ) throws IOException;
 
@@ -114,7 +129,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
       return;
     }
 
@@ -137,9 +152,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
-      for( int i = 0 ; i < objArray.length ; i++ ){
-        wrapBuffer.put( (byte)objArray[i].length );
+    public void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
+      for( byte[] obj : objList ){
+        wrapBuffer.put( (byte)obj.length );
       }
     }
 
@@ -168,9 +183,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
-      for( int i = 0 ; i < objArray.length ; i++ ){
-        wrapBuffer.put( (byte)( objArray[i].length - min ) );
+    public void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
+      for( byte[] obj : objList ){
+        wrapBuffer.put( (byte)( obj.length - min ) );
       }
     }
 
@@ -193,9 +208,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
-      for( int i = 0 ; i < objArray.length ; i++ ){
-        wrapBuffer.putShort( (short)objArray[i].length );
+    public void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
+      for( byte[] obj : objList ){
+        wrapBuffer.putShort( (short)obj.length );
       }
     }
 
@@ -224,9 +239,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
-      for( int i = 0 ; i < objArray.length ; i++ ){
-        wrapBuffer.putShort( (short)( objArray[i].length - min ) );
+    public void create( List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
+      for( byte[] obj : objList ){
+        wrapBuffer.putShort( (short)( obj.length - min ) );
       }
     }
 
@@ -249,9 +264,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
-      for( int i = 0 ; i < objArray.length ; i++ ){
-        wrapBuffer.putInt( objArray[i].length );
+    public void create( final List<byte[]> objList , final ByteBuffer wrapBuffer ) throws IOException{
+      for( byte[] obj : objList ){
+        wrapBuffer.putInt( obj.length );
       }
     }
 
@@ -266,6 +281,90 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   }
 
+  public interface IDictionaryIndexMaker{
+
+    int calcBinarySize( final int indexLength );
+
+    void create( final int[] dicIndexArray , final ByteBuffer wrapBuffer ) throws IOException;
+
+    IntBuffer getIndexIntBuffer( final int size , final ByteBuffer wrapBuffer ) throws IOException;
+
+  }
+
+  public static class ByteDictionaryIndexMaker implements IDictionaryIndexMaker{
+
+    @Override
+    public int calcBinarySize( final int indexLength ){
+      return Byte.BYTES * indexLength;
+    }
+
+    @Override
+    public void create( final int[] dicIndexArray , final ByteBuffer wrapBuffer ) throws IOException{
+      for( int index : dicIndexArray ){
+        wrapBuffer.put( (byte)index );
+      }
+    }
+
+    @Override
+    public IntBuffer getIndexIntBuffer( final int size , final ByteBuffer wrapBuffer ) throws IOException{
+      IntBuffer result = IntBuffer.allocate( size );
+      for( int i = 0 ; i < size ; i++ ){
+        result.put( (int)( wrapBuffer.get() ) );
+      }
+      result.position( 0 );
+      return result;
+    }
+
+  }
+
+  public static class ShortDictionaryIndexMaker implements IDictionaryIndexMaker{
+
+    @Override
+    public int calcBinarySize( final int indexLength ){
+      return Short.BYTES * indexLength;
+    }
+
+    @Override
+    public void create( final int[] dicIndexArray , final ByteBuffer wrapBuffer ) throws IOException{
+      for( int index : dicIndexArray ){
+        wrapBuffer.putShort( (short)index );
+      }
+    }
+
+    @Override
+    public IntBuffer getIndexIntBuffer( final int size , final ByteBuffer wrapBuffer ) throws IOException{
+      IntBuffer result = IntBuffer.allocate( size );
+      for( int i = 0 ; i < size ; i++ ){
+        result.put( (int)( wrapBuffer.getShort() ) );
+      }
+      result.position( 0 );
+      return result;
+    }
+
+  }
+
+  public static class IntDictionaryIndexMaker implements IDictionaryIndexMaker{
+
+    @Override
+    public int calcBinarySize( final int indexLength ){
+      return Integer.BYTES * indexLength;
+    }
+
+    @Override
+    public void create( final int[] dicIndexArray , final ByteBuffer wrapBuffer ) throws IOException{
+      for( int index : dicIndexArray ){
+        wrapBuffer.putInt( index );
+      }
+    }
+
+    @Override
+    public IntBuffer getIndexIntBuffer( final int size , final ByteBuffer wrapBuffer ) throws IOException{
+      return ByteBuffer.wrap( wrapBuffer.array() , wrapBuffer.position() , calcBinarySize( size ) ).asIntBuffer();
+    }
+
+  }
+
+
   @Override
   public ColumnBinary toBinary(final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException{
     if( column.size() == 0 ){
@@ -277,8 +376,12 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       currentConfig = currentConfigNode.getCurrentConfig();
     }
 
-    byte[] nullFlagBytes = new byte[column.size()];
-    byte[][] objList = new byte[column.size()][];
+    Map<String,Integer> dicMap = new HashMap<String,Integer>();
+    int[] indexArray = new int[ column.size() ];
+    List<byte[]> stringList = new ArrayList<byte[]>();
+    dicMap.put( null , 0 );
+    stringList.add( new byte[0] );
+
     int totalLength = 0;
     int logicalDataLength = 0;
     boolean hasNull = false;
@@ -289,61 +392,58 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){
-        nullFlagBytes[i] = (byte)1;
-        objList[i] = new byte[0];
+        indexArray[i] = 0;
         hasNull = true;
         continue;
       }
       PrimitiveCell byteCell = (PrimitiveCell) cell;
       String strObj = byteCell.getRow().getString();
       if( strObj == null ){
-        nullFlagBytes[i] = (byte)1;
-        objList[i] = new byte[0];
+        indexArray[i] = 0;
         hasNull = true;
         continue;
       }
-      byte[] obj = strObj.getBytes( "UTF-8" );
-      if( maxLength < obj.length ){
-        maxLength = obj.length;
+      if( ! dicMap.containsKey( strObj ) ){
+        dicMap.put( strObj , stringList.size() );
+        byte[] obj = strObj.getBytes( "UTF-8" );
+        stringList.add( obj );
+        if( maxLength < obj.length ){
+          maxLength = obj.length;
+        }
+        if( obj.length < minLength ){
+          minLength = obj.length;
+        }
+        totalLength += obj.length;
+        if( max.compareTo( strObj ) < 0 ){
+          max = strObj;
+        }
+        if( min == null || 0 < min.compareTo( strObj ) ){
+          min = strObj;
+        }
       }
-      if( obj.length < minLength ){
-        minLength = obj.length;
-      }
-      totalLength += obj.length;
       logicalDataLength += strObj.length() * Character.BYTES;
-      objList[i] = obj;
-      if( max.compareTo( strObj ) < 0 ){
-        max = strObj;
-      }
-      if( min == null || 0 < min.compareTo( strObj ) ){
-        min = strObj;
-      }
+      indexArray[i] = dicMap.get( strObj );
     }
 
     if( ! hasNull && min.equals( max ) ){
       return ConstantColumnBinaryMaker.createColumnBinary( new StringObj( min ) , column.getColumnName() , column.size() );
     }
 
-    int nullBinaryLength = nullFlagBytes.length;
-    if( ! hasNull ){
-      nullBinaryLength = 0;
-    }
-    ILengthMaker lengthMaker = chooseLengthMaker( hasNull , minLength , maxLength );
-    int binaryLength = Integer.BYTES * 2 + Integer.BYTES + nullBinaryLength + lengthMaker.calcBinarySize( column.size() ) + totalLength;
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( indexArray.length );
+    ILengthMaker lengthMaker = chooseLengthMaker( minLength , maxLength );
+
+    int indexBinaryLength = indexMaker.calcBinarySize( indexArray.length );
+    int lengthBinaryLength = lengthMaker.calcBinarySize( stringList.size() );
+
+    int binaryLength = Integer.BYTES * 2 + indexBinaryLength + lengthBinaryLength + totalLength;
     byte[] binaryRaw = new byte[binaryLength];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binaryRaw , 0 , binaryRaw.length );
     wrapBuffer.putInt( minLength );
     wrapBuffer.putInt( maxLength );
-    if( hasNull ){
-      wrapBuffer.putInt( 1 );
-      wrapBuffer.put( nullFlagBytes );
-    }
-    else{
-      wrapBuffer.putInt( 0 );
-    }
-    lengthMaker.create( objList , wrapBuffer );
-    for( int i = 0 ; i < objList.length ; i++ ){
-      wrapBuffer.put( objList[i] );
+    indexMaker.create( indexArray , wrapBuffer );
+    lengthMaker.create( stringList , wrapBuffer );
+    for( byte[] obj : stringList ){
+      wrapBuffer.put( obj );
     }
     byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
 
@@ -361,7 +461,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     binaryWrapBuffer.position( binaryWrapBuffer.position() + maxCharLength );
     binaryWrapBuffer.put( compressBinaryRaw );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , column.size() , binaryRaw.length , logicalDataLength , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.STRING , column.size() , binaryRaw.length , logicalDataLength , stringList.size() , binary , 0 , binary.length , null );
   }
 
   @Override
@@ -371,12 +471,13 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     if( ! hasNull && analizeResult.getUniqCount() == 1 ){
       return stringAnalizeResult.getUniqUtf8ByteSize();
     }
-    int nullBinaryLength = stringAnalizeResult.getColumnSize();
-    if( ! hasNull ){
-      nullBinaryLength = 0;
-    }
-    ILengthMaker lengthMaker = chooseLengthMaker( hasNull , stringAnalizeResult.getMinUtf8Bytes() , stringAnalizeResult.getMaxUtf8Bytes() );
-    return Integer.BYTES * 2 + Integer.BYTES + nullBinaryLength + lengthMaker.calcBinarySize( stringAnalizeResult.getColumnSize() ) + stringAnalizeResult.getTotalUtf8ByteSize();
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( stringAnalizeResult.getColumnSize() );
+    ILengthMaker lengthMaker = chooseLengthMaker( stringAnalizeResult.getMinUtf8Bytes() , stringAnalizeResult.getMaxUtf8Bytes() );
+
+    int indexBinaryLength = indexMaker.calcBinarySize( stringAnalizeResult.getColumnSize() );
+    int lengthBinaryLength = lengthMaker.calcBinarySize( stringAnalizeResult.getUniqCount() );
+
+    return Integer.BYTES * 2 + indexBinaryLength + lengthBinaryLength + stringAnalizeResult.getUniqUtf8ByteSize();
   }
 
   @Override
@@ -410,40 +511,46 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
-    ByteBuffer headerWrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
-    int minCharLength = headerWrapBuffer.getInt();
-    headerWrapBuffer.position( headerWrapBuffer.position() + minCharLength );
+    ByteBuffer rawBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength
+);
+    int minBinaryLength = rawBuffer.getInt();
+    rawBuffer.position( rawBuffer.position() + minBinaryLength );
 
-    int maxCharLength = headerWrapBuffer.getInt();
-    headerWrapBuffer.position( headerWrapBuffer.position() + maxCharLength );
-    int headerSize = Integer.BYTES + minCharLength + Integer.BYTES + maxCharLength;
+    int maxBinaryLength = rawBuffer.getInt();
+    rawBuffer.position( rawBuffer.position() + maxBinaryLength );
+
+    int headerSize = Integer.BYTES + minBinaryLength + Integer.BYTES + maxBinaryLength;
 
     ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
     byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart + headerSize , columnBinary.binaryLength - headerSize );
+
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
     int minLength = wrapBuffer.getInt();
     int maxLength = wrapBuffer.getInt();
-    boolean hasNull = wrapBuffer.getInt() == 1;
 
-    byte[] nullFlagBytes = new byte[columnBinary.rowCount];
-    if( hasNull ){
-      wrapBuffer.get( nullFlagBytes );
-    }
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( columnBinary.rowCount );
+    ILengthMaker lengthMaker = chooseLengthMaker( minLength , maxLength );
 
-    ILengthMaker lengthMaker = chooseLengthMaker( hasNull , minLength , maxLength );
-    int[] lengthArray = lengthMaker.getLengthArray( wrapBuffer , columnBinary.rowCount );
+    IntBuffer indexBuffer = indexMaker.getIndexIntBuffer( columnBinary.rowCount , wrapBuffer );
+    int[] lengthArray = lengthMaker.getLengthArray( wrapBuffer , columnBinary.cardinality );
 
     int currentStart = wrapBuffer.position();
-    for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
-      if( nullFlagBytes[i] == 0 ){
-        allocator.setBytes( i , binary , currentStart , lengthArray[i] );
-        currentStart += lengthArray[i];
-      } 
-      else{
-        allocator.setNull( i );
-      }
+
+    UTF8BytesLinkObj[] dicArray = new UTF8BytesLinkObj[ lengthArray.length ];
+    for( int i = 1 ; i < dicArray.length ; i++ ){
+      dicArray[i] = new UTF8BytesLinkObj( binary , currentStart , lengthArray[i] );
+      currentStart += lengthArray[i];
     }
 
+    for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
+      int index = indexBuffer.get();
+      if( index == 0 ){
+        allocator.setNull( i );
+      }
+      else{
+        allocator.setBytes( i , dicArray[index].getLinkBytes() , dicArray[index].getStart() , dicArray[index].getLength()  );
+      }
+    }
     allocator.setValueCount( columnBinary.rowCount );
   }
 
@@ -510,28 +617,25 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       ByteBuffer wrapBuffer = ByteBuffer.wrap( binary , 0 , binary.length );
       int minLength = wrapBuffer.getInt();
       int maxLength = wrapBuffer.getInt();
-      boolean hasNull = wrapBuffer.getInt() == 1;
 
-      byte[] nullFlagBytes = new byte[columnBinary.rowCount];
-      if( hasNull ){
-        wrapBuffer.get( nullFlagBytes );
-      }
+      IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( columnBinary.rowCount );
+      ILengthMaker lengthMaker = chooseLengthMaker( minLength , maxLength );
 
-      ILengthMaker lengthMaker = chooseLengthMaker( hasNull , minLength , maxLength );
-      int[] lengthArray = lengthMaker.getLengthArray( wrapBuffer , columnBinary.rowCount );
-      PrimitiveObject[] dicArray = new PrimitiveObject[ columnBinary.rowCount ];
+      IntBuffer indexBuffer = indexMaker.getIndexIntBuffer( columnBinary.rowCount , wrapBuffer );
+      int[] lengthArray = lengthMaker.getLengthArray( wrapBuffer , columnBinary.cardinality );
+
       int currentStart = wrapBuffer.position();
-      for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
-        if( nullFlagBytes[i] == 0 ){
-          dicArray[i] = new UTF8BytesLinkObj( binary , currentStart , lengthArray[i] );
-          currentStart += lengthArray[i];
-        }
+
+      PrimitiveObject[] dicArray = new PrimitiveObject[ lengthArray.length ];
+      for( int i = 1 ; i < dicArray.length ; i++ ){
+        dicArray[i] = new UTF8BytesLinkObj( binary , currentStart , lengthArray[i] );
+        currentStart += lengthArray[i];
       }
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
       IDicManager dicManager = new RangeStringDicManager( dicArray );
-      column.setCellManager( new BufferDirectCellManager( columnBinary.columnType , dicManager , columnBinary.rowCount ) );
-      column.setIndex( new SequentialStringCellIndex( dicManager ) );
+      column.setCellManager( new BufferDirectDictionaryLinkCellManager( columnBinary.columnType , dicManager , indexBuffer ) );
+      column.setIndex( new BufferDirectSequentialStringCellIndex( dicManager , indexBuffer ) );
 
       isCreate = true;
     }

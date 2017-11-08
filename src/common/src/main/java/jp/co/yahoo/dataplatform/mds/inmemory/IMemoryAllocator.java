@@ -80,24 +80,6 @@ public interface IMemoryAllocator{
     setNull( index );
   }
 
-  default void setBytesAndLength( final byte[] value , final int start , final int length , final int[] startArray , final boolean[] isNullArray ) throws IOException{
-    for( int i = 0 ; i < isNullArray.length ; i++ ){
-      if( isNullArray[i] ){
-        setNull( i );
-      }
-      else{
-        int currentLength;
-        if( i == isNullArray.length - 1 ){
-          currentLength = length - startArray[i];
-        }
-        else{
-          currentLength = startArray[i+1] - startArray[i];
-        }
-        setBytes( i , value , startArray[i] + start , currentLength );
-      }
-    }
-  }
-
   default void setArrayIndex( final int index , final int start , final int length ) throws IOException{
     setNull( index );
   }
@@ -106,11 +88,15 @@ public interface IMemoryAllocator{
   }
 
   default int getValueCount() throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    return 0;
   }
 
   default IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    throw new UnsupportedOperationException( "Unsuppored this method." );
+    return NullMemoryAllocator.INSTANCE;
+  }
+
+  default IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
+    return NullMemoryAllocator.INSTANCE;
   }
 
 }

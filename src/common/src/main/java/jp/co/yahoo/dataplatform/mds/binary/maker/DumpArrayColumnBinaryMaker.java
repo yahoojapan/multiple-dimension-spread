@@ -105,7 +105,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
     for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
       IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
-      IMemoryAllocator childMemoryAllocator = allocator.getChild( childColumnBinary.columnName , childColumnBinary.columnType );
+      IMemoryAllocator childMemoryAllocator = allocator.getArrayChild( childColumnBinary.rowCount , childColumnBinary.columnType );
       maker.loadInMemoryStorage( childColumnBinary , childMemoryAllocator );
     }
 

@@ -108,7 +108,7 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
       PrimitiveObject obj = dicManager.get( i );
-      if( obj != null && obj == null || ! comparator.isFilterString( obj.getString() ) ){
+      if( obj == null || ! comparator.isFilterString( obj.getString() ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }
