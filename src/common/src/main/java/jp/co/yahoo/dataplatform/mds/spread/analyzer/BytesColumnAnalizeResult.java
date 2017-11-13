@@ -83,6 +83,16 @@ public class BytesColumnAnalizeResult implements IColumnAnalizeResult{
     return totalLogicalDataSize;
   }
 
+  @Override
+  public int getRowStart(){
+    return 0;
+  }
+
+  @Override
+  public int getRowEnd(){
+    return columnSize - 1;
+  }
+
   public int getMinBytes(){
     return minBytes;
   }

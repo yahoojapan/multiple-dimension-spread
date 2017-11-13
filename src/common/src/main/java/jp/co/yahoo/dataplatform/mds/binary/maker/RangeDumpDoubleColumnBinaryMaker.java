@@ -35,14 +35,12 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
 import jp.co.yahoo.dataplatform.mds.binary.maker.index.RangeDoubleIndex;
-import jp.co.yahoo.dataplatform.mds.binary.maker.index.SequentialNumberCellIndex;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;

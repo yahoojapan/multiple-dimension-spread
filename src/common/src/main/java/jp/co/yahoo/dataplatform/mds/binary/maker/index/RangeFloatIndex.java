@@ -19,9 +19,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker.index;
 
 import java.io.IOException;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.NumberRangeFilter;
@@ -87,12 +84,12 @@ public class RangeFloatIndex implements ICellIndex{
         }catch( NumberFormatException e ){
           return null;
         }
-        boolean minHasEquals = numberRangeFilter.isMinHasEquals();
-        boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         boolean invert = numberRangeFilter.isInvert();
         if( invert ){
           return null;
         }
+        boolean minHasEquals = numberRangeFilter.isMinHasEquals();
+        boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
         if( minHasEquals && maxHasEquals ){
           if( ( 0 < min.compareTo( setMax ) || max.compareTo( setMin ) < 0 ) ){
             return filterArray;

@@ -478,7 +478,6 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public IntBuffer getIndexIntBuffer( final byte[] buffer , final int start , final int length ) throws IOException{
-      int size = length / Integer.BYTES;
       return ByteBuffer.wrap( buffer , start , length ).asIntBuffer();
     }
 
@@ -505,14 +504,14 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
       Long target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
         target = Long.valueOf( primitiveObj.getLong() );
-      }
-      else{
-        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){
@@ -602,11 +601,11 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
     int loopCount = indexIntBuffer.capacity();
     for( int i = 0 ; i < loopCount ; i++ ){
       int dicIndex = indexIntBuffer.get();
-      if( dicIndex != 0 ){
-        allocator.setLong( i , dicArray[dicIndex].getLong() );
+      if( dicIndex == 0 ){
+        allocator.setNull( i );
       }
       else{
-        allocator.setNull( i );
+        allocator.setLong( i , dicArray[dicIndex].getLong() );
       }
     }
     allocator.setValueCount( loopCount );

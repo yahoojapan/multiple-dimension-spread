@@ -82,6 +82,16 @@ public class ByteColumnAnalizeResult implements IColumnAnalizeResult{
     return Byte.BYTES * rowCount;
   }
 
+  @Override
+  public int getRowStart(){
+    return 0;
+  }
+
+  @Override
+  public int getRowEnd(){
+    return columnSize - 1;
+  }
+
   public byte getMin(){
     return min;
   }

@@ -20,8 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker.index;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -106,7 +104,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       return filterArray;
     }
     int length = dicIndexIntBuffer.capacity();
-    List<Integer> result = new ArrayList<Integer>( length );
     for( int i = 0 ; i < length ; i++ ){
       Integer dicIndex = Integer.valueOf( dicIndexIntBuffer.get(i) );
       if( targetDicSet.contains( dicIndex ) ){
@@ -200,12 +197,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getNotEqual( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       long target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getLong();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null || target != numObj.getLong() ){
@@ -219,12 +216,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       long target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getLong();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -241,12 +238,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       long target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getLong();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -263,12 +260,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       long target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getLong();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -285,12 +282,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       long target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getLong();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -306,7 +303,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -321,6 +317,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -363,12 +360,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getNotEqual( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       int target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getInt();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null || target != numObj.getInt() ){
@@ -382,12 +379,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       int target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getInt();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -404,12 +401,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       int target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getInt();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -426,12 +423,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       int target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getInt();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -448,12 +445,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       int target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getInt();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -469,7 +466,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -482,6 +478,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
@@ -526,12 +523,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getNotEqual( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       short target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getShort();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null || target != numObj.getShort() ){
@@ -545,12 +542,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       short target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getShort();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -567,12 +564,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       short target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getShort();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -589,12 +586,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       short target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getShort();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -611,12 +608,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       short target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getShort();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -632,7 +629,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -645,6 +641,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
@@ -689,12 +686,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getNotEqual( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       byte target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getByte();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null || target != numObj.getByte() ){
@@ -708,12 +705,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       byte target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getByte();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -730,12 +727,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       byte target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getByte();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -752,12 +749,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       byte target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getByte();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -774,12 +771,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       byte target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = numberFilter.getNumberObject().getByte();
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -795,7 +792,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -808,6 +804,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
@@ -840,12 +837,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Float target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -862,12 +859,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Float target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -884,12 +881,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Float target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -906,12 +903,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Float target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Float.valueOf( numberFilter.getNumberObject().getFloat() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -927,7 +924,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -942,6 +938,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -972,12 +969,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Double target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -994,12 +991,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getLe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Double target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -1016,12 +1013,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGt( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Double target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -1038,12 +1035,12 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
     @Override
     public Set<Integer> getGe( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberFilter numberFilter ) throws IOException{
       Double target;
-      Set<Integer> matchDicList = new HashSet<Integer>();
       try{
         target = Double.valueOf( numberFilter.getNumberObject().getDouble() );
       }catch( NumberFormatException e ){
         return null;
       }
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){
@@ -1059,7 +1056,6 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
 
     @Override
     public Set<Integer> getRange( final IDicManager dicManager , final IntBuffer dicIndexIntBuffer , final NumberRangeFilter numberRangeFilter ) throws IOException{
-      Set<Integer> matchDicList = new HashSet<Integer>();
       boolean invert = numberRangeFilter.isInvert();
       if( invert ){
         return null;
@@ -1074,6 +1070,7 @@ public class BufferDirectSequentialNumberCellIndex implements ICellIndex{
       }
       boolean minHasEquals = numberRangeFilter.isMinHasEquals();
       boolean maxHasEquals = numberRangeFilter.isMaxHasEquals();
+      Set<Integer> matchDicList = new HashSet<Integer>();
       for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
         PrimitiveObject numObj = dicManager.get( i );
         if( numObj == null ){

@@ -19,8 +19,6 @@ package jp.co.yahoo.dataplatform.mds.spread.column;
 
 import java.io.IOException;
 
-import java.util.List;
-
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;

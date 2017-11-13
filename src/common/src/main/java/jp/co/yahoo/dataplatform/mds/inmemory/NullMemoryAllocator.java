@@ -17,13 +17,7 @@
  */
 package jp.co.yahoo.dataplatform.mds.inmemory;
 
-import java.io.IOException;
-
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
-
-public class NullMemoryAllocator implements IMemoryAllocator{
+public final class NullMemoryAllocator implements IMemoryAllocator{
 
   public static final IMemoryAllocator INSTANCE = new NullMemoryAllocator();
 

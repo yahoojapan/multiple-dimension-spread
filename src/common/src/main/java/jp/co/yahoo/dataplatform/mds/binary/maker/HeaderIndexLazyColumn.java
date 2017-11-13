@@ -19,8 +19,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 
 import java.io.IOException;
 
-import java.util.List;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;

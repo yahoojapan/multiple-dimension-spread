@@ -27,21 +27,23 @@ public class StringColumnAnalizeResult implements IColumnAnalizeResult{
   private final int nullCount;
   private final int rowCount;
   private final int uniqCount;
+  private final int startIndex;
+  private final int lastIndex;
 
-  int totalLogicalDataSize;
-  int totalUtf8ByteSize;
-  int uniqLogicalDataSize;
-  int uniqUtf8ByteSize;
+  private final int totalLogicalDataSize;
+  private final int totalUtf8ByteSize;
+  private final int uniqLogicalDataSize;
+  private final int uniqUtf8ByteSize;
 
-  int minCharLength;
-  int maxCharLength;
-  int minUtfBytes;
-  int maxUtfBytes;
+  private final int minCharLength;
+  private final int maxCharLength;
+  private final int minUtfBytes;
+  private final int maxUtfBytes;
 
   private final String min;
   private final String max;
 
-  public StringColumnAnalizeResult( final String columnName , final int columnSize , final boolean sortFlag , final int nullCount , final int rowCount , final int uniqCount , final int totalLogicalDataSize , final int totalUtf8ByteSize , final int uniqLogicalDataSize , final int uniqUtf8ByteSize , final int minCharLength , final int maxCharLength , final int minUtfBytes , final int maxUtfBytes , final String min , final String max ){
+  public StringColumnAnalizeResult( final String columnName , final int columnSize , final boolean sortFlag , final int nullCount , final int rowCount , final int uniqCount , final int totalLogicalDataSize , final int startIndex , final int lastIndex , final int totalUtf8ByteSize , final int uniqLogicalDataSize , final int uniqUtf8ByteSize , final int minCharLength , final int maxCharLength , final int minUtfBytes , final int maxUtfBytes , final String min , final String max ){
     this.columnName = columnName;
     this.columnSize = columnSize;
     this.sortFlag = sortFlag;
@@ -49,6 +51,8 @@ public class StringColumnAnalizeResult implements IColumnAnalizeResult{
     this.rowCount = rowCount;
     this.uniqCount = uniqCount;
     this.totalLogicalDataSize = totalLogicalDataSize;
+    this.startIndex = startIndex;
+    this.lastIndex = lastIndex;
     this.totalUtf8ByteSize = totalUtf8ByteSize;
     this.uniqLogicalDataSize = uniqLogicalDataSize;
     this.uniqUtf8ByteSize = uniqUtf8ByteSize;
@@ -98,6 +102,16 @@ public class StringColumnAnalizeResult implements IColumnAnalizeResult{
   @Override
   public int getLogicalDataSize(){
     return totalLogicalDataSize;
+  }
+
+  @Override
+  public int getRowStart(){
+    return startIndex;
+  }
+
+  @Override
+  public int getRowEnd(){
+    return lastIndex;
   }
 
   public int getTotalUtf8ByteSize(){

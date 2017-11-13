@@ -17,29 +17,22 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
+import java.util.List;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
-public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
+public class UnionColumnAnalizeResult implements IColumnAnalizeResult{
 
   private final String columnName;
   private final int columnSize;
-  private final boolean sortFlag;
   private final int nullCount;
-  private final int rowCount;
-  private final int uniqCount;
+  private final List<IColumnAnalizeResult> childResult;
 
-  private final double min;
-  private final double max;
-
-  public DoubleColumnAnalizeResult( final String columnName , final int columnSize , final boolean sortFlag , final int nullCount , final int rowCount , final int uniqCount , final double min , final double max ){
+  public UnionColumnAnalizeResult( final String columnName , final int columnSize , final int nullCount , final List<IColumnAnalizeResult> childResult ){
     this.columnName = columnName;
     this.columnSize = columnSize;
-    this.sortFlag = sortFlag;
     this.nullCount = nullCount;
-    this.rowCount = rowCount;
-    this.uniqCount = uniqCount;
-    this.min = min;
-    this.max = max;
+    this.childResult = childResult;
   }
 
   @Override
@@ -49,7 +42,7 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public ColumnType getColumnType(){
-    return ColumnType.DOUBLE;
+    return ColumnType.UNION;
   }
 
   @Override
@@ -59,7 +52,7 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public boolean maybeSorted(){
-    return sortFlag;
+    return false;
   }
 
   @Override
@@ -69,17 +62,17 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
 
   @Override
   public int getRowCount(){
-    return rowCount;
+    return columnSize;
   }
 
   @Override
   public int getUniqCount(){
-    return uniqCount;
+    return columnSize;
   }
 
   @Override
   public int getLogicalDataSize(){
-    return Double.BYTES * rowCount;
+    return 0;
   }
 
   @Override
@@ -92,12 +85,9 @@ public class DoubleColumnAnalizeResult implements IColumnAnalizeResult{
     return columnSize - 1;
   }
 
-  public double getMin(){
-    return min;
-  }
-
-  public double getMax(){
-    return max;
+  @Override
+  public List<IColumnAnalizeResult> getChild(){
+    return childResult;
   }
 
 }

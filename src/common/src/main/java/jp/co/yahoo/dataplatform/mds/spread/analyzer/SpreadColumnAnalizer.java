@@ -17,16 +17,29 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
+import java.io.IOException;
+
+import java.util.List;
+import java.util.ArrayList;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 
-public class ColumnAnalizeNode{
+public class SpreadColumnAnalizer implements IColumnAnalizer{
 
   private final IColumn column;
-  private final IColumnAnalizer columnAnalizer;
 
-  public ColumnAnalizeNode( final IColumn column ){
+  public SpreadColumnAnalizer( final IColumn column ){
     this.column = column;
-    columnAnalizer = ColumnAnalizerFactory.get( column );
+  }
+
+  public IColumnAnalizeResult analize() throws IOException{
+    List<IColumnAnalizeResult> resultList = new ArrayList<IColumnAnalizeResult>(); 
+    for( IColumn childColumn : column.getListColumn() ){
+      IColumnAnalizer analizer = ColumnAnalizerFactory.get( childColumn );
+      resultList.add( analizer.analize() );
+    }
+    
+    return new SpreadColumnAnalizeResult( column.getColumnName() , column.getColumnSize() , 0 , resultList );
   }
 
 }

@@ -43,6 +43,7 @@ public class TestStringBlockIndex{
     return new Object[][] {
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
+      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
     };
   }
 

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.schema.objects.BooleanObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
@@ -35,7 +34,6 @@ import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.DefaultCellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;

@@ -20,12 +20,9 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
@@ -489,8 +486,11 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
-      Long target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+        isNullArray[i] = 1;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
@@ -501,10 +501,6 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
         if( max.compareTo( valueArray[i] ) < 0 ){
           max = Long.valueOf( valueArray[i] );
         }
-      }
-      else{
-        hasNull = true;
-        isNullArray[i] = 1;
       }
     }
 

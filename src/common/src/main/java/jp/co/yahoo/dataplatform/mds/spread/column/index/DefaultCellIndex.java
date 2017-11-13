@@ -19,8 +19,6 @@ package jp.co.yahoo.dataplatform.mds.spread.column.index;
 
 import java.io.IOException;
 
-import java.util.List;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class DefaultCellIndex implements ICellIndex{

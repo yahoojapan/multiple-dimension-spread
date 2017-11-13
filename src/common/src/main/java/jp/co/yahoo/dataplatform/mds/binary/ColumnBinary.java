@@ -48,7 +48,7 @@ public class ColumnBinary{
 
   public List<ColumnBinary> columnBinaryList;
 
-  public ColumnBinary( final String makerClassName , final String compressorClassName , final String columnName , final ColumnType columnType , final int rowCount , final int rawDataSize , final int logicalDataSize , int cardinality , final byte[] binary , final int binaryStart , final int binaryLength , final List<ColumnBinary> columnBinaryList ){
+  public ColumnBinary( final String makerClassName , final String compressorClassName , final String columnName , final ColumnType columnType , final int rowCount , final int rawDataSize , final int logicalDataSize , final int cardinality , final byte[] binary , final int binaryStart , final int binaryLength , final List<ColumnBinary> columnBinaryList ){
     this.makerClassName = makerClassName;
     this.compressorClassName = compressorClassName;
     this.columnName = columnName;

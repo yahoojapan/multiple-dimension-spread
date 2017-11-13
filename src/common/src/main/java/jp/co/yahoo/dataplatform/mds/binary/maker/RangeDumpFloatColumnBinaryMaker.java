@@ -35,7 +35,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;

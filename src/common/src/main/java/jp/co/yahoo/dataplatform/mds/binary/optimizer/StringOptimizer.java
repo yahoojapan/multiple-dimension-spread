@@ -24,9 +24,7 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
-import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
 public class StringOptimizer implements IOptimizer{
 

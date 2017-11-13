@@ -19,10 +19,9 @@ package jp.co.yahoo.dataplatform.mds.constants;
 
 public final class PrimitiveByteLength{
 
-  private PrimitiveByteLength(){}
-
   public static final int JAVA_OBJECT_LENGTH = 8;
-
   public static final int BOOLEAN_LENGTH = 1;
+
+  private PrimitiveByteLength(){}
 
 }

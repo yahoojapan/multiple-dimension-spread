@@ -17,6 +17,9 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public interface IColumnAnalizeResult{
@@ -36,5 +39,13 @@ public interface IColumnAnalizeResult{
   int getUniqCount();
 
   int getLogicalDataSize();
+
+  int getRowStart();
+
+  int getRowEnd();
+
+  default List<IColumnAnalizeResult> getChild(){
+    return new ArrayList<IColumnAnalizeResult>();
+  }
 
 }

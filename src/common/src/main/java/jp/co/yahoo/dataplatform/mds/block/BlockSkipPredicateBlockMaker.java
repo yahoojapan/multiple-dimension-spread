@@ -34,8 +34,8 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 
 public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
 
-  private BlockIndexNode blockIndexNode = new BlockIndexNode();
-  private byte[] compressorClassNameBytes;
+  private final BlockIndexNode blockIndexNode = new BlockIndexNode();
+  private final byte[] compressorClassNameBytes;
 
   public BlockSkipPredicateBlockMaker() throws IOException{
     super();
@@ -51,15 +51,15 @@ public class BlockSkipPredicateBlockMaker extends PredicateBlockMaker{
 
   @Override
   public void appendHeader( final byte[] headerBytes ){
-    if( this.headerBytes.length != 0 ){
+    if( this.headerBytes.length == 0 ){
+      this.headerBytes = headerBytes;
+    }
+    else{
       byte[] mergeByte = new byte[ this.headerBytes.length + headerBytes.length ];
       ByteBuffer wrapBuffer = ByteBuffer.wrap( mergeByte );
       wrapBuffer.put( this.headerBytes );
       wrapBuffer.put( headerBytes );
       this.headerBytes = mergeByte;
-    }
-    else{
-      this.headerBytes = headerBytes;
     }
   }
 

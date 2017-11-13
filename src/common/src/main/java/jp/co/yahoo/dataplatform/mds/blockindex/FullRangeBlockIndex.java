@@ -17,20 +17,12 @@
  */
 package jp.co.yahoo.dataplatform.mds.blockindex;
 
-import java.io.IOException;
-
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
-import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringCompareFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringComparator;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IStringDictionaryFilter;
 
 public class FullRangeBlockIndex implements IBlockIndex{
 

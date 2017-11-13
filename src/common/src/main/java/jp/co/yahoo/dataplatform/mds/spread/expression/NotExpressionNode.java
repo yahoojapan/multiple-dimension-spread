@@ -20,7 +20,6 @@ package jp.co.yahoo.dataplatform.mds.spread.expression;
 import java.io.IOException;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 

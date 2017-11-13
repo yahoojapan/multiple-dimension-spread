@@ -34,31 +34,28 @@ import org.testng.annotations.DataProvider;
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import jp.co.yahoo.dataplatform.mds.spread.column.NullColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.spread.column.*;
 
-public class TestStringColumnAnalizeResult {
+public class TestSpreadColumnAnalizer {
 
   @Test
   public void T_getAnalizer_1() throws IOException{
-    StringColumnAnalizeResult result = new StringColumnAnalizeResult( "name" , 100 , true , 10 , 90 , 2 , 40 , 0 , 40 , 50 , 30 , 20 , 10 , 100 , 90 , 80 , "a" , "z"  );
-    assertEquals( "name" , result.getColumnName() );
-    assertEquals( ColumnType.STRING , result.getColumnType() );
-    assertEquals( 100 , result.getColumnSize() );
-    assertEquals( true , result.maybeSorted() );
-    assertEquals( 10 , result.getNullCount() );
-    assertEquals( 90 , result.getRowCount() );
-    assertEquals( 2 , result.getUniqCount() );
-    assertEquals( 40 , result.getLogicalDataSize() );
-    assertEquals( 50 , result.getTotalUtf8ByteSize() );
-    assertEquals( 30 , result.getUniqLogicalDataSize() );
-    assertEquals( 20 , result.getUniqUtf8ByteSize() );
-    assertEquals( 10 , result.getMinCharLength() );
-    assertEquals( 100 , result.getMaxCharLength() );
-    assertEquals( 90 , result.getMinUtf8Bytes() );
-    assertEquals( 80 , result.getMaxUtf8Bytes() );
-    assertEquals( "a" , result.getMin() );
-    assertEquals( "z" , result.getMax() );
+    SpreadColumn column = new SpreadColumn( "spread" );
+    Map<Object,Object> data = new HashMap<Object,Object>();
+    data.put( "s1" , new StringObj( "abc" ) );
+    data.put( "i1" , new IntegerObj( 100 ) );
+    column.add( ColumnType.SPREAD , data , 0 );
+
+    data.clear();
+    data.put( "s1" , new StringObj( "abc" ) );
+    data.put( "i2" , new IntegerObj( 100 ) );
+    column.add( ColumnType.SPREAD , data , 1 );
+
+    SpreadColumnAnalizer a = new SpreadColumnAnalizer( column );
+
+    IColumnAnalizeResult result = a.analize();
+    List<IColumnAnalizeResult> childResult = result.getChild();
+    assertEquals( 3 , childResult.size() );
   }
 
 }

@@ -21,18 +21,18 @@ import jp.co.yahoo.dataplatform.mds.util.Pair;
 
 public final class CompressorNameShortCut{
 
-  private static final Pair classNamePair = new Pair();
+  private static final Pair CLASS_NAME_PAIR = new Pair();
 
   static{
-    classNamePair.set( "jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor"   , "default" );
-    classNamePair.set( "jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor"   , "gzip" );
-    classNamePair.set( "jp.co.yahoo.dataplatform.mds.compressor.LZ4Compressor"   , "lz4" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor"   , "default" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor"   , "gzip" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.LZ4Compressor"   , "lz4" );
   }
 
   private CompressorNameShortCut(){}
 
   public static String getShortCutName( final String className ){
-    String shortCutName = classNamePair.getPair2( className );
+    String shortCutName = CLASS_NAME_PAIR.getPair2( className );
     if( shortCutName == null ){
       return className;
     }
@@ -40,7 +40,7 @@ public final class CompressorNameShortCut{
   }
 
   public static String getClassName( final String shortCutName ){
-    String className = classNamePair.getPair1( shortCutName );
+    String className = CLASS_NAME_PAIR.getPair1( shortCutName );
     if( className == null ){
       return shortCutName;
     }

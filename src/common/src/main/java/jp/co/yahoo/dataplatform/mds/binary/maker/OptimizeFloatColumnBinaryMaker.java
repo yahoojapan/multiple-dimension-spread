@@ -196,7 +196,6 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public IntBuffer getIndexIntBuffer( final byte[] buffer , final int start , final int length ) throws IOException{
-      int size = length / Integer.BYTES;
       return ByteBuffer.wrap( buffer , start , length ).asIntBuffer();
     }
 
@@ -223,14 +222,14 @@ public class OptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
       Float target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
         target = Float.valueOf( primitiveObj.getFloat() );
-      }
-      else{
-        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){

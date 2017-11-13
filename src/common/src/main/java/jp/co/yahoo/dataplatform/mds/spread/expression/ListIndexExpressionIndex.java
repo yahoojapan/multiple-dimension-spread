@@ -18,7 +18,6 @@
 package jp.co.yahoo.dataplatform.mds.spread.expression;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class ListIndexExpressionIndex implements IExpressionIndex{
 

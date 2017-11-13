@@ -38,7 +38,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.SpreadArrayLink;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICellManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.INullFilter;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -61,7 +60,6 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     byte[] binaryRaw = new byte[ Integer.BYTES * column.size() ];
     IntBuffer intIndexBuffer = ByteBuffer.wrap( binaryRaw ).asIntBuffer();
 
-    List<Integer> numberList = new ArrayList<Integer>();
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell instanceof ArrayCell ){
@@ -117,13 +115,13 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     int currentIndex = 0;
     for( int i = 0 ; i < length ; i++ ){
       int arrayLength = buffer.get();
-      if( arrayLength != 0 ){
+      if( arrayLength == 0 ){
+        allocator.setNull(i);
+      }
+      else{
         int start = currentIndex;
         allocator.setArrayIndex( i , start , arrayLength );
         currentIndex += arrayLength;
-      }
-      else{
-        allocator.setNull(i);
       }
     }
     allocator.setValueCount( length );

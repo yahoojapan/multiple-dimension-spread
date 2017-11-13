@@ -82,6 +82,16 @@ public class LongColumnAnalizeResult implements IColumnAnalizeResult{
     return Long.BYTES * rowCount;
   }
 
+  @Override
+  public int getRowStart(){
+    return 0;
+  }
+
+  @Override
+  public int getRowEnd(){
+    return columnSize - 1;
+  }
+
   public long getMin(){
     return min;
   }

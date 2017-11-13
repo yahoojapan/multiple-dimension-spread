@@ -15,14 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.column.index;
+package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
 import java.io.IOException;
 
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
+import java.util.List;
+import java.util.ArrayList;
 
-public interface ICellIndex{
+import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 
-  boolean[] filter( final IFilter filter , final boolean[] filterArray ) throws IOException;
+public class UnionColumnAnalizer implements IColumnAnalizer{
+
+  private final IColumn column;
+
+  public UnionColumnAnalizer( final IColumn column ){
+    this.column = column;
+  }
+
+  public IColumnAnalizeResult analize() throws IOException{
+    List<IColumnAnalizeResult> resultList = new ArrayList<IColumnAnalizeResult>(); 
+    for( IColumn childColumn : column.getListColumn() ){
+      IColumnAnalizer analizer = ColumnAnalizerFactory.get( childColumn );
+      resultList.add( analizer.analize() );
+    }
+    
+    return new UnionColumnAnalizeResult( column.getColumnName() , column.getColumnSize() , 0 , resultList );
+  }
 
 }

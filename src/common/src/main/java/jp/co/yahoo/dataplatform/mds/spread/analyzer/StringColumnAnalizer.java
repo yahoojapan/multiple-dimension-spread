@@ -50,6 +50,8 @@ public class StringColumnAnalizer implements IColumnAnalizer{
     int minUtfBytes = Integer.MAX_VALUE;
     int maxUtfBytes = 0;
 
+    int startIndex = -1;
+    int lastIndex = 0;
     Set<String> dicSet = new HashSet<String>();
 
     String min = "";
@@ -68,15 +70,20 @@ public class StringColumnAnalizer implements IColumnAnalizer{
         maybeSorted = false;
       }
 
+      if( startIndex == -1 ){
+        startIndex = i;
+      }
+      lastIndex = i;
+
       byte[] stringBytes = target.getBytes( "UTF-8" );
       rowCount++;
       int charLength = target.length() * Character.BYTES;
       totalLogicalDataSize += charLength;
-      totalUtf8ByteSize = stringBytes.length;
+      totalUtf8ByteSize += stringBytes.length;
 
       if( ! dicSet.contains( target ) ){
         uniqLogicalDataSize += charLength;
-        uniqUtf8ByteSize = stringBytes.length;
+        uniqUtf8ByteSize += stringBytes.length;
         dicSet.add( target );
         if( min.isEmpty() || 0 < min.compareTo( target ) ){
           min = String.valueOf( target );
@@ -85,10 +92,10 @@ public class StringColumnAnalizer implements IColumnAnalizer{
           max = String.valueOf( target );
         }
         if( charLength < minCharLength ){
-          minUtfBytes = charLength;
+          minCharLength = charLength;
         }
         if( maxCharLength < charLength ){
-          maxUtfBytes = charLength;
+          maxCharLength = charLength;
         }
         if( stringBytes.length < minUtfBytes ){
           minUtfBytes = stringBytes.length;
@@ -101,7 +108,7 @@ public class StringColumnAnalizer implements IColumnAnalizer{
 
     int uniqCount = dicSet.size();
 
-    return new StringColumnAnalizeResult( column.getColumnName() , column.size() , maybeSorted , nullCount , rowCount , uniqCount , totalLogicalDataSize , totalUtf8ByteSize , uniqLogicalDataSize , uniqUtf8ByteSize , minCharLength , maxCharLength , minUtfBytes , maxUtfBytes , min , max );
+    return new StringColumnAnalizeResult( column.getColumnName() , column.size() , maybeSorted , nullCount , rowCount , uniqCount , totalLogicalDataSize , startIndex , lastIndex , totalUtf8ByteSize , uniqLogicalDataSize , uniqUtf8ByteSize , minCharLength , maxCharLength , minUtfBytes , maxUtfBytes , min , max );
   }
 
 }
