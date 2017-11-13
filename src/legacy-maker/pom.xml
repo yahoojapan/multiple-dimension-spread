@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-common</artifactId>
-      <version>0.2.11-SNAPSHOT</version>
+      <version>${schemalibVersion}</version>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.config</groupId>
