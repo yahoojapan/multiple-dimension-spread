@@ -135,12 +135,14 @@ public class TestMDSHiveDirectVectorizedReader{
       BytesColumnVector str = (BytesColumnVector)value.cols[0];
       LongColumnVector num2 = (LongColumnVector)value.cols[2];
       LongColumnVector p = (LongColumnVector)value.cols[4];
-      assertEquals( null , value.cols[1] );
-      assertEquals( null , value.cols[3] );
+      LongColumnVector p2 = (LongColumnVector)value.cols[1];
+      BytesColumnVector str2 = (BytesColumnVector)value.cols[3];
       for( int i = 0 ; i < value.size ; i++,colCount++ ){
         assertEquals( new String( str.vector[i] , str.start[i] , str.length[i] ) , "a-" + colCount );
         assertEquals( num2.vector[i] , colCount * 2 );
         assertEquals( p.vector[0] , 100 );
+        assertEquals( p2.vector[i] , 0 );
+        assertEquals( str2.vector[i] , null );
       }
     }
     reader.getPos();
@@ -164,12 +166,14 @@ public class TestMDSHiveDirectVectorizedReader{
       BytesColumnVector str = (BytesColumnVector)value.cols[0];
       LongColumnVector num2 = (LongColumnVector)value.cols[2];
       LongColumnVector p = (LongColumnVector)value.cols[4];
-      assertEquals( null , value.cols[1] );
-      assertEquals( null , value.cols[3] );
+      LongColumnVector p2 = (LongColumnVector)value.cols[1];
+      BytesColumnVector str2 = (BytesColumnVector)value.cols[3];
       for( int i = 0 ; i < value.size ; i++,colCount++ ){
         assertEquals( new String( str.vector[i] , str.start[i] , str.length[i] ) , "a-" + colCount );
         assertEquals( num2.vector[i] , colCount * 2 );
         assertEquals( p.vector[0] , 100 );
+        assertEquals( p2.vector[i] , 0 );
+        assertEquals( str2.vector[i] , null );
       }
     }
     reader.getPos();
@@ -195,12 +199,14 @@ public class TestMDSHiveDirectVectorizedReader{
       BytesColumnVector str = (BytesColumnVector)value.cols[0];
       LongColumnVector num2 = (LongColumnVector)value.cols[2];
       LongColumnVector p = (LongColumnVector)value.cols[4];
-      assertEquals( null , value.cols[1] );
-      assertEquals( null , value.cols[3] );
+      LongColumnVector p2 = (LongColumnVector)value.cols[1];
+      BytesColumnVector str2 = (BytesColumnVector)value.cols[3];
       for( int i = 0 ; i < value.size ; i++,colCount++ ){
         assertEquals( new String( str.vector[i] , str.start[i] , str.length[i] ) , "a-" + colCount );
         assertEquals( num2.vector[i] , colCount * 2 );
         assertEquals( p.vector[0] , 100 );
+        assertEquals( p2.vector[i] , 0 );
+        assertEquals( str2.vector[i] , null );
       }
     }
     reader.getPos();
