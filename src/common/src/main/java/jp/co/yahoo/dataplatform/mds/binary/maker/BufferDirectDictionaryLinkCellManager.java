@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.IntBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IDictionaryCellManager;
@@ -159,11 +156,11 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
       }
       int dicIndex = dicIndexIntBuffer.get( targetIndex );
       try{
-        if( dicIndex != 0 ){
-          allocator.setPrimitiveObject( index , dicManager.get( dicIndex ) );
+        if( dicIndex == 0 ){
+          allocator.setNull( index );
         }
         else{
-          allocator.setNull( index );
+          allocator.setPrimitiveObject( index , dicManager.get( dicIndex ) );
         }
       }catch( IOException e ){
         throw new UncheckedIOException( e );

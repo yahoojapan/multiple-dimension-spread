@@ -69,7 +69,7 @@ public class MDSWriter implements AutoCloseable{
     appendRow(binaryList, spread.size());
   }
 
-  public void appendRow( final List<ColumnBinary> binaryList, int spreadSize ) throws IOException {
+  public void appendRow( final List<ColumnBinary> binaryList, final int spreadSize ) throws IOException {
     if( ! blockMaker.canAppend( binaryList ) ){
       byte[] block = blockMaker.createFixedBlock();
       out.write( block , 0 , block.length );

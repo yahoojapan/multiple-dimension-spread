@@ -41,6 +41,10 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.ByteColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.ShortColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IntegerColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.LongColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -478,7 +482,6 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public IntBuffer getIndexIntBuffer( final byte[] buffer , final int start , final int length ) throws IOException{
-      int size = length / Integer.BYTES;
       return ByteBuffer.wrap( buffer , start , length ).asIntBuffer();
     }
 
@@ -505,14 +508,14 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
       Long target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
         target = Long.valueOf( primitiveObj.getLong() );
-      }
-      else{
-        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){
@@ -555,7 +558,37 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return 0;
+    long min;
+    long max;
+    switch( analizeResult.getColumnType() ){
+      case BYTE:
+        min = (long)( (ByteColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (ByteColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case SHORT:
+        min = (long)( (ShortColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (ShortColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case INTEGER:
+        min = (long)( (IntegerColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (IntegerColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case LONG:
+        min = ( (LongColumnAnalizeResult) analizeResult ).getMin();
+        max = ( (LongColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      default:
+        min = Long.MIN_VALUE;
+        max = Long.MAX_VALUE;
+        break;
+    }
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( analizeResult.getColumnSize() );
+    IDictionaryMaker dicMaker = chooseDictionaryMaker( min , max );
+
+    int indexLength = indexMaker.calcBinarySize( analizeResult.getColumnSize() );
+    int dicLength = dicMaker.calcBinarySize( analizeResult.getUniqCount() );
+
+    return indexLength + dicLength;
   }
 
   @Override
@@ -602,11 +635,11 @@ public class OptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
     int loopCount = indexIntBuffer.capacity();
     for( int i = 0 ; i < loopCount ; i++ ){
       int dicIndex = indexIntBuffer.get();
-      if( dicIndex != 0 ){
-        allocator.setLong( i , dicArray[dicIndex].getLong() );
+      if( dicIndex == 0 ){
+        allocator.setNull( i );
       }
       else{
-        allocator.setNull( i );
+        allocator.setLong( i , dicArray[dicIndex].getLong() );
       }
     }
     allocator.setValueCount( loopCount );

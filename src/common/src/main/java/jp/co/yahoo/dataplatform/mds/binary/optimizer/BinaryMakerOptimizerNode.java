@@ -34,18 +34,29 @@ public class BinaryMakerOptimizerNode{
   public BinaryMakerOptimizerNode( final IColumnAnalizeResult analizeResult ){
     this.analizeResult = analizeResult;
     childNodeMap = new HashMap<String,BinaryMakerOptimizerNode>();
-    // TODO: getChild() 
+    for( IColumnAnalizeResult result : analizeResult.getChild() ){
+      childNodeMap.put( result.getColumnName() , new BinaryMakerOptimizerNode( result ) );
+    }
   }
 
   public ColumnBinaryMakerCustomConfigNode createConfigNode( final ColumnBinaryMakerConfig commonConfig , final IOptimizerFactory factory ) throws IOException{
     IOptimizer optimizer = factory.get( analizeResult.getColumnType() );
 
     ColumnBinaryMakerConfig currentNodeConfig = optimizer.getColumnBinaryMakerConfig( commonConfig , analizeResult );
-    if( currentNodeConfig == null ){
+    if( currentNodeConfig == null && childNodeMap.isEmpty() ){
       return null;
     }
-    // TODO: getChild
-    return new ColumnBinaryMakerCustomConfigNode( analizeResult.getColumnName() , currentNodeConfig );
+    if( currentNodeConfig == null ){
+      currentNodeConfig = new ColumnBinaryMakerConfig( commonConfig );
+    }
+    ColumnBinaryMakerCustomConfigNode currentNode = new ColumnBinaryMakerCustomConfigNode( analizeResult.getColumnName() , currentNodeConfig );
+    for( Map.Entry<String,BinaryMakerOptimizerNode> entry : childNodeMap.entrySet() ){
+      ColumnBinaryMakerCustomConfigNode childNode = entry.getValue().createConfigNode( commonConfig , factory );
+      if( childNode != null ){
+        currentNode.addChildConfigNode( entry.getKey() , childNode );
+      }
+    }
+    return currentNode;
   }
 
 }

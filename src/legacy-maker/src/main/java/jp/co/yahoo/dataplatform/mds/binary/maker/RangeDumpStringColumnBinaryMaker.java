@@ -188,7 +188,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
           columnBinary , 
           columnBinary.binaryStart + headerSize , 
           columnBinary.binaryLength - headerSize ) , 
-          new RangeStringIndex( min , max , true ) 
+          new RangeStringIndex( min , max ) 
       );
     }
     else{
@@ -199,7 +199,7 @@ public class RangeDumpStringColumnBinaryMaker extends DumpStringColumnBinaryMake
           columnBinary ,
           columnBinary.binaryStart + headerSize ,
           columnBinary.binaryLength - headerSize ) ,
-          new RangeStringIndex( min , max , false )
+          new RangeStringIndex( min , max )
       );
     }
   }

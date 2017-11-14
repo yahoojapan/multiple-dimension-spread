@@ -18,11 +18,9 @@
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;

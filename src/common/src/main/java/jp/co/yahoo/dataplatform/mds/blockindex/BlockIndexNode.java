@@ -136,16 +136,16 @@ public class BlockIndexNode{
       int childKeyNameOffset = offset;
       offset += childKeyNameBytes.length;
       int childEndOffset = entry.getValue().toBinary( buffer , offset );
-      if( childEndOffset != offset ){
+      if( childEndOffset == offset ){
+        offset = childBinaryLengthOffset;
+      }
+      else{
         wrapBuffer.putInt( childBinaryLengthOffset , childEndOffset - offset );
         wrapBuffer.putInt( childKeyNameLengthOffset , childKeyNameBytes.length );
         wrapBuffer.position( childKeyNameOffset );
         wrapBuffer.put( childKeyNameBytes );
         childCount++;
         offset = childEndOffset;
-      }
-      else{
-        offset = childBinaryLengthOffset;
       }
     }
     wrapBuffer.putInt( childCountOffset , childCount );

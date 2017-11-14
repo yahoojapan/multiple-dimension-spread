@@ -82,6 +82,16 @@ public class FloatColumnAnalizeResult implements IColumnAnalizeResult{
     return Float.BYTES * rowCount;
   }
 
+  @Override
+  public int getRowStart(){
+    return 0;
+  }
+
+  @Override
+  public int getRowEnd(){
+    return columnSize - 1;
+  }
+
   public float getMin(){
     return min;
   }

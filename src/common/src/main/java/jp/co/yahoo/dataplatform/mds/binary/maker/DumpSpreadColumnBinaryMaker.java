@@ -79,6 +79,7 @@ public class DumpSpreadColumnBinaryMaker implements IColumnBinaryMaker{
   @Override
   public void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException{
     int maxValueCount = 0;
+    allocator.setChildCount( columnBinary.columnBinaryList.size() );
     for( ColumnBinary childColumnBinary : columnBinary.columnBinaryList ){
       IColumnBinaryMaker maker = FindColumnBinaryMaker.get( childColumnBinary.makerClassName );
       IMemoryAllocator childAllocator = allocator.getChild( childColumnBinary.columnName , childColumnBinary.columnType );

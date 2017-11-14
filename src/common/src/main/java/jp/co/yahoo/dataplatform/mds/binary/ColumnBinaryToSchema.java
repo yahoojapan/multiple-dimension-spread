@@ -28,7 +28,6 @@ import jp.co.yahoo.dataplatform.schema.design.DoubleField;
 import jp.co.yahoo.dataplatform.schema.design.FloatField;
 import jp.co.yahoo.dataplatform.schema.design.IntegerField;
 import jp.co.yahoo.dataplatform.schema.design.LongField;
-import jp.co.yahoo.dataplatform.schema.design.MapContainerField;
 import jp.co.yahoo.dataplatform.schema.design.NullField;
 import jp.co.yahoo.dataplatform.schema.design.ShortField;
 import jp.co.yahoo.dataplatform.schema.design.StringField;
@@ -48,8 +47,7 @@ public final class ColumnBinaryToSchema{
         }
         return unionSchema;
       case ARRAY:
-        ArrayContainerField arraySchema = new ArrayContainerField( columnBinary.columnName , get( columnBinary.columnBinaryList.get(0) ) );
-        return arraySchema;
+        return new ArrayContainerField( columnBinary.columnName , get( columnBinary.columnBinaryList.get(0) ) );
       case SPREAD:
         StructContainerField structSchema = new StructContainerField( columnBinary.columnName );
         for( ColumnBinary childBinary : columnBinary.columnBinaryList ){

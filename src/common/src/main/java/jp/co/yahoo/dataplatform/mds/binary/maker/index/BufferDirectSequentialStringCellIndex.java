@@ -20,8 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker.index;
 import java.io.IOException;
 import java.nio.IntBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -108,7 +106,7 @@ public class BufferDirectSequentialStringCellIndex implements ICellIndex{
     Set<Integer> matchDicList = new HashSet<Integer>();
     for( int i = 0 ; i < dicManager.getDicSize() ; i++ ){
       PrimitiveObject obj = dicManager.get( i );
-      if( obj != null && obj == null || ! comparator.isFilterString( obj.getString() ) ){
+      if( obj == null || ! comparator.isFilterString( obj.getString() ) ){
         matchDicList.add( Integer.valueOf( i ) );
       }
     }

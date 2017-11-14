@@ -20,9 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;

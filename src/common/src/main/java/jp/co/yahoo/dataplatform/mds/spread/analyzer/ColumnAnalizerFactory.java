@@ -18,7 +18,6 @@
 package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
-import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public final class ColumnAnalizerFactory{
 
@@ -27,9 +26,11 @@ public final class ColumnAnalizerFactory{
   public static IColumnAnalizer get( final IColumn column ){
     switch( column.getColumnType() ){
       case UNION:
+        return new UnionColumnAnalizer( column );
       case ARRAY:
+        return new ArrayColumnAnalizer( column );
       case SPREAD:
-        return null;
+        return new SpreadColumnAnalizer( column );
       case BOOLEAN:
         return new BooleanColumnAnalizer( column );
       case BYTE:

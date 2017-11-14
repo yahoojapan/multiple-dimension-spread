@@ -17,8 +17,6 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.expression;
 
-import java.util.List;
-
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 
 public final class IndexFactory{

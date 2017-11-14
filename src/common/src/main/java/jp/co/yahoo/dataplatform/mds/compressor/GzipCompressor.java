@@ -97,7 +97,6 @@ public class GzipCompressor implements ICompressor{
   @Override
   public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
-    int dataLength = wrapBuffer.getInt();
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     return new BufferedInputStream( new GZIPInputStream( bIn , 1024 * 256 ) , 1024 * 256 );
   }

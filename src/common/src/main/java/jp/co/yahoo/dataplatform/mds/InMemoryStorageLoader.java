@@ -28,7 +28,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class InMemoryStorageLoader implements AutoCloseable{
 
-  private MDSReader reader;
+  private final MDSReader reader;
 
   public InMemoryStorageLoader( final MDSReader reader ){
     this.reader = reader;

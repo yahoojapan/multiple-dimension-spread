@@ -34,9 +34,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
-import jp.co.yahoo.dataplatform.schema.objects.NullObj;
 import jp.co.yahoo.dataplatform.schema.objects.StringObj;
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
@@ -67,7 +65,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     return ColumnType.INTEGER;
   }
 
-  public static ILengthMaker chooseLengthMaker( boolean hasNull , final int min , final int max ){
+  public static ILengthMaker chooseLengthMaker( final boolean hasNull , final int min , final int max ){
     if( min == max && ! hasNull ){
       return new FixedLengthMaker( min );
     }
@@ -94,11 +92,9 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
 
     int calcBinarySize( final int columnSize );
 
-    void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException;
+    void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException;
 
     int[] getLengthArray( final ByteBuffer wrapBuffer , final int size ) throws IOException;
-
-    int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException;
 
   }
 
@@ -116,7 +112,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
       return;
     }
 
@@ -125,17 +121,6 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       int[] result = new int[size];
       for( int i = 0 ; i < result.length ; i++ ){
         result[i] = min;
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += min;
       }
       return result;
     }
@@ -150,7 +135,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
       for( int i = 0 ; i < objArray.length ; i++ ){
         wrapBuffer.put( (byte)objArray[i].length );
       }
@@ -161,17 +146,6 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       int[] result = new int[size];
       for( int i = 0 ; i < size ; i++ ){
         result[i] = wrapBuffer.get();
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += wrapBuffer.get();
       }
       return result;
     }
@@ -192,7 +166,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
       for( int i = 0 ; i < objArray.length ; i++ ){
         wrapBuffer.put( (byte)( objArray[i].length - min ) );
       }
@@ -202,18 +176,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     public int[] getLengthArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
       int[] result = new int[size];
       for( int i = 0 ; i < size ; i++ ){
-        result[i] = (int)wrapBuffer.get() + min;
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += (int)wrapBuffer.get() + min;
+        result[i] = wrapBuffer.get() + min;
       }
       return result;
     }
@@ -228,7 +191,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
       for( int i = 0 ; i < objArray.length ; i++ ){
         wrapBuffer.putShort( (short)objArray[i].length );
       }
@@ -239,17 +202,6 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       int[] result = new int[size];
       for( int i = 0 ; i < size ; i++ ){
         result[i] = wrapBuffer.getShort();
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += wrapBuffer.getShort();
       }
       return result;
     }
@@ -270,7 +222,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public void create( byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
+    public void create( final byte[][] objArray , final ByteBuffer wrapBuffer ) throws IOException{
       for( int i = 0 ; i < objArray.length ; i++ ){
         wrapBuffer.putShort( (short)( objArray[i].length - min ) );
       }
@@ -280,18 +232,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     public int[] getLengthArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
       int[] result = new int[size];
       for( int i = 0 ; i < size ; i++ ){
-        result[i] = (int)wrapBuffer.getShort() + min;
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += (int)wrapBuffer.getShort() + min;
+        result[i] = wrapBuffer.getShort() + min;
       }
       return result;
     }
@@ -317,17 +258,6 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       int[] result = new int[size];
       for( int i = 0 ; i < size ; i++ ){
         result[i] = wrapBuffer.getInt();
-      }
-      return result;
-    }
-
-    @Override
-    public int[] getStartArray( final ByteBuffer wrapBuffer , final int size ) throws IOException{
-      int[] result = new int[size];
-      int currentStart = 0;
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = currentStart;
-        currentStart += wrapBuffer.getInt();
       }
       return result;
     }
@@ -434,7 +364,17 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return 0;
+    StringColumnAnalizeResult stringAnalizeResult = (StringColumnAnalizeResult)analizeResult;
+    boolean hasNull = analizeResult.getNullCount() != 0;
+    if( ! hasNull && analizeResult.getUniqCount() == 1 ){
+      return stringAnalizeResult.getUniqUtf8ByteSize();
+    }
+    int nullBinaryLength = stringAnalizeResult.getColumnSize();
+    if( ! hasNull ){
+      nullBinaryLength = 0;
+    }
+    ILengthMaker lengthMaker = chooseLengthMaker( hasNull , stringAnalizeResult.getMinUtf8Bytes() , stringAnalizeResult.getMaxUtf8Bytes() );
+    return Integer.BYTES * 2 + Integer.BYTES + nullBinaryLength + lengthMaker.calcBinarySize( stringAnalizeResult.getColumnSize() ) + stringAnalizeResult.getTotalUtf8ByteSize();
   }
 
   @Override
@@ -462,7 +402,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
         columnBinary ,
         columnBinary.binaryStart + headerSize ,
         columnBinary.binaryLength - headerSize ) ,
-      new RangeStringIndex( min , max , true )
+      new RangeStringIndex( min , max )
     );
   }
 
@@ -484,17 +424,24 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
     boolean hasNull = wrapBuffer.getInt() == 1;
 
     byte[] nullFlagBytes = new byte[columnBinary.rowCount];
-    boolean[] isNullArray = new boolean[columnBinary.rowCount];
     if( hasNull ){
-      for( int i = 0 ; i < isNullArray.length ; i++ ){
-        isNullArray[i] = wrapBuffer.get() != 0;
-      }
+      wrapBuffer.get( nullFlagBytes );
     }
 
     ILengthMaker lengthMaker = chooseLengthMaker( hasNull , minLength , maxLength );
-    int[] startArray = lengthMaker.getStartArray( wrapBuffer , columnBinary.rowCount );
-    int binaryStart = wrapBuffer.position();
-    allocator.setBytesAndLength( binary , binaryStart , binary.length - binaryStart , startArray , isNullArray );
+    int[] lengthArray = lengthMaker.getLengthArray( wrapBuffer , columnBinary.rowCount );
+
+    int currentStart = wrapBuffer.position();
+    for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
+      if( nullFlagBytes[i] == 0 ){
+        allocator.setBytes( i , binary , currentStart , lengthArray[i] );
+        currentStart += lengthArray[i];
+      } 
+      else{
+        allocator.setNull( i );
+      }
+    }
+
     allocator.setValueCount( columnBinary.rowCount );
   }
 
@@ -575,8 +522,8 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
       for( int i = 0 ; i < columnBinary.rowCount ; i++ ){
         if( nullFlagBytes[i] == 0 ){
           dicArray[i] = new UTF8BytesLinkObj( binary , currentStart , lengthArray[i] );
+          currentStart += lengthArray[i];
         }
-        currentStart += lengthArray[i];
       }
 
       column = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );

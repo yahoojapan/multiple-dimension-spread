@@ -24,22 +24,34 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
-import jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
-import jp.co.yahoo.dataplatform.mds.spread.analyzer.StringColumnAnalizeResult;
 
 public class StringOptimizer implements IOptimizer{
 
-  private final IColumnBinaryMaker maker;
+  private final IColumnBinaryMaker[] makerArray;
 
   public StringOptimizer( final Configuration config ) throws IOException{
-    maker = FindColumnBinaryMaker.get( OptimizeDumpStringColumnBinaryMaker.class.getName() );
+    makerArray = new IColumnBinaryMaker[]{
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ),
+    };
   }
 
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
+    IColumnBinaryMaker maker = null;
+    int minSize = Integer.MAX_VALUE;
+    for( IColumnBinaryMaker currentMaker : makerArray ){
+      int currentSize = currentMaker.calcBinarySize( analizeResult );
+      if( currentSize <= minSize ){
+        maker = currentMaker;
+        minSize = currentSize;
+      }
+    }
     ColumnBinaryMakerConfig currentConfig = new ColumnBinaryMakerConfig( commonConfig );
-    currentConfig.stringMakerClass = maker;
+    if( maker != null ){
+      currentConfig.stringMakerClass = maker;
+    }
     return currentConfig;
   }
 

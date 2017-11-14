@@ -96,7 +96,6 @@ public class LZ4Compressor implements ICompressor{
   @Override
   public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
-    int dataLength = wrapBuffer.getInt();
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
     return new BufferedInputStream( new LZ4BlockInputStream( bIn ) );
   }

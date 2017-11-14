@@ -31,7 +31,7 @@ public class BinaryMakerOptimizer{
 
   private final Map<String,BinaryMakerOptimizerNode> childNodeMap;
 
-  public BinaryMakerOptimizer( List<IColumnAnalizeResult> analizeResultList ){
+  public BinaryMakerOptimizer( final List<IColumnAnalizeResult> analizeResultList ){
     childNodeMap = new HashMap<String,BinaryMakerOptimizerNode>( analizeResultList.size() );
     for( IColumnAnalizeResult analizeResult : analizeResultList ){
       childNodeMap.put( analizeResult.getColumnName() , new BinaryMakerOptimizerNode( analizeResult ) );

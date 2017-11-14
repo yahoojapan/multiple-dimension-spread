@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.6.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -24,38 +24,6 @@
   <packaging>jar</packaging>
   <name>multiple dimension spread arrow</name>
   <description>Supporting Apache Arrow by Multiple-Dimension-Spread</description>
-
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-
-  <scm>
-    <connection>git@github.com:yahoojapan/multiple-dimension-spread.git</connection>
-    <developerConnection>git@github.com:yahoojapan/multiple-dimension-spread.git</developerConnection>
-    <url>https://github.com/yahoojapan/multiple-dimension-spread</url>
-    <tag>HEAD</tag>
-  </scm>
-
-  <organization>
-    <name>Yahoo Japan Corporation</name>
-    <url>https://www.yahoo.co.jp/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <id>shoe116</id>
-      <name>Shu Suzuki</name>
-      <organization>Yahoo Japan Corporation</organization>
-    </developer>
-    <developer>
-      <id>koijima</id>
-      <name>Koji Ijima</name>
-      <organization>Yahoo Japan Corporation</organization>
-    </developer>
-  </developers>
 
   <dependencies>
     <dependency>
@@ -71,7 +39,7 @@
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.schema</groupId>
       <artifactId>schema-common</artifactId>
-      <version>0.2.11-SNAPSHOT</version>
+      <version>${schemalibVersion}</version>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.config</groupId>

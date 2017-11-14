@@ -19,9 +19,6 @@ package jp.co.yahoo.dataplatform.mds.spread.analyzer;
 
 import java.io.IOException;
 
-import java.util.Set;
-import java.util.HashSet;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;

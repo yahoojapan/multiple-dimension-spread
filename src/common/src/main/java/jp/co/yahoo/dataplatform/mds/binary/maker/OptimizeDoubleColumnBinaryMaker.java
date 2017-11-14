@@ -38,6 +38,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.DoubleColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -196,7 +197,6 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public IntBuffer getIndexIntBuffer( final byte[] buffer , final int start , final int length ) throws IOException{
-      int size = length / Integer.BYTES;
       return ByteBuffer.wrap( buffer , start , length ).asIntBuffer();
     }
 
@@ -223,14 +223,14 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
       Double target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
         target = Double.valueOf( primitiveObj.getDouble() );
-      }
-      else{
-        hasNull = true;
       }
       if( ! dicMap.containsKey( target ) ){
         if( 0 < min.compareTo( target ) ){
@@ -273,7 +273,15 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return 0;
+    double min = ( (DoubleColumnAnalizeResult) analizeResult ).getMin();
+    double max = ( (DoubleColumnAnalizeResult) analizeResult ).getMax();
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( analizeResult.getColumnSize() );
+    IDictionaryMaker dicMaker = chooseDictionaryMaker( min , max );
+
+    int indexLength = indexMaker.calcBinarySize( analizeResult.getColumnSize() );
+    int dicLength = dicMaker.calcBinarySize( analizeResult.getUniqCount() );
+
+    return indexLength + dicLength;
   }
 
   @Override

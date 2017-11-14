@@ -16,11 +16,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jp.co.yahoo.dataplatform.mds</groupId>
   <artifactId>multiple-dimension-spread</artifactId>
-  <version>0.5.1-SNAPSHOT</version>
+  <version>0.6.0</version>
   <packaging>pom</packaging>
-
   <name>Yahoo dataplatform multiple dimension spread</name>
   <description>Multiple-Dimension-Spread (MDS) is a Schema-less columnar storage format.</description>
+  <url>https://github.com/yahoojapan/multiple-dimension-spread</url>
 
   <licenses>
     <license>
@@ -30,9 +30,9 @@
   </licenses>
 
   <scm>
-    <connection>git@github.com:yahoojapan/multiple-dimension-spread.git</connection>
-    <developerConnection>git@github.com:yahoojapan/multiple-dimension-spread.git</developerConnection>
-    <url>https://github.com/yahoojapan/multiple-dimension-spread</url>
+    <connection>scm:git:git@github.com:yahoojapan/multiple-dimension-spread.git</connection>
+    <developerConnection>scm:git:git@github.com:yahoojapan/multiple-dimension-spread.git</developerConnection>
+    <url>scm:git:https://github.com/yahoojapan/multiple-dimension-spread</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -55,7 +55,9 @@
   </developers>
 
   <properties>
-    <configlibVersion>1.0.12-SNAPSHOT</configlibVersion>
+    <configlibVersion>1.1.0</configlibVersion>
+    <!--schemalibVersion>0.2.11-SNAPSHOT</schemalibVersion-->
+    <schemalibVersion>1.0.0</schemalibVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <target_jdk_version>1.8</target_jdk_version>
     <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
@@ -104,6 +106,22 @@
     </extensions>
     <plugins>
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.11</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.openclover</groupId>
+        <artifactId>clover-maven-plugin</artifactId>
+        <version>4.2.0</version>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
@@ -121,6 +139,29 @@
           <id>attach-sources</id>
           <goals>
             <goal>jar-no-fork</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-javadoc-plugin</artifactId>
+      <version>2.10.1</version>
+      <configuration>
+        <show>package</show>
+        <source>1.8</source>
+        <encoding>UTF-8</encoding>
+        <docencoding>UTF-8</docencoding>
+        <charset>UTF-8</charset>
+        <links>
+          <link>http://docs.oracle.com/javase/8/docs/api/</link>
+        </links>
+      </configuration>
+      <executions>
+        <execution>
+          <phase>package</phase>
+          <goals>
+            <goal>jar</goal>
           </goals>
         </execution>
       </executions>
@@ -165,123 +206,5 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <profiles>
-    <profile>
-      <id>screwdriver-v3</id>
-      <activation>
-        <property>
-          <name>screwdriver3</name>
-        </property>
-      </activation>
-      <properties>
-        <buildtype>release</buildtype>
-        <project.reporting.outputDirectory>${env.TEST_RESULTS_DIR}</project.reporting.outputDirectory>
-      </properties>
-      <reporting>
-        <plugins>
-          <plugin>
-            <artifactId>maven-site-plugin</artifactId>
-            <version>2.1</version>
-            <configuration>
-              <locales>ja</locales>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-jxr-plugin</artifactId>
-           <version>2.3</version>
-           <reportSets>
-              <reportSet>
-               <id>aggregate</id>
-                <inherited>false</inherited>
-               <reports>
-                 <report>aggregate</report>
-               </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>3.0.4</version>
-            <configuration>
-              <effort>max</effort>
-              <excludeFilterFile>./findbugs_filter.xml</excludeFilterFile>
-              <onlyAnalyze>jp.co.jp.co.yahoo.dataplatform.mds.*</onlyAnalyze>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jdepend-maven-plugin</artifactId>
-            <version>2.0</version>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.5</version>
-            <configuration>
-              <targetJdk>1.7</targetJdk>
-              <rulesets>
-                <ruleset>./pmd_rulesets.xml</ruleset>
-              </rulesets>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8.1</version>
-            <configuration>
-            <author>true</author>
-            <source>1.8</source>
-              <show>protected</show>
-              <encoding>UTF-8</encoding>
-              <charset>UTF-8</charset>
-              <docencoding>UTF-8</docencoding>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>${maven-surefire-plugin.version}</version>
-            <configuration>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>${maven-surefire-report-plugin.version}</version>
-            <configuration>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <artifactId>maven-clover2-plugin</artifactId>
-            <version>4.0.4</version>
-            <configuration>
-              <jdk>${target_jdk_version}</jdk>
-              <licenseLocation>${env.CLOVER_LICENSE_LOCATION}</licenseLocation>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.7</version>
-            <extensions>true</extensions>
-            <configuration>
-               <serverId>ossrh</serverId>
-               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-               <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 
 </project>

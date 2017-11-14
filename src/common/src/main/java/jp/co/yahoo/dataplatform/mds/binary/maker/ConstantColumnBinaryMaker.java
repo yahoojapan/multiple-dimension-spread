@@ -20,9 +20,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
@@ -73,7 +70,6 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public IColumn toColumn( final ColumnBinary columnBinary ) throws IOException{
-    IColumn result = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
     ICellManager cellManager;
     
     ByteBuffer wrapBuffer = ByteBuffer.wrap( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
@@ -122,7 +118,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
         wrapBuffer.get( stringBytes );
         cellManager = new ConstantCellManager( columnBinary.columnType , new UTF8BytesLinkObj( stringBytes , 0 , stringBytes.length ) , columnBinary.rowCount );
         String string = new String( stringBytes , 0 , stringBytes.length , "UTF-8" );
-        cellManager.setIndex( new RangeStringIndex( string , string , false ) );
+        cellManager.setIndex( new RangeStringIndex( string , string ) );
         break;
       case BYTES:
         int byteLength = wrapBuffer.getInt();
@@ -133,6 +129,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
       default:
         throw new IOException( "Unknown primitive type." );
     }
+    IColumn result = new PrimitiveColumn( columnBinary.columnType , columnBinary.columnName );
     result.setCellManager( cellManager );
     return result;
   }
@@ -203,6 +200,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
       default:
         throw new IOException( "Unknown primitive type." );
     }
+    allocator.setValueCount( columnBinary.rowCount );
   }
 
   @Override
@@ -243,6 +241,7 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
         break;
       default:
         currentNode.disable();
+        break;
     }
   }
 

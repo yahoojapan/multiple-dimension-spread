@@ -51,7 +51,7 @@ public final class PrimitiveToWritableConverter{
     switch( primitiveCategory ){
       case STRING:
         Text textResult = new Text();
-        if( primitiveObject instanceof IBytesLink){
+        if( primitiveObject instanceof IBytesLink ){
           IBytesLink linkObj = (IBytesLink)primitiveObject;
           textResult.set( linkObj.getLinkBytes() , linkObj.getStart() , linkObj.getLength() );
         }

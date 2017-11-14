@@ -161,7 +161,7 @@ public class RangeIndexStringToUTF8BytesColumnBinaryMaker extends UniqStringToUT
     offset++;
     int binaryLength = wrapBuffer.getInt( offset ); 
     offset += Integer.BYTES;
-    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) , hasNull == (byte)1 ) );
+    return new HeaderIndexLazyColumn( columnBinary.columnName , columnBinary.columnType , new StringColumnManager( columnBinary , offset , binaryLength ) , new RangeStringIndex( new String( minCharArray ) , new String( maxCharArray ) ) );
   }
 
   @Override

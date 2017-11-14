@@ -20,7 +20,7 @@ package jp.co.yahoo.dataplatform.mds.binary.optimizer;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
-public class NullOptimizer implements IOptimizer{
+public final class NullOptimizer implements IOptimizer{
 
   public static final IOptimizer INSTANCE = new NullOptimizer();
 

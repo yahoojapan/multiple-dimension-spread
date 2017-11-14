@@ -19,8 +19,6 @@ package jp.co.yahoo.dataplatform.mds.binary.maker.index;
 
 import java.io.IOException;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
@@ -34,12 +32,10 @@ public class RangeStringIndex implements ICellIndex{
 
   private final String max;
   private final String min;
-  private final boolean hasNull;
 
-  public RangeStringIndex( final String min , final String max , final boolean hasNull ){
+  public RangeStringIndex( final String min , final String max ){
     this.max = max;
     this.min = min;
-    this.hasNull = hasNull;
   }
 
   @Override

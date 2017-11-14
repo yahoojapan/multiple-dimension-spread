@@ -20,12 +20,9 @@ package jp.co.yahoo.dataplatform.mds.binary.maker;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
@@ -41,6 +38,10 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.ByteColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.ShortColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.IntegerColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.LongColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -489,8 +490,11 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       PrimitiveObject primitiveObj = null;
-      Long target = null;
-      if( cell.getType() != ColumnType.NULL ){
+      if( cell.getType() == ColumnType.NULL ){
+        hasNull = true;
+        isNullArray[i] = 1;
+      }
+      else{
         rowCount++;
         PrimitiveCell stringCell = (PrimitiveCell) cell;
         primitiveObj = stringCell.getRow();
@@ -501,10 +505,6 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
         if( max.compareTo( valueArray[i] ) < 0 ){
           max = Long.valueOf( valueArray[i] );
         }
-      }
-      else{
-        hasNull = true;
-        isNullArray[i] = 1;
       }
     }
 
@@ -536,7 +536,34 @@ public class OptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return 0;
+    long min;
+    long max;
+    switch( analizeResult.getColumnType() ){
+      case BYTE:
+        min = (long)( (ByteColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (ByteColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case SHORT:
+        min = (long)( (ShortColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (ShortColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case INTEGER:
+        min = (long)( (IntegerColumnAnalizeResult) analizeResult ).getMin();
+        max = (long)( (IntegerColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      case LONG:
+        min = ( (LongColumnAnalizeResult) analizeResult ).getMin();
+        max = ( (LongColumnAnalizeResult) analizeResult ).getMax();
+        break;
+      default:
+        min = Long.MIN_VALUE;
+        max = Long.MAX_VALUE;
+        break;
+    }
+    IBinaryMaker binaryMaker = chooseBinaryMaker( min , max );
+    int nullBinaryLength = analizeResult.getColumnSize();
+    int valueLength = binaryMaker.calcBinarySize( analizeResult.getColumnSize() );
+    return nullBinaryLength + valueLength;
   }
 
   @Override

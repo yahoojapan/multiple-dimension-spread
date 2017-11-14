@@ -17,9 +17,6 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.expression;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class FilterdExpressionIndex implements IExpressionIndex{
 
   private final int[] indexList;
