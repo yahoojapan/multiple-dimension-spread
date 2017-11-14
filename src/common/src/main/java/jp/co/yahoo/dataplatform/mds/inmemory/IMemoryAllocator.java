@@ -91,6 +91,9 @@ public interface IMemoryAllocator{
     return 0;
   }
 
+  default void setChildCount( final int childSize ) throws IOException{
+  }
+
   default IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
     return NullMemoryAllocator.INSTANCE;
   }
