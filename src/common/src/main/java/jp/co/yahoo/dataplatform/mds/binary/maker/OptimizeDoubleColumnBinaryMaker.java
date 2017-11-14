@@ -38,6 +38,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.DoubleColumnAnalizeResult;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
@@ -272,7 +273,15 @@ public class OptimizeDoubleColumnBinaryMaker implements IColumnBinaryMaker{
 
   @Override
   public int calcBinarySize( final IColumnAnalizeResult analizeResult ){
-    return 0;
+    double min = ( (DoubleColumnAnalizeResult) analizeResult ).getMin();
+    double max = ( (DoubleColumnAnalizeResult) analizeResult ).getMax();
+    IDictionaryIndexMaker indexMaker = chooseDictionaryIndexMaker( analizeResult.getColumnSize() );
+    IDictionaryMaker dicMaker = chooseDictionaryMaker( min , max );
+
+    int indexLength = indexMaker.calcBinarySize( analizeResult.getColumnSize() );
+    int dicLength = dicMaker.calcBinarySize( analizeResult.getUniqCount() );
+
+    return indexLength + dicLength;
   }
 
   @Override
