@@ -41,26 +41,6 @@ public class TestLegacyNumberBlockIndex extends TestNumberBlockIndex{
   @Override
   public IBlockIndex[] createBlockIndex() throws IOException{
     return  new IBlockIndex[] {
-      createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpByteColumnBinaryMaker" ) ,
-      createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpByteColumnBinaryMaker" ) ,
-      createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexByteColumnBinaryMaker" ) ,
-      createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqByteColumnBinaryMaker" ) ,
-      createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpShortColumnBinaryMaker" ) ,
-      createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpShortColumnBinaryMaker" ) ,
-      createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexShortColumnBinaryMaker" ) ,
-      createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqShortColumnBinaryMaker" ) ,
-      createIntegerTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpIntegerColumnBinaryMaker" ) ,
-      createIntegerTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpIntegerColumnBinaryMaker" ) ,
-      createIntegerTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexIntegerColumnBinaryMaker" ) ,
-      createIntegerTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqIntegerColumnBinaryMaker" ) ,
-      createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpLongColumnBinaryMaker" ) ,
-      createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpLongColumnBinaryMaker" ) ,
-      createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexLongColumnBinaryMaker" ) ,
-      createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqLongColumnBinaryMaker" ) ,
-      createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexFloatColumnBinaryMaker" ) ,
-      createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqFloatColumnBinaryMaker" ) ,
-      createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexDoubleColumnBinaryMaker" ) ,
-      createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqDoubleColumnBinaryMaker" ) ,
     };
   }
 

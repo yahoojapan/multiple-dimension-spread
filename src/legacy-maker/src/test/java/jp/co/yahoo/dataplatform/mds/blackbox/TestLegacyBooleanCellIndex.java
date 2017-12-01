@@ -43,13 +43,6 @@ public class TestLegacyBooleanCellIndex extends TestBooleanCellIndex{
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.FullRangeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.FullRangeIndexStringToUTF8BytesColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexStringToUTF8BytesColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringToUTF8BytesColumnBinaryMaker" ) },
     };
   }
 

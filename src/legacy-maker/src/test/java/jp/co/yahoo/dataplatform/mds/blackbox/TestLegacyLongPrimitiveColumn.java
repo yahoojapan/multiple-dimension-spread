@@ -41,10 +41,6 @@ public class TestLegacyLongPrimitiveColumn extends TestLongPrimitiveColumn{
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.DumpLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UniqLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexLongColumnBinaryMaker" },
     };
   }
 
