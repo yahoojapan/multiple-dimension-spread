@@ -30,39 +30,6 @@ public class TestLegacyNumberCellIndex extends TestNumberCellIndex{
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpByteColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqByteColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpByteColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexByteColumnBinaryMaker" ) },
-
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpShortColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqShortColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpShortColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexShortColumnBinaryMaker" ) },
-
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpIntegerColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqIntegerColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpIntegerColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexIntegerColumnBinaryMaker" ) },
-
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexLongColumnBinaryMaker" ) },
-
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexFloatColumnBinaryMaker" ) },
-
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexDoubleColumnBinaryMaker" ) },
-
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.FullRangeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.FullRangeIndexStringToUTF8BytesColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexStringToUTF8BytesColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UniqStringToUTF8BytesColumnBinaryMaker" ) },
     };
   }
 

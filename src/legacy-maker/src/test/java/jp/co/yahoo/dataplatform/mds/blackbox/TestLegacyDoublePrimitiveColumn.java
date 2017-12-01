@@ -41,8 +41,6 @@ public class TestLegacyDoublePrimitiveColumn extends TestDoublePrimitiveColumn{
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UniqDoubleColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexDoubleColumnBinaryMaker" },
     };
   }
 

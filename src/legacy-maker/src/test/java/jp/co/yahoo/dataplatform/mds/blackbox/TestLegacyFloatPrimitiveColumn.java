@@ -41,8 +41,6 @@ public class TestLegacyFloatPrimitiveColumn extends TestFloatPrimitiveColumn{
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UniqFloatColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexFloatColumnBinaryMaker" },
     };
   }
 
