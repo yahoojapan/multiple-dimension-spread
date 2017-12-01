@@ -97,9 +97,14 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
         if( columnType != ( (INullFilter)filter ).getTargetColumnType() ){
           return null;
         }
-        for( int i = 0 ; i < size() ; i++ ){
-          if( dicIndexIntBuffer.get(i) != 0 ){
-            filterArray[i] = true;
+        for( int i = 0 ; i < filterArray.length ; i++ ){
+          if( i < size() ){
+            if( dicIndexIntBuffer.get(i) != 0 ){
+              filterArray[i] = true;
+            }
+          }
+          else{
+            filterArray[i] = false;
           }
         }
         return filterArray;
@@ -107,8 +112,13 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
         if( columnType != ( (INullFilter)filter ).getTargetColumnType() ){
           return null;
         }
-        for( int i = 0 ; i < size() ; i++ ){
-          if( dicIndexIntBuffer.get(i) == 0 ){
+        for( int i = 0 ; i < filterArray.length ; i++ ){
+          if( i < size() ){
+            if( dicIndexIntBuffer.get(i) == 0 ){
+              filterArray[i] = true;
+            }
+          }
+          else{
             filterArray[i] = true;
           }
         }
