@@ -18,35 +18,36 @@
 package jp.co.yahoo.dataplatform.mds.binary;
 
 import jp.co.yahoo.dataplatform.mds.util.Pair;
+import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public final class ColumnBinaryMakerNameShortCut{
 
   private static final Pair CLASS_NAME_PAIR = new Pair();
 
   static{
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpArrayColumnBinaryMaker"   , "D0" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" , "D1" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker"   , "D3" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker"  , "D4" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker"   , "D5" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpSpreadColumnBinaryMaker"  , "D9" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpUnionColumnBinaryMaker"   , "D11" );
+    CLASS_NAME_PAIR.set( DumpArrayColumnBinaryMaker.class.getName()   , "D0" );
+    CLASS_NAME_PAIR.set( DumpBooleanColumnBinaryMaker.class.getName() , "D1" );
+    CLASS_NAME_PAIR.set( DumpBytesColumnBinaryMaker.class.getName()   , "D3" );
+    CLASS_NAME_PAIR.set( DumpDoubleColumnBinaryMaker.class.getName()  , "D4" );
+    CLASS_NAME_PAIR.set( DumpFloatColumnBinaryMaker.class.getName()   , "D5" );
+    CLASS_NAME_PAIR.set( DumpSpreadColumnBinaryMaker.class.getName()  , "D9" );
+    CLASS_NAME_PAIR.set( DumpUnionColumnBinaryMaker.class.getName()   , "D11" );
 
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker"  , "RD0" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker"   , "RD5" );
+    CLASS_NAME_PAIR.set( RangeDumpDoubleColumnBinaryMaker.class.getName()  , "RD0" );
+    CLASS_NAME_PAIR.set( RangeDumpFloatColumnBinaryMaker.class.getName()   , "RD5" );
     // Mistake
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker"   , "OD0" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker"   , "O0" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker"   , "O1" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker"   , "O2" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker"   , "O11" );
+    CLASS_NAME_PAIR.set( OptimizeLongColumnBinaryMaker.class.getName()    , "OD0" );
+    CLASS_NAME_PAIR.set( OptimizeLongColumnBinaryMaker.class.getName()    , "O0" );
+    CLASS_NAME_PAIR.set( OptimizeFloatColumnBinaryMaker.class.getName()   , "O1" );
+    CLASS_NAME_PAIR.set( OptimizeDoubleColumnBinaryMaker.class.getName()  , "O2" );
+    CLASS_NAME_PAIR.set( OptimizeStringColumnBinaryMaker.class.getName()  , "O11" );
 
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker"   , "OD10" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker"   , "OD11" );
+    CLASS_NAME_PAIR.set( OptimizeDumpLongColumnBinaryMaker.class.getName()    , "OD10" );
+    CLASS_NAME_PAIR.set( OptimizeDumpStringColumnBinaryMaker.class.getName()  , "OD11" );
 
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker"   , "OI11" );
+    CLASS_NAME_PAIR.set( OptimizeIndexDumpStringColumnBinaryMaker.class.getName()   , "OI11" );
 
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.binary.maker.ConstantColumnBinaryMaker"   , "C0" );
+    CLASS_NAME_PAIR.set( ConstantColumnBinaryMaker.class.getName()   , "C0" );
   }
 
   private ColumnBinaryMakerNameShortCut(){}
