@@ -91,6 +91,16 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   }
 
   @Override
+  public boolean isDisableSkipBlock(){
+    return hiveReaderConfig.isDisableSkipBlock();
+  }
+
+  @Override
+  public boolean isDisableFilterPushdown(){
+    return hiveReaderConfig.isDisableFilterPushdown();
+  }
+
+  @Override
   public Configuration getReaderConfig(){
     return hiveReaderConfig.getReaderConfig();
   }

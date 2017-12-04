@@ -40,7 +40,7 @@ public class TestHiveVectorizedReaderSetting{
     intList.add( 3 );
     intList.add( 4 );
 
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     int[] intArray = setting.createNeedColumnId( intList );
     assertEquals( 1 , intArray[0] );
     assertEquals( 2 , intArray[1] );
@@ -50,19 +50,19 @@ public class TestHiveVectorizedReaderSetting{
 
   @Test
   public void T_isVectorMode_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertFalse( setting.isVectorMode() );
   }
 
   @Test
   public void T_getReaderConfig_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertEquals( null , setting.getReaderConfig() );
   }
 
   @Test
   public void T_getExpressionNode_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertEquals( null , setting.getExpressionNode() );
   }
 
@@ -92,7 +92,7 @@ public class TestHiveVectorizedReaderSetting{
   @Test
   public void T_createVectorizedRowBatch_1(){
     VectorizedRowBatchCtx rbCtx = getVectorizedRowBatchCtx();
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true } , null , rbCtx , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true } , null , rbCtx , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     VectorizedRowBatch batch = setting.createVectorizedRowBatch();
     assertEquals( batch.numCols , 5 );
     assertEquals( batch.cols[0].getClass().getName() , BytesColumnVector.class.getName() );
@@ -106,7 +106,7 @@ public class TestHiveVectorizedReaderSetting{
   public void T_setPartitionValues_1(){
     VectorizedRowBatchCtx rbCtx = getVectorizedRowBatchCtx();
     Object[] partitionValue = new Object[]{ Integer.valueOf(100) };
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true , true } , partitionValue , rbCtx , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true , true } , partitionValue , rbCtx , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     VectorizedRowBatch batch = setting.createVectorizedRowBatch();
     setting.setPartitionValues( batch );
     assertEquals( batch.numCols , 5 );
@@ -120,7 +120,7 @@ public class TestHiveVectorizedReaderSetting{
   public void T_setPartitionValues_2(){
     VectorizedRowBatchCtx rbCtx = getVectorizedRowBatchCtx();
     Object[] partitionValue = new Object[0];
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true } , partitionValue , rbCtx , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( new boolean[]{ true , true , true , true } , partitionValue , rbCtx , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     VectorizedRowBatch batch = setting.createVectorizedRowBatch();
     setting.setPartitionValues( batch );
     LongColumnVector vector = (LongColumnVector)batch.cols[4];
@@ -129,19 +129,19 @@ public class TestHiveVectorizedReaderSetting{
 
   @Test
   public void T_getAssignors_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertEquals( setting.getAssignors() , null );
   }
 
   @Test
   public void T_getNeedColumnIds_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertEquals( setting.getNeedColumnIds() , null );
   }
 
   @Test
   public void T_getColumnNames_1(){
-    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false ) );
+    HiveVectorizedReaderSetting setting = new HiveVectorizedReaderSetting( null , null , null , null , null , null , new HiveReaderSetting( null , null , false , false , false ) );
     assertEquals( setting.getColumnNames() , null );
   }
 

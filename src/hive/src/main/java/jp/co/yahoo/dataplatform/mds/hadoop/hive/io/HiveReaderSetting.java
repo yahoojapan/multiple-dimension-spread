@@ -49,15 +49,22 @@ public class HiveReaderSetting implements IReaderSetting{
   private final Configuration config;
   private final IExpressionNode node;
   private final boolean isVectorModeFlag;
+  private final boolean disableSkipBlock;
+  private final boolean disableFilterPushdown;
 
-  public HiveReaderSetting( final Configuration config , final IExpressionNode node , final boolean isVectorModeFlag ){
+  public HiveReaderSetting( final Configuration config , final IExpressionNode node , final boolean isVectorModeFlag , final boolean disableSkipBlock , final boolean disableFilterPushdown ){
     this.config = config;
     this.node = node;
     this.isVectorModeFlag = isVectorModeFlag;
+    this.disableSkipBlock = disableSkipBlock;
+    this.disableFilterPushdown = disableFilterPushdown;
   }
 
   public HiveReaderSetting( final FileSplit split, final JobConf job ){
     config = new Configuration();
+
+    disableSkipBlock = job.getBoolean( "mds.disable.block.skip" , false );
+    disableFilterPushdown = job.getBoolean( "mds.disable.filter.pushdown" , false );
 
     Set<String> pathNameSet= createPathSet( split.getPath() );
     List<ExprNodeGenericFuncDesc> filterExprs = new ArrayList<ExprNodeGenericFuncDesc>();
@@ -147,6 +154,16 @@ public class HiveReaderSetting implements IReaderSetting{
   @Override
   public boolean isVectorMode(){
     return isVectorModeFlag;
+  }
+
+  @Override
+  public boolean isDisableSkipBlock(){
+    return disableSkipBlock;
+  }
+
+  @Override
+  public boolean isDisableFilterPushdown(){
+    return disableFilterPushdown;
   }
 
   @Override
