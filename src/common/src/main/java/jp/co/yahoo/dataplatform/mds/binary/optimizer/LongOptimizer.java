@@ -32,7 +32,6 @@ public class LongOptimizer implements IOptimizer{
 
   public LongOptimizer( final Configuration config ) throws IOException{
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ),
       FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ),
     };
   }

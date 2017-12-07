@@ -32,7 +32,6 @@ public class FloatOptimizer implements IOptimizer{
 
   public FloatOptimizer( final Configuration config ) throws IOException{
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ),
       FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ),
     };
   }
