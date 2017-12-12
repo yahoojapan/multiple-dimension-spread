@@ -24,6 +24,10 @@ public interface IReaderSetting{
 
   boolean isVectorMode();
 
+  boolean isDisableSkipBlock();
+
+  boolean isDisableFilterPushdown();
+
   Configuration getReaderConfig();
 
   IExpressionNode getExpressionNode();

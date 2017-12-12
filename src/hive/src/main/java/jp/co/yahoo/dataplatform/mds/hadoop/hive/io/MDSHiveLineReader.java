@@ -43,6 +43,7 @@ public class MDSHiveLineReader implements RecordReader<NullWritable, ColumnAndIn
   private final IExpressionNode node;
   private final IJobReporter reporter;
   private final SpreadCounter spreadCounter;
+  private final IReaderSetting setting;
 
   private Spread currentSpread;
   private int currentIndex;
@@ -53,9 +54,12 @@ public class MDSHiveLineReader implements RecordReader<NullWritable, ColumnAndIn
   public MDSHiveLineReader( final InputStream in , final long dataLength , final long start , final long length , final IReaderSetting setting , final IJobReporter reporter , final SpreadCounter spreadCounter ) throws IOException{
     this.reporter = reporter;
     this.spreadCounter = spreadCounter;
+    this.setting = setting;
     reader = new MDSReader();
     node = setting.getExpressionNode();
-    reader.setBlockSkipIndex( node );
+    if( ! setting.isDisableSkipBlock() ){
+      reader.setBlockSkipIndex( node );
+    }
     reader.setNewStream( in , dataLength , setting.getReaderConfig() , start , length );
     nextReader();
   }
@@ -108,7 +112,12 @@ public class MDSHiveLineReader implements RecordReader<NullWritable, ColumnAndIn
       return nextReader();
     }
     spreadCounter.increment();
-    currentIndexList = IndexFactory.toExpressionIndex( currentSpread , node.exec( currentSpread ) );
+    if( setting.isDisableFilterPushdown() ){
+      currentIndexList = IndexFactory.toExpressionIndex( currentSpread , null );
+    }
+    else{
+      currentIndexList = IndexFactory.toExpressionIndex( currentSpread , node.exec( currentSpread ) );
+    }
     currentIndex = 0;
     if( currentIndexList.size() == 0 ){
       return nextReader();

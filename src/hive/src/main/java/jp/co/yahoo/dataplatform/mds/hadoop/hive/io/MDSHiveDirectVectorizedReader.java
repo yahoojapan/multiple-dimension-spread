@@ -60,7 +60,9 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
     this.setting = setting;
     this.reporter = reporter;
     node = setting.getExpressionNode();
-    currentReader.setBlockSkipIndex( node );
+    if( ! setting.isDisableSkipBlock() ){
+      currentReader.setBlockSkipIndex( node );
+    }
     currentReader.setNewStream( in ,  dataLength , setting.getReaderConfig(), start , length );
     assignors = setting.getAssignors();
     needColumnIds = setting.getNeedColumnIds();
@@ -98,7 +100,13 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
     }
     Spread spread = currentReader.next();
     readSpreadCount++;
-    currentIndexList = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );
+    if( setting.isDisableFilterPushdown() ){
+      currentIndexList = IndexFactory.toExpressionIndex( spread , null );
+    }
+    else{
+      currentIndexList = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );
+    }
+  
     indexSize = currentIndexList.size();
     currentIndex = 0;
     if( indexSize == 0 ){

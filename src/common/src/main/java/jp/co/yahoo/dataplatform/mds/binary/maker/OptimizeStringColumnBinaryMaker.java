@@ -424,8 +424,9 @@ public class OptimizeStringColumnBinaryMaker implements IColumnBinaryMaker{
           min = strObj;
         }
       }
-      logicalDataLength += strObj.length() * Character.BYTES;
-      indexArray[i] = dicMap.get( strObj );
+      int dicIndex = dicMap.get( strObj );
+      indexArray[i] = dicIndex;
+      logicalDataLength += Integer.BYTES + stringList.get( dicIndex ).length;
     }
 
     if( ! hasNull && min.equals( max ) ){
