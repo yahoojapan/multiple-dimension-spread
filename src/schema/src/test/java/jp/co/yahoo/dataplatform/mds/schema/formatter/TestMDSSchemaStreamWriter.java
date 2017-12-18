@@ -37,6 +37,18 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 
 public class TestMDSSchemaStreamWriter{
 
+  @Test
+  public void T_new_Instance() throws IOException{
+    MDSSchemaStreamWriter writer;
+    for( int i = 0 ; i < 100 ; i++ ){
+      writer = new MDSSchemaStreamWriter( new ByteArrayOutputStream() , new Configuration() );
+      Map<Object,Object> data = new HashMap<Object,Object>();
+      data.put( "hoge" , new IntegerObj(1) );
+      writer.write( data );
+      writer.close();
+    }
+  }
+
   @Test( expectedExceptions = { UnsupportedOperationException.class } )
   public void T_write_1() throws IOException{
     MDSSchemaStreamWriter writer = new MDSSchemaStreamWriter( new ByteArrayOutputStream() , new Configuration() );
