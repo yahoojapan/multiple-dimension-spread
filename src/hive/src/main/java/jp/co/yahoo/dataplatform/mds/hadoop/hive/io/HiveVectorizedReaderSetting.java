@@ -46,9 +46,8 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   private final int[] needColumnIds;
   private final String[] columnNames;
 
-  public HiveVectorizedReaderSetting( final boolean[] projectionColumn , final Object[] partitionValues , final VectorizedRowBatchCtx rbCtx , final IColumnVectorAssignor[] assignors , final int[] needColumnIds , final String[] columnNames , final HiveReaderSetting hiveReaderConfig ){
+  public HiveVectorizedReaderSetting( final boolean[] projectionColumn , final VectorizedRowBatchCtx rbCtx , final IColumnVectorAssignor[] assignors , final int[] needColumnIds , final String[] columnNames , final HiveReaderSetting hiveReaderConfig ){
     this.projectionColumn = projectionColumn;
-    this.partitionValues = partitionValues;
     this.rbCtx = rbCtx;
     this.hiveReaderConfig = hiveReaderConfig;
     this.assignors = assignors;
@@ -59,11 +58,8 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   public HiveVectorizedReaderSetting( final FileSplit split , final JobConf job , final HiveReaderSetting hiveReaderConfig ) throws IOException{
     this.hiveReaderConfig = hiveReaderConfig;
 
-    rbCtx = Utilities.getVectorizedRowBatchCtx( job );
-    partitionValues = new Object[rbCtx.getPartitionColumnCount()];
-    if( 0 < partitionValues.length ){
-      rbCtx.getPartitionValues( rbCtx, job, split, partitionValues );
-    }
+    rbCtx = new VectorizedRowBatchCtx();
+    rbCtx.init( job , split );
 
     TypeInfo[] typeInfos = rbCtx.getRowColumnTypeInfos();
     columnNames = rbCtx.getRowColumnNames();
@@ -117,9 +113,7 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
 
   @Override
   public void setPartitionValues( final VectorizedRowBatch outputBatch ){
-    if( 0 < partitionValues.length ){
-      rbCtx.addPartitionColsToBatch( outputBatch , partitionValues );
-    }
+    rbCtx.addPartitionColsToBatch( outputBatch );
   }
 
   @Override
