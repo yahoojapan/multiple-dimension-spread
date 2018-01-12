@@ -308,7 +308,7 @@ public class OptimizeDumpStringColumnBinaryMaker implements IColumnBinaryMaker{
         minLength = obj.length;
       }
       totalLength += obj.length;
-      logicalDataLength += strObj.length() * Character.BYTES;
+      logicalDataLength += Integer.BYTES + obj.length;
       objList[i] = obj;
       if( max.compareTo( strObj ) < 0 ){
         max = strObj;

@@ -83,13 +83,13 @@ public class TestMDSHiveLineReader{
 
 
   private HiveReaderSetting getHiveReaderSetting(){
-    return new HiveReaderSetting( new Configuration() , new OrExpressionNode() , false );
+    return new HiveReaderSetting( new Configuration() , new OrExpressionNode() , false , false , false );
   }
 
   private HiveReaderSetting getHiveReaderSetting2(){
     OrExpressionNode or = new OrExpressionNode();
     or.addChildNode( new ExecuterNode( new StringExtractNode( "str" ) , new PerfectMatchStringFilter( "a-0" ) ) );
-    return new HiveReaderSetting( new Configuration() , or , false );
+    return new HiveReaderSetting( new Configuration() , or , false , false , false );
   }
 
   @Test

@@ -59,12 +59,13 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
 
     byte[] binaryRaw = new byte[ Integer.BYTES * column.size() ];
     IntBuffer intIndexBuffer = ByteBuffer.wrap( binaryRaw ).asIntBuffer();
-
+    int logicalDataSize = 0;
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell instanceof ArrayCell ){
         ArrayCell arrayCell = (ArrayCell) cell;
         intIndexBuffer.put( arrayCell.getEnd() - arrayCell.getStart() );
+        logicalDataSize += Integer.BYTES * 2;
       }
       else{
         intIndexBuffer.put( 0 );
@@ -86,7 +87,7 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     }
     columnBinaryList.add( maker.toBinary( commonConfig , childColumnConfigNode , childColumn ) );
     
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binaryRaw.length , 0 , -1 , compressData , 0 , compressData.length , columnBinaryList );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , ColumnType.ARRAY , column.size() , binaryRaw.length , logicalDataSize , -1 , compressData , 0 , compressData.length , columnBinaryList );
   }
 
   @Override

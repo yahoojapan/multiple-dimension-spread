@@ -15,33 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.blackbox;
+package jp.co.yahoo.dataplatform.mds;
 
-import java.io.IOException;
+import java.io.*;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.annotations.DataProvider;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
-import jp.co.yahoo.dataplatform.schema.objects.*;
+public class TestMDSWriter{
 
-import jp.co.yahoo.dataplatform.mds.spread.expression.*;
-import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
-import jp.co.yahoo.dataplatform.mds.spread.column.*;
-import jp.co.yahoo.dataplatform.mds.binary.*;
-import jp.co.yahoo.dataplatform.mds.binary.maker.*;
-
-public class TestLegacyFloatPrimitiveColumn extends TestFloatPrimitiveColumn{
-
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-    };
+  @Test
+  public void T_newInstance_1() throws IOException{
+    MDSWriter writer;
+    for( int i = 0 ; i < 100 ; i++ ){
+      writer = new MDSWriter( new ByteArrayOutputStream() , new Configuration() );
+      writer.close();
+    }
   }
 
 }

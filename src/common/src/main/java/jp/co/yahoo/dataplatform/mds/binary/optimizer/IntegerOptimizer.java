@@ -28,11 +28,12 @@ import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
 
 public class IntegerOptimizer implements IOptimizer{
 
+  private final IColumnBinaryMaker uniqMaker;
   private final IColumnBinaryMaker[] makerArray;
 
   public IntegerOptimizer( final Configuration config ) throws IOException{
+    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" );
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ),
       FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ),
     };
   }
@@ -40,12 +41,17 @@ public class IntegerOptimizer implements IOptimizer{
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
-    int minSize = Integer.MAX_VALUE;
-    for( IColumnBinaryMaker currentMaker : makerArray ){
-      int currentSize = currentMaker.calcBinarySize( analizeResult );
-      if( currentSize <= minSize ){
-        maker = currentMaker;
-        minSize = currentSize;
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.1d ){
+      maker = uniqMaker;
+    }
+    else{
+      int minSize = Integer.MAX_VALUE;
+      for( IColumnBinaryMaker currentMaker : makerArray ){
+        int currentSize = currentMaker.calcBinarySize( analizeResult );
+        if( currentSize <= minSize ){
+          maker = currentMaker;
+          minSize = currentSize;
+        }
       }
     }
     ColumnBinaryMakerConfig currentConfig = new ColumnBinaryMakerConfig( commonConfig );

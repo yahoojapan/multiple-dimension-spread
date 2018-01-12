@@ -46,28 +46,28 @@ public class TestHiveReaderSetting{
     GenericUDF udf = new GenericUDFOPAnd();
     list.add( new ExprNodeGenericFuncDesc( PrimitiveObjectInspectorFactory.writableStringObjectInspector , udf , new ArrayList<ExprNodeDesc>() ) );
 
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , false );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , false , false , false );
     IExpressionNode node = setting.createExpressionNode( list );
     assertEquals( node.getClass().getName() , OrExpressionNode.class.getName() );
   }
 
   @Test
   public void T_createReadColumnNames_1(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , false );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , false , false , false );
     String readColumnJson = setting.createReadColumnNames( "a,b,,c" );
     assertEquals( readColumnJson , "[[\"a\"],[\"b\"],[\"c\"]]" );
   }
 
   @Test
   public void T_createReadColumnNames_2(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , false );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , false , false , false );
     String readColumnJson = setting.createReadColumnNames( "" );
     assertEquals( readColumnJson , null );
   }
 
   @Test
   public void T_createReadColumnNames_3(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , false );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , false , false , false );
     String readColumnJson = setting.createReadColumnNames( null );
     assertEquals( readColumnJson , null );
   }
@@ -75,7 +75,7 @@ public class TestHiveReaderSetting{
   @Test
   public void T_createPathSet_1(){
     Path test = new Path( "file:///a/b/c" );
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , false );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , false , false , false );
     Set<String> set = setting.createPathSet( test );
     System.out.println( set.toString() );
     assertTrue( set.contains( "file:/a/b" ) );
@@ -85,22 +85,22 @@ public class TestHiveReaderSetting{
 
   @Test
   public void T_isVectorMode_1(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , true );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , true , false , false );
     assertTrue( setting.isVectorMode() );
 
-    setting = new HiveReaderSetting( null , null , false );
+    setting = new HiveReaderSetting( null , null , false , false , false );
     assertFalse( setting.isVectorMode() );
   }
 
   @Test
   public void T_getReaderConfig_1(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , true );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , true , false , false );
     assertEquals( null , setting.getReaderConfig() );
   }
 
   @Test
   public void T_getExpressionNode_1(){
-    HiveReaderSetting setting = new HiveReaderSetting( null , null , true );
+    HiveReaderSetting setting = new HiveReaderSetting( null , null , true , false , false );
     assertEquals( null , setting.getExpressionNode() );
   }
 

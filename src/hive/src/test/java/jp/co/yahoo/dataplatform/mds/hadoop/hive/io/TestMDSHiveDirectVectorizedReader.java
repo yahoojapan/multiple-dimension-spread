@@ -125,7 +125,7 @@ public class TestMDSHiveDirectVectorizedReader{
     String outPath = String.format( "%s/TestMDSHiveDirectVectorizedReader_T_allTest_1.mds" , dirName );
     createFile( outPath );
 
-    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , new OrExpressionNode() , true ) );
+    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , new OrExpressionNode() , true , false , false ) );
     File inFile = new File( outPath );
     MDSHiveDirectVectorizedReader reader = new MDSHiveDirectVectorizedReader( new FileInputStream( inFile ) , inFile.length() , 0 , inFile.length() , setting , new DummyJobReporter() );
     NullWritable key = reader.createKey();
@@ -156,7 +156,7 @@ public class TestMDSHiveDirectVectorizedReader{
     String outPath = String.format( "%s/TestMDSHiveDirectVectorizedReader_T_allTest_2.mds" , dirName );
     createFile2( outPath );
 
-    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , new OrExpressionNode() , true ) );
+    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , new OrExpressionNode() , true , false , false ) );
     File inFile = new File( outPath );
     MDSHiveDirectVectorizedReader reader = new MDSHiveDirectVectorizedReader( new FileInputStream( inFile ) , inFile.length() , 0 , inFile.length() , setting , new DummyJobReporter() );
     NullWritable key = reader.createKey();
@@ -189,7 +189,7 @@ public class TestMDSHiveDirectVectorizedReader{
 
     OrExpressionNode or = new OrExpressionNode();
     or.addChildNode( new ExecuterNode( new StringExtractNode( "str" ) , new PerfectMatchStringFilter( "a-0" ) ) );
-    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , or , true ) );
+    HiveVectorizedReaderSetting setting = getHiveVectorizedReaderSetting( new HiveReaderSetting( new Configuration() , or , true , false , false ) );
     File inFile = new File( outPath );
     MDSHiveDirectVectorizedReader reader = new MDSHiveDirectVectorizedReader( new FileInputStream( inFile ) , inFile.length() , 0 , inFile.length() , setting , new DummyJobReporter() );
     NullWritable key = reader.createKey();

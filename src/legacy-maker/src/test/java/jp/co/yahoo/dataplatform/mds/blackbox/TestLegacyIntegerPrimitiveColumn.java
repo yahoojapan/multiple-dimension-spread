@@ -41,10 +41,6 @@ public class TestLegacyIntegerPrimitiveColumn extends TestIntegerPrimitiveColumn
   @DataProvider(name = "target_class")
   public Object[][] data1() throws IOException{
     return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.DumpIntegerColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UniqIntegerColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpIntegerColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeIndexIntegerColumnBinaryMaker" },
     };
   }
 

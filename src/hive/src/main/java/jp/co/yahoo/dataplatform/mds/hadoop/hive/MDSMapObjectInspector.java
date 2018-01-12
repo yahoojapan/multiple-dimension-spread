@@ -124,8 +124,15 @@ public class MDSMapObjectInspector implements SettableMapObjectInspector{
 
   @Override
   public Object getMapValueElement( final Object object, final Object key ){
-    Map map = (Map)object;
-    return map.get(key);
+    if( object instanceof ColumnAndIndex ){
+      ColumnAndIndex columnAndIndex = (ColumnAndIndex) object;
+      IColumn childColumn = columnAndIndex.column.getColumn( key.toString() );
+      return getField.get( childColumn , columnAndIndex.index , columnAndIndex.columnIndex );
+    }
+    else{
+      Map map = (Map)object;
+      return map.get(key);
+    }
   }
 
   @Override

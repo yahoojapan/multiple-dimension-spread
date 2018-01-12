@@ -56,6 +56,16 @@ public class MDSHiveParserOutputFormat extends FileOutputFormat<NullWritable,Par
         int spreadSize = Integer.valueOf( spreadSizeStr );
         config.set( "spread.size" , spreadSizeStr );
       }catch( Exception e ){
+        throw new IOException( e );
+      }
+    }
+    if( tableProperties.containsKey( "mds.record.writer.max.rows" ) ){
+      String spreadMaxRowsStr = tableProperties.getProperty( "mds.record.writer.max.rows" );
+      try{
+        int spreadMaxRows = Integer.valueOf( spreadMaxRowsStr );
+        config.set( "record.writer.max.rows" , spreadMaxRowsStr );
+      }catch( Exception e ){
+        throw new IOException( e );
       }
     }
     if( tableProperties.containsKey( "mds.compression.class" ) ){

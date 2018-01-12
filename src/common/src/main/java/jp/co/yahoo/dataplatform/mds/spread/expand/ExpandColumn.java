@@ -177,10 +177,14 @@ public class ExpandColumn implements IColumn{
       return null;
     }
 
-    for( int i = 0 ; i < filterArray.length ; i++ ){
-      if( searchResult[ columnIndexArray[i] ] ){
-        filterArray[i] = true;
+    int index = 0;
+    for( ; index < filterArray.length && columnIndexArray[index] < searchResult.length ; index++ ){
+      if( searchResult[ columnIndexArray[index] ] ){
+        filterArray[index] = true;
       }
+    }
+    for( ; index < filterArray.length ; index++ ){
+      filterArray[index] = true;
     }
     return filterArray;
   }

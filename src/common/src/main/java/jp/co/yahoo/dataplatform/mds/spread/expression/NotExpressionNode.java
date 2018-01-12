@@ -43,6 +43,9 @@ public class NotExpressionNode implements IExpressionNode {
 
   @Override
   public boolean[] exec( final Spread spread ) throws IOException{
+    if( childNode == null ){
+      return null;
+    }
     boolean[] childCollection = childNode.exec( spread );
     if( childCollection == null ){
       return null;
