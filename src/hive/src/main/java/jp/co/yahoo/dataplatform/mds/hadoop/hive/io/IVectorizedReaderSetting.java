@@ -17,15 +17,17 @@
  */
 package jp.co.yahoo.dataplatform.mds.hadoop.hive.io;
 
+import java.io.IOException;
+
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 
 import jp.co.yahoo.dataplatform.mds.hadoop.hive.io.vector.IColumnVectorAssignor;
 
 public interface IVectorizedReaderSetting extends IReaderSetting{
 
-  VectorizedRowBatch createVectorizedRowBatch();
+  VectorizedRowBatch createVectorizedRowBatch() throws IOException;
 
-  void setPartitionValues( final VectorizedRowBatch outputBatch );
+  void setPartitionValues( final VectorizedRowBatch outputBatch ) throws IOException;
 
   IColumnVectorAssignor[] getAssignors();
 
