@@ -29,7 +29,7 @@
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>
-      <version>2.0.1</version>
+      <version>1.2.1000.2.6.2.0-205</version>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
@@ -61,5 +61,16 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>hdp</id>
+      <url> http://repo.hortonworks.com/content/repositories/releases</url>
+      <name>HDP</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>
