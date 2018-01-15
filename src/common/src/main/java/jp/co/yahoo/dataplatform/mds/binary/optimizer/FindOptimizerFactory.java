@@ -27,6 +27,7 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 
 public final class FindOptimizerFactory{
 
+  private final static FindOptimizerFactory OBJ = new FindOptimizerFactory();
   private final static Object LOCK = new Object();
   private final static Map<String,IOptimizerFactory> CACHE = new HashMap<String,IOptimizerFactory>();
 
@@ -39,7 +40,7 @@ public final class FindOptimizerFactory{
     if( target == null || target.isEmpty() ){
       throw new IOException( "IOptimizerFactory class name is null or empty." );
     }
-    Object obj = FindClass.getObject( target );
+    Object obj = FindClass.getObject( target , true , OBJ.getClass().getClassLoader() );
     if( ! ( obj instanceof IOptimizerFactory ) ){
       throw new IOException( "Invalid IOptimizerFactory class : " + target );
     }
