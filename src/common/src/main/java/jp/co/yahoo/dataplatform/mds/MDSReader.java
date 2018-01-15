@@ -118,7 +118,7 @@ public class MDSReader implements AutoCloseable{
     FileHeaderMeta meta = readFileHeader( in );
     inReadOffset += meta.headerSize;
     if( ! blockReaderMap.containsKey( meta.className ) ){
-      IBlockReader blockReader = (IBlockReader)( FindClass.getObject( meta.className ) );
+      IBlockReader blockReader = (IBlockReader)( FindClass.getObject( meta.className , true , this.getClass().getClassLoader() ) );
       blockReaderMap.put( meta.className , blockReader );
     }
 
