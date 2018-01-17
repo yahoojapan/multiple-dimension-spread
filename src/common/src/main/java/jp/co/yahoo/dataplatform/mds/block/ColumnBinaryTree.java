@@ -162,8 +162,10 @@ public class ColumnBinaryTree{
         }
       }
       offset = childColumnBinary.toColumnBinaryTree( metaBinary , offset , spreadIndexDict ); 
-      if( isAppend ){
+      if( childCount < childColumnBinary.size() ){
         childCount = childColumnBinary.size();
+      }
+      if( isAppend ){
         childTreeMap.put( childName , childColumnBinary );
       }
     }
