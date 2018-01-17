@@ -55,7 +55,7 @@
   </developers>
 
   <properties>
-    <configlibVersion>1.1.0</configlibVersion>
+    <configlibVersion>1.2.0</configlibVersion>
     <schemalibVersion>1.0.0</schemalibVersion>
     <mdsPackageVersion>0.6.1</mdsPackageVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
