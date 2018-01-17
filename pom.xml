@@ -55,14 +55,10 @@
   </developers>
 
   <properties>
-<<<<<<< HEAD
     <configlibVersion>1.2.0</configlibVersion>
     <schemalibVersion>1.0.0</schemalibVersion>
     <mdsPackageVersion>0.6.1</mdsPackageVersion>
-=======
-    <configlibVersion>1.1.0</configlibVersion>
     <schemalibVersion>1.0.1</schemalibVersion>
->>>>>>> 1892d56e117a4dc592cb6675c79485aac756518e
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <target_jdk_version>1.8</target_jdk_version>
     <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
