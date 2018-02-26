@@ -217,7 +217,7 @@ public class ExpandColumn implements IColumn{
   }
 
   @Override
-  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
     List<Integer> originalIndexList = new ArrayList<Integer>();
     int maxIndex = -1;
     for( int i = start ; i < ( start + length ) ; i++ ){

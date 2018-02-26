@@ -17,11 +17,13 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.expression;
 
+import java.io.Serializable;
+
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.blockindex.BlockIndexNode;
 
-public interface IExtractNode{
+public interface IExtractNode extends Serializable{
 
   IColumn get( final IColumn column );
 

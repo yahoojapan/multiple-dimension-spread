@@ -20,18 +20,23 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableBitVector;
+import org.apache.arrow.vector.complex.ListVector;
 
+import jp.co.yahoo.dataplatform.schema.design.IField;
+import jp.co.yahoo.dataplatform.schema.design.ArrayContainerField;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
-public class ArrowNullMemoryAllocator implements IMemoryAllocator{
+public class ArrowFixedSchemaArrayMemoryAllocator implements IMemoryAllocator{
 
-  private static final IMemoryAllocator NULL_ALLOCATOR = new ArrowNullMemoryAllocator();
+  private final IField childSchema;
+  private final ListVector vector;
+  private final BufferAllocator allocator;
 
-  private ArrowNullMemoryAllocator(){}
-
-  public static IMemoryAllocator getInstance(){
-    return NULL_ALLOCATOR;
+  public ArrowFixedSchemaArrayMemoryAllocator( final ArrayContainerField schema , final BufferAllocator allocator , final ListVector vector ){
+    this.allocator = allocator;
+    this.vector = vector;
+    vector.allocateNew();
+    childSchema = schema.getField();
   }
 
   @Override
@@ -40,68 +45,88 @@ public class ArrowNullMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setBoolean( final int index , final boolean value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setBoolean()" );
   }
 
   @Override
   public void setByte( final int index , final byte value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setByte()" );
   }
 
   @Override
   public void setShort( final int index , final short value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setShort()" );
   }
 
   @Override
   public void setInteger( final int index , final int value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setInteger()" );
   }
 
   @Override
   public void setLong( final int index , final long value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setLong()" );
   }
 
   @Override
   public void setFloat( final int index , final float value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setFloat()" );
   }
 
   @Override
   public void setDouble( final int index , final double value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setDouble()" );
   }
 
   @Override
   public void setBytes( final int index , final byte[] value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setBytes()" );
   }
 
   @Override
   public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setBytes()" );
   }
 
   @Override
   public void setString( final int index , final String value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setString()" );
   }
 
   @Override
   public void setString( final int index , final char[] value ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setString()" );
   }
 
   @Override
   public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
+    throw new UnsupportedOperationException( "Unsupported method setString()" );
   }
 
   @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
+    vector.getMutator().startNewValue( index );
+    vector.getMutator().endValue( index , length );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
+    vector.getMutator().setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return 0;
+    return vector.getAccessor().getValueCount();
   }
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return NULL_ALLOCATOR;
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , columnName , allocator , vector );
+  }
+
+  @Override
+  public IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , "ARRAY_CHILD" , allocator , vector );
   }
 
 }

@@ -120,4 +120,9 @@ public class ArrowArrayMemoryAllocator implements IMemoryAllocator{
     return ArrowMemoryAllocatorFactory.getFromListVector( type , columnName , allocator , vector );
   }
 
+  @Override
+  public IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
+    return ArrowMemoryAllocatorFactory.getFromListVector( type , "ARRAY_CHILD" , allocator , vector );
+  }
+
 }

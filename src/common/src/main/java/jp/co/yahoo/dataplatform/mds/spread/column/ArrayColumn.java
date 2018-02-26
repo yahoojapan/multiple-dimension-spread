@@ -30,6 +30,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
+import jp.co.yahoo.dataplatform.mds.spread.expression.ListIndexExpressionIndex;
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.design.ArrayContainerField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
@@ -212,8 +213,25 @@ public class ArrayColumn implements IColumn{
   }
 
   @Override
-  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
-    return;
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
+    allocator.setValueCount( length );
+    List<Integer> childIndexList = new ArrayList<Integer>();
+    for( int i = start ; i < start + length ; i++ ){
+      int index = indexList.get( i );
+      ICell cell = cellManager.get( index , EmptyArrayCell.getInstance() );
+      if( cell.getType() == ColumnType.EMPTY_ARRAY ){
+        allocator.setNull( index );
+        continue;
+      }
+      ArrayCell arrayCell = (ArrayCell)cell;
+      for( int ii = arrayCell.getStart() ; ii < arrayCell.getEnd() ; ii++ ){
+        childIndexList.add( Integer.valueOf( ii ) );
+      }
+    }
+    ListIndexExpressionIndex newIndexList = new ListIndexExpressionIndex( childIndexList );
+    IColumn column = spread.getColumn(0);
+    IMemoryAllocator childAllocator = allocator.getArrayChild( newIndexList.size() , column.getColumnType() );
+    column.setPrimitiveObjectArray( newIndexList , 0 , newIndexList.size() , childAllocator );
   }
 
   @Override

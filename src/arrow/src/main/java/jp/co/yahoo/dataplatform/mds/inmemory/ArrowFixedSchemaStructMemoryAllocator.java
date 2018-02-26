@@ -19,25 +19,35 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.vector.NullableVarBinaryVector;
+import java.util.Map;
+import java.util.HashMap;
 
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.NullableMapVector;
 
-import jp.co.yahoo.dataplatform.mds.binary.IBytesLink;
+import jp.co.yahoo.dataplatform.schema.design.IField;
+import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
-public class ArrowBytesMemoryAllocator implements IMemoryAllocator{
+public class ArrowFixedSchemaStructMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableVarBinaryVector vector;
+  private final Map<String,IMemoryAllocator> loaderMap;
+  private final NullableMapVector vector;
 
-  public ArrowBytesMemoryAllocator( final NullableVarBinaryVector vector ){
+  public ArrowFixedSchemaStructMemoryAllocator( final StructContainerField schema , final BufferAllocator allocator , final MapVector vector ) throws IOException{
+    this.vector = (NullableMapVector)vector;
     vector.allocateNew();
-    this.vector = vector;
+
+    loaderMap = new HashMap<String,IMemoryAllocator>();
+    for( String key : schema.getKeys() ){
+      IField childSchema = schema.get( key );
+      loaderMap.put( key , ArrowFixedSchemaMemoryAllocatorFactory.getFromMapVector( childSchema , key , allocator , vector ) );
+    }
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
   }
 
   @Override
@@ -77,12 +87,12 @@ public class ArrowBytesMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setBytes( final int index , final byte[] value ) throws IOException{
-    setBytes( index , value , 0 , value.length );
+    throw new UnsupportedOperationException( "Unsupported method setBytes()" );
   }
 
   @Override
   public void setBytes( final int index , final byte[] value , final int start , final int length ) throws IOException{
-    vector.getMutator().setSafe( index , value , start , length );
+    throw new UnsupportedOperationException( "Unsupported method setBytes()" );
   }
 
   @Override
@@ -101,32 +111,15 @@ public class ArrowBytesMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
-  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
-    if( value == null ){
-      setNull( index );
-    }
-    else{
-      try{
-        if( value instanceof IBytesLink ){
-          IBytesLink linkObj = (IBytesLink)value;
-          setBytes( index , linkObj.getLinkBytes() , linkObj.getStart() , linkObj.getLength() );
-        }
-        else{
-          setBytes( index , value.getBytes() );
-        }
-      }catch( Exception e ){
-        setNull( index );
-      }
-    }
-  }
-
-  @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setArrayIndex()" );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
+    for( int i = 0 ; i < count ; i++ ){
+      vector.getMutator().setIndexDefined(i);
+    }
     vector.getMutator().setValueCount( count );
   }
 
@@ -137,7 +130,13 @@ public class ArrowBytesMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method getChild()" );
+    if( loaderMap.containsKey( columnName ) ){
+      return loaderMap.get( columnName );
+    }
+    else{
+      return NullMemoryAllocator.INSTANCE;
+    }
   }
 
 }
+

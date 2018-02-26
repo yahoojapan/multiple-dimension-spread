@@ -18,17 +18,9 @@
 package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableVarCharVector;
-import org.apache.arrow.vector.NullableVarBinaryVector;
-import org.apache.arrow.vector.NullableBitVector;
-import org.apache.arrow.vector.NullableUInt1Vector;
-import org.apache.arrow.vector.NullableUInt2Vector;
-import org.apache.arrow.vector.NullableUInt4Vector;
-import org.apache.arrow.vector.NullableUInt8Vector;
-import org.apache.arrow.vector.NullableFloat4Vector;
-import org.apache.arrow.vector.NullableFloat8Vector;
-import org.apache.arrow.vector.AddOrGetResult;
+import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.NullableMapVector;
 import org.apache.arrow.vector.complex.ListVector;
 import org.apache.arrow.vector.complex.UnionVector;
 import org.apache.arrow.vector.types.FloatingPointPrecision;
@@ -46,26 +38,28 @@ public final class ArrowMemoryAllocatorFactory{
   public static IMemoryAllocator getFromMapVector( final ColumnType columnType , final String columnName , final BufferAllocator allocator , final MapVector vector ){
     switch( columnType ){
       case UNION:
-        return new ArrowUnionMemoryAllocator( allocator , vector.addOrGetUnion( columnName ) );
+        UnionVector unionVector = vector.addOrGetUnion( columnName );
+        return new ArrowUnionMemoryAllocator( allocator , unionVector );
       case ARRAY:
         return new ArrowArrayMemoryAllocator( allocator , vector.addOrGetList( columnName ) );
       case SPREAD:
-        return new ArrowMapMemoryAllocator( allocator , vector.addOrGetMap( columnName ) );
+        NullableMapVector mapVector = vector.addOrGetMap( columnName );
+        return new ArrowMapMemoryAllocator( allocator , mapVector );
 
       case BOOLEAN:
         NullableBitVector bitVector =  vector.addOrGet( columnName , new FieldType( true , ArrowType.Bool.INSTANCE , null , null ) , NullableBitVector.class );
         return new ArrowBooleanMemoryAllocator( bitVector );
       case BYTE:
-        NullableUInt1Vector byteVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 8 , false ) , null , null ) , NullableUInt1Vector.class );
+        NullableTinyIntVector byteVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 8 , true ) , null , null ) , NullableTinyIntVector.class );
         return new ArrowByteMemoryAllocator( byteVector );
       case SHORT:
-        NullableUInt2Vector shortVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 16 , false ) , null , null ) , NullableUInt2Vector.class );
+        NullableSmallIntVector shortVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 16 , true ) , null , null ) , NullableSmallIntVector.class );
         return new ArrowShortMemoryAllocator( shortVector );
       case INTEGER:
-        NullableUInt4Vector integerVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 32 , false ) , null , null ) , NullableUInt4Vector.class );
+        NullableIntVector integerVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 32 , true ) , null , null ) , NullableIntVector.class );
         return new ArrowIntegerMemoryAllocator( integerVector );
       case LONG:
-        NullableUInt8Vector longVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 64 , false ) , null , null ) , NullableUInt8Vector.class );
+        NullableBigIntVector longVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.Int( 64 , true ) , null , null ) , NullableBigIntVector.class );
         return new ArrowLongMemoryAllocator( longVector );
       case FLOAT:
         NullableFloat4Vector floatVector =  vector.addOrGet( columnName , new FieldType( true , new ArrowType.FloatingPoint( FloatingPointPrecision.SINGLE ) , null , null ) , NullableFloat4Vector.class );
@@ -84,7 +78,7 @@ public final class ArrowMemoryAllocatorFactory{
       case EMPTY_ARRAY:
       case EMPTY_SPREAD:
       default:
-        return ArrowNullMemoryAllocator.getInstance();
+        return NullMemoryAllocator.INSTANCE;
     }
   }
 
@@ -104,16 +98,16 @@ public final class ArrowMemoryAllocatorFactory{
         AddOrGetResult<NullableBitVector> bitVector =  vector.addOrGetVector( new FieldType( true , ArrowType.Bool.INSTANCE , null , null ) );
         return new ArrowBooleanMemoryAllocator( bitVector.getVector() );
       case BYTE:
-        AddOrGetResult<NullableUInt1Vector> byteVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 8 , false ) , null , null ) );
+        AddOrGetResult<NullableTinyIntVector> byteVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 8 , true ) , null , null ) );
         return new ArrowByteMemoryAllocator( byteVector.getVector() );
       case SHORT:
-        AddOrGetResult<NullableUInt2Vector> shortVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 16 , false ) , null , null ) );
+        AddOrGetResult<NullableSmallIntVector> shortVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 16 , true ) , null , null ) );
         return new ArrowShortMemoryAllocator( shortVector.getVector() );
       case INTEGER:
-        AddOrGetResult<NullableUInt4Vector> integerVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 32 , false ) , null , null ) );
+        AddOrGetResult<NullableIntVector> integerVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 32 , true ) , null , null ) );
         return new ArrowIntegerMemoryAllocator( integerVector.getVector() );
       case LONG:
-        AddOrGetResult<NullableUInt8Vector> longVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 64 , false ) , null , null ) );
+        AddOrGetResult<NullableBigIntVector> longVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.Int( 64 , true ) , null , null ) );
         return new ArrowLongMemoryAllocator( longVector.getVector() );
       case FLOAT:
         AddOrGetResult<NullableFloat4Vector> floatVector =  vector.addOrGetVector( new FieldType( true , new ArrowType.FloatingPoint( FloatingPointPrecision.HALF ) , null , null ) );
@@ -132,14 +126,14 @@ public final class ArrowMemoryAllocatorFactory{
       case EMPTY_ARRAY:
       case EMPTY_SPREAD:
       default:
-        return ArrowNullMemoryAllocator.getInstance();
+        return NullMemoryAllocator.INSTANCE;
     }
   }
 
   public static IMemoryAllocator getFromUnionVector( final ColumnType columnType , final String columnName , final BufferAllocator allocator , final UnionVector vector ){
     switch( columnType ){
       case UNION:
-        return ArrowNullMemoryAllocator.getInstance();
+        return NullMemoryAllocator.INSTANCE;
       case ARRAY:
         return new ArrowArrayMemoryAllocator( allocator , vector.getList() );
       case SPREAD:
@@ -148,13 +142,13 @@ public final class ArrowMemoryAllocatorFactory{
       case BOOLEAN:
         return new ArrowBooleanMemoryAllocator( vector.getBitVector() );
       case BYTE:
-        return new ArrowByteMemoryAllocator( vector.getUInt1Vector() );
+        return new ArrowByteMemoryAllocator( vector.getTinyIntVector() );
       case SHORT:
-        return new ArrowShortMemoryAllocator( vector.getUInt2Vector() );
+        return new ArrowShortMemoryAllocator( vector.getSmallIntVector() );
       case INTEGER:
-        return new ArrowIntegerMemoryAllocator( vector.getUInt4Vector() );
+        return new ArrowIntegerMemoryAllocator( vector.getIntVector() );
       case LONG:
-        return new ArrowLongMemoryAllocator( vector.getUInt8Vector() );
+        return new ArrowLongMemoryAllocator( vector.getBigIntVector() );
       case FLOAT:
         return new ArrowFloatMemoryAllocator( vector.getFloat4Vector() );
       case DOUBLE:
@@ -168,7 +162,7 @@ public final class ArrowMemoryAllocatorFactory{
       case EMPTY_ARRAY:
       case EMPTY_SPREAD:
       default:
-        return ArrowNullMemoryAllocator.getInstance();
+        return NullMemoryAllocator.INSTANCE;
     }
   }
 

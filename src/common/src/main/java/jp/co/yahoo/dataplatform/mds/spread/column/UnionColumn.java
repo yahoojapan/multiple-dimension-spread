@@ -189,7 +189,7 @@ public class UnionColumn implements IColumn {
   }
 
   @Override
-  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
     cellManager.getPrimitiveObjectArray( indexList , start , length );
   }
 

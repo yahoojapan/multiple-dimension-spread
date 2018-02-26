@@ -19,16 +19,17 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableUInt8Vector;
+import org.apache.arrow.vector.NullableBigIntVector;
+
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowLongMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableUInt8Vector vector;
+  private final NullableBigIntVector vector;
 
-  public ArrowLongMemoryAllocator( final NullableUInt8Vector vector ){
+  public ArrowLongMemoryAllocator( final NullableBigIntVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
@@ -96,6 +97,20 @@ public class ArrowLongMemoryAllocator implements IMemoryAllocator{
   @Override
   public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setString()" );
+  }
+
+  @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        setLong( index , value.getLong() );
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
   }
 
   @Override

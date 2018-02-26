@@ -20,24 +20,18 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableUInt4Vector;
+import org.apache.arrow.vector.NullableIntVector;
 
-import jp.co.yahoo.dataplatform.schema.objects.BytesObj;
-import jp.co.yahoo.dataplatform.schema.objects.StringObj;
-import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
-import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
-import jp.co.yahoo.dataplatform.schema.objects.IntegerObj;
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.objects.LongObj;
-import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
-import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowIntegerMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableUInt4Vector vector;
+  private final NullableIntVector vector;
 
-  public ArrowIntegerMemoryAllocator( final NullableUInt4Vector vector ){
+  public ArrowIntegerMemoryAllocator( final NullableIntVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
@@ -105,6 +99,20 @@ public class ArrowIntegerMemoryAllocator implements IMemoryAllocator{
   @Override
   public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setString()" );
+  }
+
+  @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        setInteger( index , value.getInt() );
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
   }
 
   @Override
