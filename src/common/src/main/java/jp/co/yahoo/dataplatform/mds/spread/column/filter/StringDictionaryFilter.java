@@ -18,13 +18,14 @@
 package jp.co.yahoo.dataplatform.mds.spread.column.filter;
 
 import java.util.Set;
+import java.util.HashSet;
 
 public class StringDictionaryFilter implements IStringDictionaryFilter{
 
   private final Set<String> dic;
 
   public StringDictionaryFilter( final Set<String> dic ){
-    this.dic = dic;
+    this.dic = new HashSet( dic );
   }
 
   @Override

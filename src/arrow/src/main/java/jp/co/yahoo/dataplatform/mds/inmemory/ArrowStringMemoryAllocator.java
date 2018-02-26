@@ -22,6 +22,9 @@ import java.io.IOException;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.NullableVarCharVector;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
+
+import jp.co.yahoo.dataplatform.mds.binary.IBytesLink;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowStringMemoryAllocator implements IMemoryAllocator{
@@ -99,6 +102,26 @@ public class ArrowStringMemoryAllocator implements IMemoryAllocator{
   public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
     byte[] strBytes = new String( value , start , length ).getBytes( "UTF-8" );
     setBytes( index , strBytes );
+  }
+
+  @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        if( value instanceof IBytesLink ){
+          IBytesLink linkObj = (IBytesLink)value;
+          setBytes( index , linkObj.getLinkBytes() , linkObj.getStart() , linkObj.getLength() );
+        }
+        else{
+          setBytes( index , value.getBytes() );
+        }
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
   }
 
   @Override

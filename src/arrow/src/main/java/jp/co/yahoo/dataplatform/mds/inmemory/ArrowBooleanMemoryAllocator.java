@@ -19,8 +19,9 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.NullableBitVector;
+
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
@@ -101,6 +102,16 @@ public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
   @Override
   public void setString( final int index , final char[] value , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setString()" );
+  }
+
+  @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      setBoolean( index , value.getBoolean() );
+    }
   }
 
   @Override

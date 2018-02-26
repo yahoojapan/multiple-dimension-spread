@@ -18,15 +18,17 @@
 package jp.co.yahoo.dataplatform.mds.binary;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import jp.co.yahoo.dataplatform.schema.objects.StringObj;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 public class UTF8BytesLinkObj extends StringObj implements IBytesLink {
 
-  private final int start;
-  private final int length;
-  private final byte[] value;
+  private int start;
+  private int length;
+  private byte[] value;
 
   public UTF8BytesLinkObj( final byte[] data , final int start , final int length ){
     this.value = data;
@@ -119,6 +121,18 @@ public class UTF8BytesLinkObj extends StringObj implements IBytesLink {
   @Override
   public void clear() throws IOException{
     throw new IOException( "Unsupported set method." );
+  }
+
+  private void writeObject( final ObjectOutputStream out ) throws IOException{
+    out.write( length );
+    out.write( value , start , length );
+  }
+
+  private void readObject( final ObjectInputStream in ) throws IOException{
+    start = 0;
+    length = in.readInt();
+    value = new byte[length];
+    in.readFully( value );
   }
 
 }

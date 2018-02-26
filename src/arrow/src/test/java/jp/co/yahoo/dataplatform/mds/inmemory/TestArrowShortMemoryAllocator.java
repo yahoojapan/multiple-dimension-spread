@@ -61,17 +61,17 @@ public class TestArrowShortMemoryAllocator{
     MapReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)100 );
+    assertEquals( (short)( reader.readShort() ) , (short)100 );
     reader.setPosition( 1 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)200 );
+    assertEquals( (short)( reader.readShort() ) , (short)200 );
     reader.setPosition( 5 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)255 );
+    assertEquals( (short)( reader.readShort() ) , (short)255 );
     for( int i = 6 ; i < 1000 ; i++ ){
       reader.setPosition( i );
-      assertEquals( reader.readCharacter() , null );
+      assertEquals( reader.readShort() , null );
     }
     reader.setPosition( 1000 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)10 );
+    assertEquals( (short)( reader.readShort() ) , (short)10 );
   }
 
   @Test
@@ -97,17 +97,17 @@ public class TestArrowShortMemoryAllocator{
     MapReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)100 );
+    assertEquals( (short)( reader.readShort() ) , (short)100 );
     reader.setPosition( 1 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)200 );
+    assertEquals( (short)( reader.readShort() ) , (short)200 );
     reader.setPosition( 5 );
-    assertEquals( (short)( reader.readCharacter().charValue() ) , (short)255 );
+    assertEquals( (short)( reader.readShort() ) , (short)255 );
     reader.setPosition( 2 );
-    assertEquals( reader.readCharacter() , null );
+    assertEquals( reader.readShort() , null );
     reader.setPosition( 3 );
-    assertEquals( reader.readCharacter() , null );
+    assertEquals( reader.readShort() , null );
     reader.setPosition( 4 );
-    assertEquals( reader.readCharacter() , null );
+    assertEquals( reader.readShort() , null );
   }
 
 }
