@@ -77,10 +77,9 @@ public class TestArrowArrayMemoryAllocator{
     IMemoryAllocator memoryAllocator = new ArrowArrayMemoryAllocator( allocator , listVector );
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 
-    ListVector.Accessor accessor = listVector.getAccessor();
     for( int i = 0 ; i < 7 ; i++ ){
-      System.out.println( "count:" + accessor.getInnerValueCountAt(i) );
-      System.out.println( "obj:" + accessor.getObject(i) );
+      System.out.println( "count:" + listVector.getInnerValueCountAt(i) );
+      System.out.println( "obj:" + listVector.getObject(i) );
     }
 /*
     reader.setPosition( 0 );

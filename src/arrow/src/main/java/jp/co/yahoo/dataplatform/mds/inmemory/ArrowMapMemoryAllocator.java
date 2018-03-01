@@ -38,7 +38,7 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
@@ -109,14 +109,14 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
   @Override
   public void setValueCount( final int count ) throws IOException{
     for( int i = 0 ; i < count ; i++ ){
-      vector.getMutator().setIndexDefined(i);
+      vector.setIndexDefined(i);
     }
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override
