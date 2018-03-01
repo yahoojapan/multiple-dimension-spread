@@ -19,7 +19,7 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.vector.NullableSmallIntVector;
+import org.apache.arrow.vector.SmallIntVector;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.objects.IntegerObj;
@@ -29,16 +29,16 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableSmallIntVector vector;
+  private final SmallIntVector vector;
 
-  public ArrowShortMemoryAllocator( final NullableSmallIntVector vector ){
+  public ArrowShortMemoryAllocator( final SmallIntVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
@@ -53,7 +53,7 @@ public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setShort( final int index , final short value ) throws IOException{
-    vector.getMutator().setSafe( index , value );
+    vector.setSafe( index , value );
   }
 
   @Override
@@ -122,12 +122,12 @@ public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

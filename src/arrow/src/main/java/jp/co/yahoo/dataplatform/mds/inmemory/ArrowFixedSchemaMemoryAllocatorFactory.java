@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.*;
 import org.apache.arrow.vector.complex.MapVector;
-import org.apache.arrow.vector.complex.NullableMapVector;
 import org.apache.arrow.vector.complex.ListVector;
 import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.FieldType;
@@ -44,10 +43,10 @@ public final class ArrowFixedSchemaMemoryAllocatorFactory{
       case ARRAY:
         return new ArrowFixedSchemaArrayMemoryAllocator( (ArrayContainerField)schema , allocator , vector.addOrGetList( columnName ) );
       case MAP:
-        NullableMapVector mapVector = vector.addOrGetMap( columnName );
+        MapVector mapVector = vector.addOrGetMap( columnName );
         return new ArrowFixedSchemaMapMemoryAllocator( (MapContainerField)schema , allocator , mapVector );
       case STRUCT:
-        NullableMapVector structVector = vector.addOrGetMap( columnName );
+        MapVector structVector = vector.addOrGetMap( columnName );
         return new ArrowFixedSchemaStructMemoryAllocator( (StructContainerField)schema , allocator , structVector );
 
       case BOOLEAN:

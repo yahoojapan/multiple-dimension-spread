@@ -19,7 +19,7 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.vector.NullableBitVector;
+import org.apache.arrow.vector.BitVector;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
@@ -27,25 +27,25 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableBitVector vector;
+  private final BitVector vector;
 
-  public ArrowBooleanMemoryAllocator( final NullableBitVector vector ){
+  public ArrowBooleanMemoryAllocator( final BitVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
   public void setBoolean( final int index , final boolean value ) throws IOException{
     if( value ){
-      vector.getMutator().setSafe( index , 1 );
+      vector.setSafe( index , 1 );
     }
     else{
-      vector.getMutator().setSafe( index , 0 );
+      vector.setSafe( index , 0 );
     }
   }
 
@@ -121,12 +121,12 @@ public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

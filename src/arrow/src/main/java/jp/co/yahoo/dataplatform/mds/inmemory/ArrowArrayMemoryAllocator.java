@@ -101,18 +101,18 @@ public class ArrowArrayMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
-    vector.getMutator().startNewValue( index );
-    vector.getMutator().endValue( index , length );
+    vector.startNewValue( index );
+    vector.endValue( index , length );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override
