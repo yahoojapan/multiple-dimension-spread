@@ -56,7 +56,7 @@
 
   <properties>
     <configlibVersion>1.2.0</configlibVersion>
-    <schemalibVersion>1.1.0</schemalibVersion>
+    <schemalibVersion>1.1.1</schemalibVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <target_jdk_version>1.8</target_jdk_version>
     <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>

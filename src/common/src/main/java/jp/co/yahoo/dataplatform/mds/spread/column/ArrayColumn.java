@@ -32,6 +32,7 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.ListIndexExpressionIndex;
 import jp.co.yahoo.dataplatform.schema.design.IField;
+import jp.co.yahoo.dataplatform.schema.design.NullField;
 import jp.co.yahoo.dataplatform.schema.design.ArrayContainerField;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
@@ -189,6 +190,9 @@ public class ArrayColumn implements IColumn{
   @Override
   public IField getSchema( final String schemaName ) throws IOException{
     IField childSchema = spread.getColumn(0).getSchema();
+    if( childSchema == null ){
+      childSchema = new NullField( "dummy" );
+    }
     return new ArrayContainerField( schemaName , childSchema );
   }
 
