@@ -163,7 +163,7 @@ public class LazyColumn implements IColumn{
   }
 
   @Override
-  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
     columnManager.get().setPrimitiveObjectArray( indexList , start , length , allocator );
   }
 

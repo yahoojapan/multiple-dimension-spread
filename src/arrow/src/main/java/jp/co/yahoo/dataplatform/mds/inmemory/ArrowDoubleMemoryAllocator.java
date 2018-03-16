@@ -19,23 +19,24 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableFloat8Vector;
+import org.apache.arrow.vector.Float8Vector;
+
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowDoubleMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableFloat8Vector vector;
+  private final Float8Vector vector;
 
-  public ArrowDoubleMemoryAllocator( final NullableFloat8Vector vector ){
+  public ArrowDoubleMemoryAllocator( final Float8Vector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
@@ -70,7 +71,7 @@ public class ArrowDoubleMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setDouble( final int index , final double value ) throws IOException{
-    vector.getMutator().setSafe( index , value );
+    vector.setSafe( index , value );
   }
 
   @Override
@@ -99,18 +100,32 @@ public class ArrowDoubleMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        setDouble( index , value.getDouble() );
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
+  }
+
+  @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setArrayIndex()" );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

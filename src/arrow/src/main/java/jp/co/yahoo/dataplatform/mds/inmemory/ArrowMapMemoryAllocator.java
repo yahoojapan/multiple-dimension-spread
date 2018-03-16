@@ -21,22 +21,24 @@ import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.NullableMapVector;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
-  private final MapVector vector;
+  private final NullableMapVector vector;
   private final BufferAllocator allocator;
 
   public ArrowMapMemoryAllocator( final BufferAllocator allocator , final MapVector vector ){
     this.allocator = allocator;
-    this.vector = vector;
+    this.vector = (NullableMapVector)vector;
     vector.allocateNew();
   }
 
   @Override
   public void setNull( final int index ){
+    vector.setNull( index );
   }
 
   @Override
@@ -106,12 +108,15 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    for( int i = 0 ; i < count ; i++ ){
+      vector.setIndexDefined(i);
+    }
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

@@ -19,23 +19,24 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableUInt8Vector;
+import org.apache.arrow.vector.BigIntVector;
+
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowLongMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableUInt8Vector vector;
+  private final BigIntVector vector;
 
-  public ArrowLongMemoryAllocator( final NullableUInt8Vector vector ){
+  public ArrowLongMemoryAllocator( final BigIntVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
@@ -60,7 +61,7 @@ public class ArrowLongMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setLong( final int index , final long value ) throws IOException{
-    vector.getMutator().setSafe( index , value );
+    vector.setSafe( index , value );
   }
 
   @Override
@@ -99,18 +100,32 @@ public class ArrowLongMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        setLong( index , value.getLong() );
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
+  }
+
+  @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setArrayIndex()" );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

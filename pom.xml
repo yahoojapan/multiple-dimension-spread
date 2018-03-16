@@ -16,7 +16,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jp.co.yahoo.dataplatform.mds</groupId>
   <artifactId>multiple-dimension-spread</artifactId>
-  <version>0.6.4</version>
+  <version>0.7.3</version>
   <packaging>pom</packaging>
   <name>Yahoo dataplatform multiple dimension spread</name>
   <description>Multiple-Dimension-Spread (MDS) is a Schema-less columnar storage format.</description>
@@ -56,7 +56,7 @@
 
   <properties>
     <configlibVersion>1.2.0</configlibVersion>
-    <schemalibVersion>1.0.1</schemalibVersion>
+    <schemalibVersion>1.1.2</schemalibVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <target_jdk_version>1.8</target_jdk_version>
     <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
