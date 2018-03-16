@@ -19,32 +19,26 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.NullableUInt2Vector;
+import org.apache.arrow.vector.SmallIntVector;
 
-import jp.co.yahoo.dataplatform.schema.objects.BytesObj;
-import jp.co.yahoo.dataplatform.schema.objects.StringObj;
-import jp.co.yahoo.dataplatform.schema.objects.ByteObj;
-import jp.co.yahoo.dataplatform.schema.objects.ShortObj;
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.objects.IntegerObj;
 import jp.co.yahoo.dataplatform.schema.objects.LongObj;
-import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
-import jp.co.yahoo.dataplatform.schema.objects.DoubleObj;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableUInt2Vector vector;
+  private final SmallIntVector vector;
 
-  public ArrowShortMemoryAllocator( final NullableUInt2Vector vector ){
+  public ArrowShortMemoryAllocator( final SmallIntVector vector ){
     vector.allocateNew();
     this.vector = vector;
   }
 
   @Override
   public void setNull( final int index ){
-    vector.getMutator().setNull( index );
+    vector.setNull( index );
   }
 
   @Override
@@ -59,7 +53,7 @@ public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setShort( final int index , final short value ) throws IOException{
-    vector.getMutator().setSafe( index , (char)value );
+    vector.setSafe( index , value );
   }
 
   @Override
@@ -108,18 +102,32 @@ public class ArrowShortMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
+  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+    if( value == null ){
+      setNull( index );
+    }
+    else{
+      try{
+        setShort( index , value.getShort() );
+      }catch( Exception e ){
+        setNull( index );
+      }
+    }
+  }
+
+  @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
     throw new UnsupportedOperationException( "Unsupported method setArrayIndex()" );
   }
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

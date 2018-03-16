@@ -106,12 +106,12 @@ public class ArrowUnionMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public void setValueCount( final int count ) throws IOException{
-    vector.getMutator().setValueCount( count );
+    vector.setValueCount( count );
   }
 
   @Override
   public int getValueCount() throws IOException{
-    return vector.getAccessor().getValueCount();
+    return vector.getValueCount();
   }
 
   @Override

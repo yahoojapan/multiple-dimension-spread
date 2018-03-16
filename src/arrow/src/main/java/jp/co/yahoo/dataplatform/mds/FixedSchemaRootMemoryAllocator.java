@@ -15,27 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.column.filter;
+package jp.co.yahoo.dataplatform.mds;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.io.IOException;
 
-public class StringDictionaryFilter implements IStringDictionaryFilter{
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.vector.complex.MapVector;
 
-  private final Set<String> dic;
+import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
 
-  public StringDictionaryFilter( final Set<String> dic ){
-    this.dic = new HashSet( dic );
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+import jp.co.yahoo.dataplatform.mds.inmemory.ArrowFixedSchemaStructMemoryAllocator;
+
+public class FixedSchemaRootMemoryAllocator implements IRootMemoryAllocator{
+
+  private final StructContainerField schema;
+
+  public FixedSchemaRootMemoryAllocator( final StructContainerField schema ){
+    this.schema = schema;
   }
 
   @Override
-  public Set<String> getDictionary(){
-    return dic;
+  public IMemoryAllocator create( final BufferAllocator allocator , final MapVector rootVector ) throws IOException{
+    return new ArrowFixedSchemaStructMemoryAllocator( schema , allocator , rootVector );
   }
-
-  @Override
-  public FilterType getFilterType(){
-    return FilterType.STRING_DICTIONARY;
-  }
-
+  
 }

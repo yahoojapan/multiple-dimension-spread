@@ -15,12 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.column.filter;
+package jp.co.yahoo.dataplatform.mds;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-public interface IFilter extends Serializable{
+import org.apache.arrow.vector.ValueVector;
 
-  FilterType getFilterType();
+import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
+
+public interface IArrowLoader{
+
+  void setNode( final IExpressionNode node );
+
+  boolean hasNext() throws IOException;
+
+  ValueVector next() throws IOException;
+
+  void close() throws IOException;
 
 }

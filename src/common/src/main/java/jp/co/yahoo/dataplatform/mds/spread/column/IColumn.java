@@ -77,6 +77,6 @@ public interface IColumn{
 
   PrimitiveObject[] getPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length );
 
-  void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator );
+  void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException;
 
 }

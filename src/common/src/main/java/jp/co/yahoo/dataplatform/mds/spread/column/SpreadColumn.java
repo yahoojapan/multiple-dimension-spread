@@ -193,8 +193,12 @@ public class SpreadColumn implements IColumn{
   }
 
   @Override
-  public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
-    return;
+  public void setPrimitiveObjectArray( final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ) throws IOException{
+    allocator.setValueCount( length );
+    for( IColumn column : spread.getListColumn() ){
+      IMemoryAllocator childAllocator = allocator.getChild( column.getColumnName() , column.getColumnType() );
+      column.setPrimitiveObjectArray( indexList , start , length , childAllocator );
+    }
   }
 
   @Override
