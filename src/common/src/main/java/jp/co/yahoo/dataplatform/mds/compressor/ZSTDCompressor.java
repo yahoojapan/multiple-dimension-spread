@@ -51,7 +51,8 @@ public class ZSTDCompressor implements ICompressor{
     return compressByte;
   }
 
-  @Override                                                                                                   public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
+  @Override 
+  public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
     ZstdOutputStream zstdOut = new ZstdOutputStream( out );
 
     zstdOut.write( data , start , length );
