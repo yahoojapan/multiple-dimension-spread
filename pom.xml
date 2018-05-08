@@ -52,6 +52,11 @@
       <name>Koji Ijima</name>
       <organization>Yahoo Japan Corporation</organization>
     </developer>
+    <developer>
+      <id>yoto</id>
+      <name>Yasunori Ohto</name>
+      <organization>Yahoo Japan Corporation</organization>
+    </developer>
   </developers>
 
   <properties>
