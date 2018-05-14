@@ -21,24 +21,26 @@ import java.io.IOException;
 
 import java.util.List;
 
+import jp.co.yahoo.dataplatform.mds.hadoop.hive.util.HiveConfigurationUtil;
 import jp.co.yahoo.dataplatform.mds.hadoop.hive.io.vector.ColumnVectorAssignorFactory;
 import jp.co.yahoo.dataplatform.mds.hadoop.hive.io.vector.IColumnVectorAssignor;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionNode;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.JobConf;
 
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
+import org.apache.hadoop.hive.serde2.SerDeException;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
 public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
 
   private final boolean[] projectionColumn;
-  private final Object[] partitionValues;
   private final HiveReaderSetting hiveReaderConfig;
   private final VectorizedRowBatchCtx rbCtx;
 
@@ -46,9 +48,8 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   private final int[] needColumnIds;
   private final String[] columnNames;
 
-  public HiveVectorizedReaderSetting( final boolean[] projectionColumn , final Object[] partitionValues , final VectorizedRowBatchCtx rbCtx , final IColumnVectorAssignor[] assignors , final int[] needColumnIds , final String[] columnNames , final HiveReaderSetting hiveReaderConfig ){
+  public HiveVectorizedReaderSetting( final boolean[] projectionColumn , final VectorizedRowBatchCtx rbCtx , final IColumnVectorAssignor[] assignors , final int[] needColumnIds , final String[] columnNames , final HiveReaderSetting hiveReaderConfig ){
     this.projectionColumn = projectionColumn;
-    this.partitionValues = partitionValues;
     this.rbCtx = rbCtx;
     this.hiveReaderConfig = hiveReaderConfig;
     this.assignors = assignors;
@@ -59,14 +60,17 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   public HiveVectorizedReaderSetting( final FileSplit split , final JobConf job , final HiveReaderSetting hiveReaderConfig ) throws IOException{
     this.hiveReaderConfig = hiveReaderConfig;
 
-    rbCtx = Utilities.getVectorizedRowBatchCtx( job );
-    partitionValues = new Object[rbCtx.getPartitionColumnCount()];
-    if( 0 < partitionValues.length ){
-      rbCtx.getPartitionValues( rbCtx, job, split, partitionValues );
+    rbCtx = new VectorizedRowBatchCtx();
+    try{
+      rbCtx.init( job , split );
+    }catch( ClassNotFoundException|SerDeException|InstantiationException|IllegalAccessException|HiveException e ){
+      throw new IOException( e );
     }
 
-    TypeInfo[] typeInfos = rbCtx.getRowColumnTypeInfos();
-    columnNames = rbCtx.getRowColumnNames();
+    //TypeInfo[] typeInfos = rbCtx.getRowColumnTypeInfos();
+    TypeInfo[] typeInfos = HiveConfigurationUtil.getTypeInfos( job );
+    //columnNames = rbCtx.getRowColumnNames();
+    columnNames = HiveConfigurationUtil.getColumnNames( job );
     needColumnIds = createNeedColumnId( ColumnProjectionUtils.getReadColumnIDs( job ) );
 
     projectionColumn = new boolean[columnNames.length];
@@ -111,14 +115,20 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
   }
 
   @Override
-  public VectorizedRowBatch createVectorizedRowBatch(){
-    return rbCtx.createVectorizedRowBatch( projectionColumn );
+  public VectorizedRowBatch createVectorizedRowBatch() throws IOException{
+    try{
+      return rbCtx.createVectorizedRowBatch();
+    }catch( HiveException e ){
+      throw new IOException( e );
+    }
   }
 
   @Override
-  public void setPartitionValues( final VectorizedRowBatch outputBatch ){
-    if( 0 < partitionValues.length ){
-      rbCtx.addPartitionColsToBatch( outputBatch , partitionValues );
+  public void setPartitionValues( final VectorizedRowBatch outputBatch ) throws IOException{
+    try{
+      rbCtx.addPartitionColsToBatch( outputBatch );
+    }catch( HiveException e ){
+      throw new IOException( e );
     }
   }
 

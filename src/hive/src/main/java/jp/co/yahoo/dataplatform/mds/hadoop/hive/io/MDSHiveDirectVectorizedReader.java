@@ -81,7 +81,11 @@ public class MDSHiveDirectVectorizedReader implements RecordReader<NullWritable,
 
   @Override
   public VectorizedRowBatch createValue() {
-    return setting.createVectorizedRowBatch();
+    try{
+      return setting.createVectorizedRowBatch();
+    }catch( IOException e ){
+      throw new RuntimeException( e );
+    }
   }
 
   @Override
