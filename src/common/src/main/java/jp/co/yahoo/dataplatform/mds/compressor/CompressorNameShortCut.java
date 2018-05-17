@@ -27,6 +27,7 @@ public final class CompressorNameShortCut{
     CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor"   , "default" );
     CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor"   , "gzip" );
     CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.LZ4Compressor"   , "lz4" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.ZSTDCompressor"   , "zstd" );
   }
 
   private CompressorNameShortCut(){}
