@@ -41,7 +41,7 @@ public class IntegerOptimizer implements IOptimizer{
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
-    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.1d ){
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.20d ){
       maker = uniqMaker;
     }
     else{

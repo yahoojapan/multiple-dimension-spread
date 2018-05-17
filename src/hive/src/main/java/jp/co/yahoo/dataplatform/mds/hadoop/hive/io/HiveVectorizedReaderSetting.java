@@ -112,7 +112,7 @@ public class HiveVectorizedReaderSetting implements IVectorizedReaderSetting{
 
   @Override
   public VectorizedRowBatch createVectorizedRowBatch(){
-    return rbCtx.createVectorizedRowBatch( projectionColumn );
+    return rbCtx.createVectorizedRowBatch();
   }
 
   @Override
