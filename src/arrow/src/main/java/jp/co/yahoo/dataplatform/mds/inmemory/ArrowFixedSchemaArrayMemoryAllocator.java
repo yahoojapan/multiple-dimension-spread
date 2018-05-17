@@ -19,34 +19,33 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import java.io.IOException;
 
-import org.apache.arrow.vector.BitVector;
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.vector.complex.ListVector;
 
-import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
-
+import jp.co.yahoo.dataplatform.schema.design.IField;
+import jp.co.yahoo.dataplatform.schema.design.ArrayContainerField;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
-public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
+public class ArrowFixedSchemaArrayMemoryAllocator implements IMemoryAllocator{
 
-  private final BitVector vector;
+  private final IField childSchema;
+  private final ListVector vector;
+  private final BufferAllocator allocator;
 
-  public ArrowBooleanMemoryAllocator( final BitVector vector ){
-    vector.allocateNew();
+  public ArrowFixedSchemaArrayMemoryAllocator( final ArrayContainerField schema , final BufferAllocator allocator , final ListVector vector ){
+    this.allocator = allocator;
     this.vector = vector;
+    vector.allocateNew();
+    childSchema = schema.getField();
   }
 
   @Override
   public void setNull( final int index ){
-    vector.setNull( index );
   }
 
   @Override
   public void setBoolean( final int index , final boolean value ) throws IOException{
-    if( value ){
-      vector.setSafe( index , 1 );
-    }
-    else{
-      vector.setSafe( index , 0 );
-    }
+    throw new UnsupportedOperationException( "Unsupported method setBoolean()" );
   }
 
   @Override
@@ -105,18 +104,9 @@ public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
-  public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
-    if( value == null ){
-      setNull( index );
-    }
-    else{
-      setBoolean( index , value.getBoolean() );
-    }
-  }
-
-  @Override
   public void setArrayIndex( final int index , final int start , final int length ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method setArrayIndex()" );
+    vector.startNewValue( index );
+    vector.endValue( index , length );
   }
 
   @Override
@@ -131,7 +121,12 @@ public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    throw new UnsupportedOperationException( "Unsupported method getChild()" );
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , columnName , allocator , vector );
+  }
+
+  @Override
+  public IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , "ARRAY_CHILD" , allocator , vector );
   }
 
 }

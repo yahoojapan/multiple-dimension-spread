@@ -33,7 +33,9 @@ public class OrExpressionNode implements IExpressionNode {
 
   @Override
   public void addChildNode( final IExpressionNode node ){
-    childNode.add( node );
+    if( node != null ){
+      childNode.add( node );
+    }
   }
 
   @Override

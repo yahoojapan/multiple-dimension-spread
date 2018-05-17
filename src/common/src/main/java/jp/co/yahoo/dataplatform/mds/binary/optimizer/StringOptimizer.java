@@ -44,7 +44,7 @@ public class StringOptimizer implements IOptimizer{
     int minSize = Integer.MAX_VALUE;
 
     StringColumnAnalizeResult stringResult = (StringColumnAnalizeResult)analizeResult;
-    if( ( (double)stringResult.getUniqCount() / (double)stringResult.getRowCount() ) < 0.1d ){
+    if( ( (double)stringResult.getUniqCount() / (double)stringResult.getRowCount() ) < 0.5d ){
       maker = makerArray[0];
     }
     else{

@@ -15,12 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds.spread.column.filter;
+package jp.co.yahoo.dataplatform.mds;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-public interface IFilter extends Serializable{
+import org.apache.arrow.memory.BufferAllocator;
+import org.apache.arrow.vector.complex.MapVector;
 
-  FilterType getFilterType();
+import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
+public interface IRootMemoryAllocator{
+
+  IMemoryAllocator create( final BufferAllocator allocator , final MapVector rootVector ) throws IOException;
+  
 }

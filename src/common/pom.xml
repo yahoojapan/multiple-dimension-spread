@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
-    <version>0.6.4</version>
+    <version>0.8.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -30,6 +30,20 @@
       <groupId>net.jpountz.lz4</groupId>
       <artifactId>lz4</artifactId>
       <version>1.2.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>1.3.3-3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.4</version>
+      <scope>test</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.schema</groupId>
@@ -53,20 +67,20 @@
   </properties>
 
   <build>
-  <plugins>
-    <plugin>
+    <plugins>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
-            <execution>
-                <phase>package</phase>
-                <goals>
-                    <goal>test-jar</goal>
-                </goals>
-            </execution>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
         </executions>
-    </plugin>
-  </plugins>
+      </plugin>
+    </plugins>
   </build>
 
 </project>

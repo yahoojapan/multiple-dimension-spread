@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread-base</artifactId>
-    <version>0.6.4</version>
+    <version>0.8.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -29,7 +29,20 @@
     <dependency>
       <groupId>org.apache.arrow</groupId>
       <artifactId>arrow-vector</artifactId>
-      <version>0.4.0</version>
+      <version>0.8.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.4</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.4</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
