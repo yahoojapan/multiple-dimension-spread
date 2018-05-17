@@ -104,8 +104,7 @@ public class HiveReaderSetting implements IReaderSetting{
     config.set( "spread.reader.read.column.names" , createReadColumnNames( job.get( ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR , null ) ) );
 
     // Next Hive vesion;
-    // Utilities.getUseVectorizedInputFileFormat(job)
-    isVectorModeFlag = Utilities.isVectorMode( job );
+    isVectorModeFlag = Utilities.getUseVectorizedInputFileFormat(job);
   }
 
   public String createReadColumnNames( final String readColumnNames ){
