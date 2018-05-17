@@ -41,7 +41,7 @@ public class LongOptimizer implements IOptimizer{
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
-    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.4d ){
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.7d ){
       maker = uniqMaker;
     }
     else{
