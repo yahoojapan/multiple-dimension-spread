@@ -35,10 +35,7 @@
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-exec</artifactId>
-<<<<<<< HEAD
       <version>1.2.1000.2.6.2.0-205</version>
-=======
-      <version>2.0.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -47,7 +44,6 @@
       <version>2.9.4</version>
       <scope>test</scope>
       <optional>true</optional>
->>>>>>> 131787792134186d4a7649c74a3abfcd3abfa556
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
@@ -85,6 +81,14 @@
       <id>hdp</id>
       <url> http://repo.hortonworks.com/content/repositories/releases</url>
       <name>HDP</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>spring</id>
+      <url>http://repo.spring.io/plugins-release/</url>
+      <name>SPRING</name>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
