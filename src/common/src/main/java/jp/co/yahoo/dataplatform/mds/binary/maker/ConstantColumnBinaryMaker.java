@@ -313,20 +313,38 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     @Override
     public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
       PrimitiveObject[] result = new PrimitiveObject[length];
-      for( int i = 0 ; i < result.length ; i++ ){
-        result[i] = value;
+      int loopEnd = ( start + length );
+      if( indexList.size() < loopEnd ){
+        loopEnd = indexList.size();
+      }
+      for( int i = start , index = 0 ; i < loopEnd ; i++ , index++ ){
+        if( indexList.get( i ) < this.length ){
+          result[index] = value;
+        }
       }
       return result;
     }
 
     @Override
     public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
-      for( int i = 0 ; i < length ; i++ ){
-        try{
-          allocator.setPrimitiveObject( i , value );
-        }catch( IOException e ){
-          allocator.setNull( i );
+      int loopEnd = ( start + length );
+      if( indexList.size() < loopEnd ){
+        loopEnd = indexList.size();
+      }
+      for( int i = start , index = 0 ; i < loopEnd ; i++ , index++ ){
+        if( this.length <= indexList.get( i ) ){
+          allocator.setNull( index );
         }
+        else{
+          try{
+            allocator.setPrimitiveObject( index , value );
+          }catch( IOException e ){
+            allocator.setNull( index );
+          }
+        }
+      }
+      for( int i = loopEnd ; i < ( start + length ) ; i++ ){
+        allocator.setNull( i );
       }
     }
 
