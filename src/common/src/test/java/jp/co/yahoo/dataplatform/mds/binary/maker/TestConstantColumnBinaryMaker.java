@@ -32,6 +32,7 @@ import static org.testng.Assert.assertNull;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerCustomConfigNode;
+import jp.co.yahoo.dataplatform.mds.spread.expression.AllExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
@@ -99,6 +100,7 @@ public class TestConstantColumnBinaryMaker {
     assertNull( decodeColumn.get(3).getRow() );
   }
 
+  @Test
   public void T_createBinary_int_1() throws IOException{
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new IntegerObj( 20 ) , "hoge" , 3 );
 
@@ -135,6 +137,7 @@ public class TestConstantColumnBinaryMaker {
     assertNull( decodeColumn.get(3).getRow() );
   }
 
+  @Test
   public void T_createBinary_float_1() throws IOException{
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new FloatObj( (float)0.1 ) , "hoge" , 3 );
 
@@ -153,6 +156,7 @@ public class TestConstantColumnBinaryMaker {
     assertNull( decodeColumn.get(3).getRow() );
   }
 
+  @Test
   public void T_createBinary_double_1() throws IOException{
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new DoubleObj( (double)0.1 ) , "hoge" , 3 );
 
@@ -171,6 +175,7 @@ public class TestConstantColumnBinaryMaker {
     assertNull( decodeColumn.get(3).getRow() );
   }
 
+  @Test
   public void T_createBinary_string_1() throws IOException{
     String str = "hogehoge";
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new StringObj( str ) , "hoge" , 3 )
@@ -191,6 +196,7 @@ public class TestConstantColumnBinaryMaker {
     assertNull( decodeColumn.get(3).getRow() );
   }
 
+  @Test
   public void T_createBinary_bytes_1() throws IOException{
     String str = "hogehoge";
     byte[] bytes = str.getBytes( "UTF-8" );
@@ -210,6 +216,68 @@ public class TestConstantColumnBinaryMaker {
     assertEquals( str , ( (PrimitiveObject)( decodeColumn.get(1).getRow() ) ).getString() );
     assertEquals( str , ( (PrimitiveObject)( decodeColumn.get(2).getRow() ) ).getString() );
     assertNull( decodeColumn.get(3).getRow() );
+  }
+
+  @Test
+  public void T_getPrimitiveObjectArray_1() throws IOException{
+    String str = "hogehoge";
+    ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new StringObj( str ) , "hoge" , 3 )
+;
+
+    assertEquals( columnBinary.columnName , "hoge" );
+    assertEquals( columnBinary.rowCount , 3 );
+    assertEquals( columnBinary.columnType , ColumnType.STRING );
+
+    ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
+    IColumn decodeColumn = maker.toColumn( columnBinary );
+    assertEquals( decodeColumn.getColumnKeys().size() , 0 );
+    assertEquals( decodeColumn.getColumnSize() , 0 );
+
+    AllExpressionIndex index = new AllExpressionIndex( 10 );
+    PrimitiveObject[] array = decodeColumn.getPrimitiveObjectArray( index , 0 , 10 );
+    assertEquals( str ,  array[0].getString() );
+    assertEquals( str ,  array[1].getString() );
+    assertEquals( str ,  array[2].getString() );
+    for( int i = 3 ; i < 10 ; i++ ){
+      assertEquals( null ,  array[i] );
+    }
+  }
+
+  @Test
+  public void T_setPrimitiveObjectArray_1() throws IOException{
+    String str = "hogehoge";
+    ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( new StringObj( str ) , "hoge" , 3 )
+;
+
+    assertEquals( columnBinary.columnName , "hoge" );
+    assertEquals( columnBinary.rowCount , 3 );
+    assertEquals( columnBinary.columnType , ColumnType.STRING );
+
+    ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
+    IColumn decodeColumn = maker.toColumn( columnBinary );
+    assertEquals( decodeColumn.getColumnKeys().size() , 0 );
+    assertEquals( decodeColumn.getColumnSize() , 0 );
+
+    AllExpressionIndex index = new AllExpressionIndex( 10 );
+    MyAllocator allocator = new MyAllocator();
+    decodeColumn.setPrimitiveObjectArray( index , 0 , 10 , allocator );
+    
+    assertEquals( str ,  allocator.array[0].getString() );
+    assertEquals( str ,  allocator.array[1].getString() );
+    assertEquals( str ,  allocator.array[2].getString() );
+    for( int i = 3 ; i < 10 ; i++ ){
+      assertEquals( null ,  allocator.array[i] );
+    }
+  }
+
+  private class MyAllocator implements IMemoryAllocator{
+
+    public PrimitiveObject[] array = new PrimitiveObject[10];
+
+    @Override
+    public void setPrimitiveObject( final int index , final PrimitiveObject value ) throws IOException{
+      array[index] = value;
+    }
   }
 
 }
