@@ -35,7 +35,6 @@ import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.Operator;
 import org.apache.hadoop.hive.ql.exec.TableScanOperator;
-import org.apache.hadoop.hive.ql.exec.SerializationUtilities;
 import org.apache.hadoop.hive.ql.plan.MapWork;
 import org.apache.hadoop.hive.ql.plan.TableScanDesc;
 import org.apache.hadoop.hive.ql.plan.PartitionDesc;
@@ -70,7 +69,7 @@ public class HiveReaderSetting implements IReaderSetting{
     List<ExprNodeGenericFuncDesc> filterExprs = new ArrayList<ExprNodeGenericFuncDesc>();
     String filterExprSerialized = job.get( TableScanDesc.FILTER_EXPR_CONF_STR );
     if( filterExprSerialized != null ){
-      filterExprs.add( SerializationUtilities.deserializeExpression(filterExprSerialized) );
+      filterExprs.add( Utilities.deserializeExpression(filterExprSerialized) );
     }
 
     MapWork mapWork;
