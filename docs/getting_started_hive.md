@@ -50,26 +50,26 @@ It corresponds to both predicate pushdown and pushdown filter.
 However, as for pushdown filter, column binaryization is pluggable, so it is different whether binary is supported.
 
 ## jars
-- yjava_jp_dataplatform_config.jar
-- yjava_jp_dataplatform_schema_common.jar
-- yjava_jp_dataplatform_schema_hive.jar
-- yjava_jp_dataplatform_schema_jackson.jar
-- yjava_dataplatform_mds_common.jar
-- yjava_dataplatform_mds_hive.jar
-- yjava_dataplatform_mds_schema.jar
+- jp_dataplatform_config.jar
+- jp_dataplatform_schema_common.jar
+- jp_dataplatform_schema_hive.jar
+- jp_dataplatform_schema_jackson.jar
+- dataplatform_mds_common.jar
+- dataplatform_mds_hive.jar
+- dataplatform_mds_schema.jar
 
 ## Setup Hive
 See [Apache Hive](https://hive.apache.org/)
 
 ## Add jars
 ```
-add jar yjava_jp_dataplatform_config.jar;
-add jar yjava_jp_dataplatform_schema_common.jar;
-add jar yjava_jp_dataplatform_schema_hive.jar;
-add jar yjava_jp_dataplatform_schema_jackson.jar;
-add jar yjava_dataplatform_mds_common.jar;
-add jar yjava_dataplatform_mds_hive.jar;
-add jar yjava_dataplatform_mds_schema.jar;
+add jar jp_dataplatform_config.jar;
+add jar jp_dataplatform_schema_common.jar;
+add jar jp_dataplatform_schema_hive.jar;
+add jar jp_dataplatform_schema_jackson.jar;
+add jar dataplatform_mds_common.jar;
+add jar dataplatform_mds_hive.jar;
+add jar dataplatform_mds_schema.jar;
 ```
 
 ## Create table
