@@ -131,7 +131,7 @@ public class MDSMapObjectInspector implements SettableMapObjectInspector{
     }
     else{
       Map map = (Map)object;
-      return map.get(key);
+      return map.get( key.toString() );
     }
   }
 
