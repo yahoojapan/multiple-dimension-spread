@@ -25,6 +25,7 @@ import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
 import jp.co.yahoo.dataplatform.mds.binary.FindColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.spread.analyzer.IColumnAnalizeResult;
+import jp.co.yahoo.dataplatform.mds.spread.analyzer.DoubleColumnAnalizeResult;
 
 public class DoubleOptimizer implements IOptimizer{
 
@@ -32,16 +33,18 @@ public class DoubleOptimizer implements IOptimizer{
   private final IColumnBinaryMaker[] makerArray;
 
   public DoubleOptimizer( final Configuration config ) throws IOException{
-    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" );
+    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" );
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ),
     };
   }
 
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
-    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.4d ){
+
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.1d ){
       maker = uniqMaker;
     }
     else{
@@ -54,6 +57,7 @@ public class DoubleOptimizer implements IOptimizer{
         }
       }
     }
+
     ColumnBinaryMakerConfig currentConfig = new ColumnBinaryMakerConfig( commonConfig );
     if( maker != null ){
       currentConfig.doubleMakerClass = maker;

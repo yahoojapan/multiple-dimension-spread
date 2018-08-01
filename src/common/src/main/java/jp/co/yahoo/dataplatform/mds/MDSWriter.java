@@ -41,7 +41,7 @@ public class MDSWriter implements AutoCloseable{
   public MDSWriter( final OutputStream out , final Configuration config ) throws IOException{
     this.out = out;
 
-    int blockSize = config.getInt( "block.size" , 1024 * 1024 * 256 );
+    int blockSize = config.getInt( "block.size" , 1024 * 1024 * 128 );
 
     blockMaker = FindBlockMaker.get( config.get( "block.maker.class" , BlockSkipPredicateBlockMaker.class.getName() ) );
     blockMaker.setup( blockSize , config );

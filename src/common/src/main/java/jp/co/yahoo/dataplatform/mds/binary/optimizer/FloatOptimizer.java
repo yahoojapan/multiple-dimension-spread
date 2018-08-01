@@ -32,16 +32,16 @@ public class FloatOptimizer implements IOptimizer{
   private final IColumnBinaryMaker[] makerArray;
 
   public FloatOptimizer( final Configuration config ) throws IOException{
-    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" );
+    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" );
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ),
     };
   }
 
   @Override
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
-    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.20d ){
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.05d ){
       maker = uniqMaker;
     }
     else{

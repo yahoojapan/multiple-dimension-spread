@@ -43,6 +43,8 @@ public class TestIntegerPrimitiveColumn {
     return new Object[][] {
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" },
     };
   }
 

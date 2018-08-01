@@ -47,6 +47,18 @@ public final class ColumnBinaryMakerNameShortCut{
 
     CLASS_NAME_PAIR.set( OptimizeIndexDumpStringColumnBinaryMaker.class.getName()   , "OI11" );
 
+    CLASS_NAME_PAIR.set( UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName()    , "XOD10" );
+
+    CLASS_NAME_PAIR.set( UnsafeRangeDumpFloatColumnBinaryMaker.class.getName()  , "XD1" );
+    CLASS_NAME_PAIR.set( UnsafeRangeDumpDoubleColumnBinaryMaker.class.getName()  , "XD2" );
+
+    //CLASS_NAME_PAIR.set( UnsafeRangeDumpReverseBitDoubleColumnBinaryMaker.class.getName()  , "XDR2" );
+
+    CLASS_NAME_PAIR.set( UnsafeOptimizeLongColumnBinaryMaker.class.getName()    , "XO0" );
+    CLASS_NAME_PAIR.set( UnsafeOptimizeFloatColumnBinaryMaker.class.getName()  , "XO1" );
+    CLASS_NAME_PAIR.set( UnsafeOptimizeDoubleColumnBinaryMaker.class.getName()  , "XO2" );
+    CLASS_NAME_PAIR.set( UnsafeOptimizeStringColumnBinaryMaker.class.getName()  , "XO11" );
+
     CLASS_NAME_PAIR.set( ConstantColumnBinaryMaker.class.getName()   , "C0" );
   }
 

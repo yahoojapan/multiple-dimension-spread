@@ -39,6 +39,7 @@ public class BooleanColumnAnalizer implements IColumnAnalizer{
     int falseCount = 0;
     int nullCount = 0;
     int rowCount = 0;
+
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){

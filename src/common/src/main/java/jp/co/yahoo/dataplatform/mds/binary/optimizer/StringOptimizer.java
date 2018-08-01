@@ -33,7 +33,7 @@ public class StringOptimizer implements IOptimizer{
 
   public StringOptimizer( final Configuration config ) throws IOException{
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ),
       FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ),
     };
   }
@@ -44,7 +44,9 @@ public class StringOptimizer implements IOptimizer{
     int minSize = Integer.MAX_VALUE;
 
     StringColumnAnalizeResult stringResult = (StringColumnAnalizeResult)analizeResult;
-    if( ( (double)stringResult.getUniqCount() / (double)stringResult.getRowCount() ) < 0.5d ){
+
+    int avgLength = stringResult.getTotalUtf8ByteSize() / stringResult.getRowCount();
+    if( 4 < avgLength && ( (double)stringResult.getUniqCount() / (double)stringResult.getRowCount() ) < 0.5d ){
       maker = makerArray[0];
     }
     else{
