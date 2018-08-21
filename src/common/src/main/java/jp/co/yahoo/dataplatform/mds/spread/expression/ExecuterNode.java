@@ -32,6 +32,12 @@ public class ExecuterNode implements IExpressionNode{
   private final IFilter filter;
 
   public ExecuterNode( final IExtractNode columnExtractNode , final IFilter filter ){
+    if( columnExtractNode == null ){
+      throw new IllegalArgumentException( "column extract node is null." );
+    }
+    if( filter == null ){
+      throw new IllegalArgumentException( "filter is null." );
+    }
     this.columnExtractNode = columnExtractNode;
     this.filter = filter;
   }

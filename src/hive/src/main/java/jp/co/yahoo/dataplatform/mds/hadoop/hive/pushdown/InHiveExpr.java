@@ -81,17 +81,11 @@ public class InHiveExpr implements IHiveExprNode{
         }
         return new StringDictionaryFilter( stringDic );
       case BYTE:
-       // byte byteObj = ( (WritableConstantByteObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       case SHORT:
-        //short shortObj = ( (WritableConstantShortObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       case INT:
-        //int intObj = ( (WritableConstantIntObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       case LONG:
-        //long longObj = ( (WritableConstantLongObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       case FLOAT:
-        //float floatObj = ( (WritableConstantFloatObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       case DOUBLE:
-        //double doubleObj = ( (WritableConstantDoubleObjectInspector)primitiveObjectInspector ).getWritableConstantValue().get();
       default:
         return null;
     }
@@ -113,6 +107,9 @@ public class InHiveExpr implements IHiveExprNode{
       return null;
     }
     IFilter filter = getEqualsExecuter( nodeDescList , 1 );
+    if( filter == null ){
+      return null;
+    }
     return new ExecuterNode( extractNode , filter );
   }
 
