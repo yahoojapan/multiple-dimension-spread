@@ -44,6 +44,7 @@ public class TestStringBlockIndex{
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
+      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) },
     };
   }
 

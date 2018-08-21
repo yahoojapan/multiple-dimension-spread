@@ -43,6 +43,7 @@ public class TestStringPrimitiveColumn {
     return new Object[][] {
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" },
     };
   }
 

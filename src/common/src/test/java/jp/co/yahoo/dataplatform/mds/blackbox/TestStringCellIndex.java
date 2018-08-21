@@ -67,6 +67,7 @@ public class TestStringCellIndex{
       { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) },
       { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) },
       { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) },
+      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) },
 
       { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) },
       { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) },
@@ -77,6 +78,7 @@ public class TestStringCellIndex{
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
       { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
+      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) },
 
       { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },
     };

@@ -51,6 +51,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 import jp.co.yahoo.dataplatform.mds.util.io.unsafe.ByteBufferSupporterFactory;
 import jp.co.yahoo.dataplatform.mds.util.io.IWriteSupporter;
 import jp.co.yahoo.dataplatform.mds.util.io.IReadSupporter;
+import jp.co.yahoo.dataplatform.mds.util.io.NumberToBinaryUtils;
 
 public class UnsafeOptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
 
@@ -59,10 +60,10 @@ public class UnsafeOptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   public static IDictionaryIndexMaker chooseDictionaryIndexMaker( final int dicIndexLength ){
-    if( dicIndexLength <= Byte.valueOf( Byte.MAX_VALUE ).intValue() ){
+    if( dicIndexLength <= NumberToBinaryUtils.INT_BYTE_MAX_LENGTH ){
       return new ByteDictionaryIndexMaker();
     }
-    else if( dicIndexLength <= Short.valueOf( Short.MAX_VALUE ).intValue() ){
+    else if( dicIndexLength <= NumberToBinaryUtils.INT_SHORT_MAX_LENGTH ){
       return new ShortDictionaryIndexMaker();
     }
     else{
@@ -148,7 +149,7 @@ public class UnsafeOptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       IntBuffer result = IntBuffer.allocate( size );
       for( int i = 0 ; i < size ; i++ ){
-        result.put( (int)( wrapBuffer.getByte() ) );
+        result.put( NumberToBinaryUtils.getUnsignedByteToInt( wrapBuffer.getByte() ) );
       }
       result.position( 0 );
       return result;
@@ -177,7 +178,7 @@ public class UnsafeOptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       IntBuffer result = IntBuffer.allocate( size );
       for( int i = 0 ; i < size ; i++ ){
-        result.put( (int)( wrapBuffer.getShort() ) );
+        result.put( NumberToBinaryUtils.getUnsignedShortToInt( wrapBuffer.getShort() ) );
       }
       result.position( 0 );
       return result;

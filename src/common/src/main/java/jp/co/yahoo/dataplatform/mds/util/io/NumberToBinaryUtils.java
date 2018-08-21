@@ -31,6 +31,13 @@ import jp.co.yahoo.dataplatform.mds.util.io.unsafe.ByteBufferSupporterFactory;
 
 public final class NumberToBinaryUtils{
 
+  public static final int INT_BYTE_MAX_LENGTH = 0xFF;
+  public static final int INT_SHORT_MAX_LENGTH = 0xFFFF;
+
+  public static final long LONG_BYTE_MAX_LENGTH = 0xFFL;
+  public static final long LONG_SHORT_MAX_LENGTH = 0xFFFFL;
+  public static final long LONG_INT_MAX_LENGTH = 0xFFFFFFFFL;
+
   public static final int HEADER_SIZE = 2;
 
   public static final byte HEADER_8 = (byte)8;

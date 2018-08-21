@@ -67,13 +67,13 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       return ColumnType.LONG;
     }
 
-    if( diff <= Byte.MAX_VALUE ){
+    if( diff <= NumberToBinaryUtils.LONG_BYTE_MAX_LENGTH ){
       return ColumnType.BYTE;
     }
-    else if( diff <= Short.MAX_VALUE ){
+    else if( diff <= NumberToBinaryUtils.LONG_SHORT_MAX_LENGTH ){
       return ColumnType.SHORT;
     }
-    else if( diff <= Integer.MAX_VALUE ){
+    else if( diff <= NumberToBinaryUtils.LONG_INT_MAX_LENGTH ){
       return ColumnType.INTEGER;
     }
 
@@ -120,10 +120,10 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
   }
 
   public static IDictionaryIndexMaker chooseDictionaryIndexMaker( final int dicIndexLength ){
-    if( dicIndexLength <= Byte.valueOf( Byte.MAX_VALUE ).intValue() ){
+    if( dicIndexLength <= NumberToBinaryUtils.INT_BYTE_MAX_LENGTH ){
       return new ByteDictionaryIndexMaker();
     }
-    else if( dicIndexLength <= Short.valueOf( Short.MAX_VALUE ).intValue() ){
+    else if( dicIndexLength <= NumberToBinaryUtils.INT_SHORT_MAX_LENGTH ){
       return new ShortDictionaryIndexMaker();
     }
     else{
@@ -209,7 +209,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       wrapBuffer.getByte();
       for( int i = 1 ; i < size ; i++ ){
-        result[i] = new LongObj( (long)wrapBuffer.getByte() + min );
+        result[i] = new LongObj( NumberToBinaryUtils.getUnsignedByteToLong( wrapBuffer.getByte() ) + min );
       }
 
       return result;
@@ -283,7 +283,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       wrapBuffer.getShort();
       for( int i = 1 ; i < size ; i++ ){
-        result[i] = new LongObj( (long)wrapBuffer.getShort() + min );
+        result[i] = new LongObj( NumberToBinaryUtils.getUnsignedShortToLong( wrapBuffer.getShort() ) + min );
       }
 
       return result;
@@ -366,7 +366,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = converter.toReadSupporter( buffer , start , length );
       wrapBuffer.getInt();
       for( int i = 1 ; i < size ; i++ ){
-        result[i] = new LongObj( (long)wrapBuffer.getInt() + min );
+        result[i] = new LongObj( NumberToBinaryUtils.getUnsignedIntToLong( wrapBuffer.getInt() ) + min );
       }
 
       return result;
@@ -445,7 +445,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       IntBuffer result = IntBuffer.allocate( size );
       for( int i = 0 ; i < size ; i++ ){
-        result.put( (int)( wrapBuffer.getByte() ) );
+        result.put( NumberToBinaryUtils.getUnsignedByteToInt( wrapBuffer.getByte() ) );
       }
       result.position( 0 );
       return result;
@@ -474,7 +474,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       IntBuffer result = IntBuffer.allocate( size );
       for( int i = 0 ; i < size ; i++ ){
-        result.put( (int)( wrapBuffer.getShort() ) );
+        result.put( NumberToBinaryUtils.getUnsignedShortToInt( wrapBuffer.getShort() ) );
       }
       result.position( 0 );
       return result;

@@ -71,6 +71,8 @@ public class TestNumberBlockIndex{
       createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) ,
       createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) ,
       createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) ,
+      createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) ,
+
       createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) ,
       createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) ,
       createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) ,

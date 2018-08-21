@@ -58,19 +58,38 @@ import jp.co.yahoo.dataplatform.mds.util.io.unsafe.ByteBufferSupporterFactory;
 
 public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMaker{
 
+  public static int getLogicalSize( final int columnSize , final ColumnType columnType ){
+    int byteSize = Long.BYTES;
+    switch( columnType ){
+      case BYTE:
+        byteSize = Byte.BYTES;
+        break;
+      case SHORT:
+        byteSize = Short.BYTES;
+        break;
+      case INTEGER:
+        byteSize = Integer.BYTES;
+        break;
+      default:
+        byteSize = Long.BYTES;
+        break;
+    }
+    return columnSize * byteSize;
+  }
+
   public static ColumnType getDiffColumnType( final long min , final long max ){
     long diff = max - min;
     if( diff < 0 ){
       return ColumnType.LONG;
     }
 
-    if( diff <= Byte.MAX_VALUE ){
+    if( diff <= NumberToBinaryUtils.LONG_BYTE_MAX_LENGTH ){
       return ColumnType.BYTE;
     }
-    else if( diff <= Short.MAX_VALUE ){
+    else if( diff <= NumberToBinaryUtils.LONG_SHORT_MAX_LENGTH ){
       return ColumnType.SHORT;
     }
-    else if( diff <= Integer.MAX_VALUE ){
+    else if( diff <= NumberToBinaryUtils.LONG_INT_MAX_LENGTH ){
       return ColumnType.INTEGER;
     }
 
@@ -118,8 +137,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
   public interface IBinaryMaker{
 
-    int getLogicalSize( final int columnSize );
-
     int calcBinarySize( final int columnSize );
 
     void create( final long[] longArray , final byte[] buffer , final int start , final int length , final ByteOrder order , final int rowCount ) throws IOException;
@@ -131,11 +148,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
   }
 
   public static class ByteBinaryMaker implements IBinaryMaker{
-
-    @Override
-    public int getLogicalSize( final int columnSize ){
-      return Byte.BYTES * columnSize;
-    }
 
     @Override
     public int calcBinarySize( final int columnSize ){
@@ -186,11 +198,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
     }
 
     @Override
-    public int getLogicalSize( final int columnSize ){
-      return Byte.BYTES * columnSize;
-    }
-
-    @Override
     public int calcBinarySize( final int columnSize ){
       return Byte.BYTES * columnSize;
     }
@@ -210,7 +217,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       for( int i = 0 ; i < columnSize ; i++ ){
         if( ! hasNull || buffer[i] == (byte)0 ){
-          result[i] = new LongObj( (long)( wrapBuffer.getByte() ) + min );
+          result[i] = new LongObj( NumberToBinaryUtils.getUnsignedByteToLong( wrapBuffer.getByte() ) + min );
         }
       }
       return result;
@@ -221,7 +228,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       for( int i = 0 ; i < size ; i++ ){
         if( ! hasNull || isNullArray[i] == 0 ){
-          allocator.setLong( i , (long)( wrapBuffer.getByte() ) + min );
+          allocator.setLong( i , NumberToBinaryUtils.getUnsignedByteToLong( wrapBuffer.getByte() ) + min );
         }
         else{
           allocator.setNull( i );
@@ -232,11 +239,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
   }
 
   public static class ShortBinaryMaker implements IBinaryMaker{
-
-    @Override
-    public int getLogicalSize( final int columnSize ){
-      return Short.BYTES * columnSize;
-    }
 
     @Override
     public int calcBinarySize( final int columnSize ){
@@ -287,11 +289,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
     }
 
     @Override
-    public int getLogicalSize( final int columnSize ){
-      return Short.BYTES * columnSize;
-    }
-
-    @Override
     public int calcBinarySize( final int columnSize ){
       return Short.BYTES * columnSize;
     }
@@ -311,7 +308,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       for( int i = 0 ; i < columnSize ; i++ ){
         if( ! hasNull || buffer[i] == (byte)0 ){
-          result[i] = new LongObj( (long)( wrapBuffer.getShort() ) + min );
+          result[i] = new LongObj( NumberToBinaryUtils.getUnsignedShortToLong( wrapBuffer.getShort() ) + min );
         }
       }
       return result;
@@ -322,7 +319,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = ByteBufferSupporterFactory.createReadSupporter( buffer , start , length , order );
       for( int i = 0 ; i < size ; i++ ){
         if( ! hasNull || isNullArray[i] == 0 ){
-          allocator.setLong( i , (long)( wrapBuffer.getShort() ) + min );
+          allocator.setLong( i , NumberToBinaryUtils.getUnsignedShortToLong( wrapBuffer.getShort() ) + min );
         }
         else{
           allocator.setNull( i );
@@ -338,11 +335,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
     public IntBinaryMaker( final long min , final long  max ){
       converter = NumberToBinaryUtils.getIntConverter( (int)min , (int)max );
-    }
-
-    @Override
-    public int getLogicalSize( final int columnSize ){
-      return Integer.BYTES * columnSize;
     }
 
     @Override
@@ -396,11 +388,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
     }
 
     @Override
-    public int getLogicalSize( final int columnSize ){
-      return Long.BYTES * columnSize;
-    }
-
-    @Override
     public int calcBinarySize( final int columnSize ){
       return converter.calcBinarySize( columnSize );
     }
@@ -420,7 +407,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = converter.toReadSupporter( buffer , start , length );
       for( int i = 0 ; i < columnSize ; i++ ){
         if( ! hasNull || buffer[i] == (byte)0 ){
-          result[i] = new LongObj( (long)( wrapBuffer.getInt() ) + min );
+          result[i] = new LongObj( NumberToBinaryUtils.getUnsignedIntToLong( wrapBuffer.getInt() ) + min );
         }
       }
       return result;
@@ -430,7 +417,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
       IReadSupporter wrapBuffer = converter.toReadSupporter( buffer , start , length );
       for( int i = 0 ; i < size ; i++ ){
         if( ! hasNull || isNullArray[i] == 0 ){
-          allocator.setLong( i , (long)( wrapBuffer.getInt() ) + min );
+          allocator.setLong( i , NumberToBinaryUtils.getUnsignedIntToLong( wrapBuffer.getInt() ) + min );
         }
         else{
           allocator.setNull( i );
@@ -446,11 +433,6 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
     public LongBinaryMaker( final long min , final long max ){
       converter = NumberToBinaryUtils.getLongConverter( min , max );
-    }
-
-    @Override
-    public int getLogicalSize( final int columnSize ){
-      return Long.BYTES * columnSize;
     }
 
     @Override
@@ -560,7 +542,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
     wrapBuffer.putInt( rowCount );
     wrapBuffer.put( compressBinary );
 
-    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , column.getColumnType() , column.size() , binary.length , binaryMaker.getLogicalSize( rowCount ) , -1 , binary , 0 , binary.length , null );
+    return new ColumnBinary( this.getClass().getName() , currentConfig.compressorClass.getClass().getName() , column.getColumnName() , column.getColumnType() , column.size() , binary.length , getLogicalSize( rowCount , column.getColumnType() ) , -1 , binary , 0 , binary.length , null );
   }
 
   @Override
