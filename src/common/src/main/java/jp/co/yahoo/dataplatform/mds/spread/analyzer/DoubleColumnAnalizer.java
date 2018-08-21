@@ -45,6 +45,7 @@ public class DoubleColumnAnalizer implements IColumnAnalizer{
 
     Double min = Double.MAX_VALUE;
     Double max = Double.MIN_VALUE;
+
     for( int i = 0 ; i < column.size() ; i++ ){
       ICell cell = column.get(i);
       if( cell.getType() == ColumnType.NULL ){

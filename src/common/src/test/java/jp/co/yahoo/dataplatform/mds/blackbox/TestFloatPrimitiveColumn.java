@@ -44,6 +44,8 @@ public class TestFloatPrimitiveColumn {
       { "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" },
     };
   }
 

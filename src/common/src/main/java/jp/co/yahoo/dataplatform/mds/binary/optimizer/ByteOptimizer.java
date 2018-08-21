@@ -42,7 +42,7 @@ public class ByteOptimizer implements IOptimizer{
   public ColumnBinaryMakerConfig getColumnBinaryMakerConfig( final ColumnBinaryMakerConfig commonConfig , final IColumnAnalizeResult analizeResult ){
     IColumnBinaryMaker maker = null;
 
-    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.1d ){
+    if( ( (double)analizeResult.getUniqCount() / (double)analizeResult.getRowCount() ) < 0.01d ){
       maker = uniqMaker;
     }
     else{

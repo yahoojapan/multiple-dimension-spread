@@ -44,6 +44,8 @@ public class TestDoublePrimitiveColumn {
       { "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" },
       { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" },
+      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" },
     };
   }
 
