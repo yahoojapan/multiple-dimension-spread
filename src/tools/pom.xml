@@ -27,6 +27,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>2.7.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>1.2.1000.2.6.2.0-205</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-common</artifactId>
       <version>${project.version}</version>
@@ -34,6 +46,11 @@
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-schema</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-hive</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -69,5 +86,24 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>hdp</id>
+      <url> http://repo.hortonworks.com/content/repositories/releases</url>
+      <name>HDP</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>spring</id>
+      <url>http://repo.spring.io/plugins-release/</url>
+      <name>SPRING</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>

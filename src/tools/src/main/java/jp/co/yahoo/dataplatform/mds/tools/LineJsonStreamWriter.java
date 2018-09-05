@@ -30,7 +30,8 @@ import jp.co.yahoo.dataplatform.schema.formatter.JacksonMessageWriter;
 
 public class LineJsonStreamWriter implements IStreamWriter{
 
-  private final byte[] NEW_LINE = new byte[]{ '\n' };
+  private static final byte[] NEW_LINE = new byte[]{ '\n' };
+
   private final JacksonMessageWriter jsonWriter = new JacksonMessageWriter();
   private final OutputStream out;
 
