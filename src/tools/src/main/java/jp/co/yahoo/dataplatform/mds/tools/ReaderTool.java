@@ -73,6 +73,20 @@ public final class ReaderTool{
       withArgName("projection_pushdown").
       create( 'p' );
 
+    Option expand = OptionBuilder.
+      withLongOpt("expand").
+      withDescription("Use expand function.").
+      hasArg().
+      withArgName("expand").
+      create( 'e' );
+
+    Option flatten = OptionBuilder.
+      withLongOpt("flatten").
+      withDescription("Use flatten function.").
+      hasArg().
+      withArgName("flatten").
+      create( 'x' );
+
     Option output = OptionBuilder.
       withLongOpt("output").
       withDescription("output file path. \"-\" standard output").
@@ -94,6 +108,8 @@ public final class ReaderTool{
       .addOption( input )
       .addOption( schema )
       .addOption( ppd )
+      .addOption( expand )
+      .addOption( flatten )
       .addOption( output )
       .addOption( help );
   }
@@ -123,6 +139,8 @@ public final class ReaderTool{
     String schema = cl.getOptionValue( "schema" , null );
     String output = cl.getOptionValue( "output" , null );
     String ppd = cl.getOptionValue( "projection_pushdown" , null );
+    String expand = cl.getOptionValue( "expand" , null );
+    String flatten = cl.getOptionValue( "flatten" , null );
 
     OutputStream out = FileUtil.create( output );
     IStreamWriter writer = StreamWriterFactory.create( out , format , schema );
@@ -130,6 +148,14 @@ public final class ReaderTool{
     Configuration config = new Configuration();
     if( ppd != null ){
       config.set( "spread.reader.read.column.names" , ppd );
+    }
+
+    if( expand != null ){
+      config.set( "spread.reader.expand.column" , expand );
+    }
+
+    if( flatten != null ){
+      config.set( "spread.reader.flatten.column" , flatten );
     }
 
     InputStream in = FileUtil.fopen( input );
