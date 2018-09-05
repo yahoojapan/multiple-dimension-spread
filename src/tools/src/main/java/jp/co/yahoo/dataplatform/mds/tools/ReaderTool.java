@@ -17,8 +17,11 @@
  */
 package jp.co.yahoo.dataplatform.mds.tools;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.cli.GnuParser;
@@ -30,13 +33,14 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.HelpFormatter;
 
-import jp.co.yahoo.dataplatform.schema.parser.IStreamReader;
+import jp.co.yahoo.dataplatform.config.Configuration;
+import jp.co.yahoo.dataplatform.schema.formatter.IStreamWriter;
+import jp.co.yahoo.dataplatform.schema.formatter.IMessageWriter;
+import jp.co.yahoo.dataplatform.mds.schema.parser.MDSSchemaReader;
 
-import jp.co.yahoo.dataplatform.mds.MDSRecordWriter;
+public final class ReaderTool{
 
-public final class WriterTool{
-
-  private WriterTool(){}
+  private ReaderTool(){}
 
   public static Options createOptions( final String[] args ){
     Option format = OptionBuilder.
@@ -62,6 +66,13 @@ public final class WriterTool{
       withArgName("schema").
       create( 's' );
 
+    Option ppd = OptionBuilder.
+      withLongOpt("projection_pushdown").
+      withDescription("Use projection pushdown. Format:\"[ [ \"column1\" , \"[column1-child]\" , \"column1-child-child\" ] [ \"column2\" , ... ] ... ]\"").
+      hasArg().
+      withArgName("projection_pushdown").
+      create( 'p' );
+
     Option output = OptionBuilder.
       withLongOpt("output").
       withDescription("output file path. \"-\" standard output").
@@ -81,8 +92,9 @@ public final class WriterTool{
     return options
       .addOption( format )
       .addOption( input )
-      .addOption( output )
       .addOption( schema )
+      .addOption( ppd )
+      .addOption( output )
       .addOption( help );
   }
 
@@ -110,17 +122,43 @@ public final class WriterTool{
     String format = cl.getOptionValue( "format" , null );
     String schema = cl.getOptionValue( "schema" , null );
     String output = cl.getOptionValue( "output" , null );
+    String ppd = cl.getOptionValue( "projection_pushdown" , null );
+
+    OutputStream out = FileUtil.create( output );
+    IStreamWriter writer = StreamWriterFactory.create( out , format , schema );
+
+    Configuration config = new Configuration();
+    if( ppd != null ){
+      config.set( "spread.reader.read.column.names" , ppd );
+    }
 
     InputStream in = FileUtil.fopen( input );
-    IStreamReader reader = StreamReaderFactory.create( in , format , schema );
-    OutputStream out = FileUtil.create( output );
+    MDSSchemaReader reader = new MDSSchemaReader();
 
-    MDSRecordWriter writer = new MDSRecordWriter( out );
+    if( "-".equals( input ) ){
+      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+      byte[] buffer = new byte[1024*10];
+      int readLength = in.read( buffer );
+      long totalLength = readLength;
+      while( 0 <= readLength ){
+        bOut.write( buffer );
+        readLength = in.read( buffer );
+        totalLength += readLength;
+      }
+      in = new ByteArrayInputStream( bOut.toByteArray() );
+      reader.setNewStream( in , totalLength , config );
+    }
+    else{
+      File file = new File( input );
+      long fileLength = file.length();
+      reader.setNewStream( in , fileLength , config );
+    }
 
     while( reader.hasNext() ){
-      writer.addParserRow( reader.next() );
+      writer.write( reader.next() );
     }
     writer.close();
+    reader.close();
 
     return 0;
   }
