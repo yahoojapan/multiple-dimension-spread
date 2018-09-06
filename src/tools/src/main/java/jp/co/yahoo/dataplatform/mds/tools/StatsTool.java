@@ -34,22 +34,19 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.HelpFormatter;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
-import jp.co.yahoo.dataplatform.schema.formatter.IStreamWriter;
-import jp.co.yahoo.dataplatform.schema.formatter.IMessageWriter;
-import jp.co.yahoo.dataplatform.mds.schema.parser.MDSSchemaReader;
 
-public final class ReaderTool{
+import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
 
-  private ReaderTool(){}
+import jp.co.yahoo.dataplatform.mds.MDSStatsReader;
+import jp.co.yahoo.dataplatform.mds.stats.SpreadSummaryStats;
+
+public final class StatsTool{
+
+  private static final byte[] NEW_LINE = new byte[]{ '\n' };
+
+  private StatsTool(){}
 
   public static Options createOptions( final String[] args ){
-    Option format = OptionBuilder.
-      withLongOpt("format").
-      withDescription("Output data format. [json|].").
-      hasArg().
-      withArgName("format").
-      create( 'f' );
-
     Option input = OptionBuilder.
       withLongOpt("input").
       withDescription("Input file path.  \"-\" standard input").
@@ -57,34 +54,6 @@ public final class ReaderTool{
       isRequired().
       withArgName("input").
       create( 'i' );
-
-    Option schema = OptionBuilder.
-      withLongOpt("schema").
-      withDescription("If need a schema with input data format please enter it.").
-      hasArg().
-      withArgName("schema").
-      create( 's' );
-
-    Option ppd = OptionBuilder.
-      withLongOpt("projection_pushdown").
-      withDescription("Use projection pushdown. Format:\"[ [ \"column1\" , \"[column1-child]\" , \"column1-child-child\" ] [ \"column2\" , ... ] ... ]\"").
-      hasArg().
-      withArgName("projection_pushdown").
-      create( 'p' );
-
-    Option expand = OptionBuilder.
-      withLongOpt("expand").
-      withDescription("Use expand function.").
-      hasArg().
-      withArgName("expand").
-      create( 'e' );
-
-    Option flatten = OptionBuilder.
-      withLongOpt("flatten").
-      withDescription("Use flatten function.").
-      hasArg().
-      withArgName("flatten").
-      create( 'x' );
 
     Option output = OptionBuilder.
       withLongOpt("output").
@@ -103,12 +72,7 @@ public final class ReaderTool{
     Options  options = new Options();
 
     return options
-      .addOption( format )
       .addOption( input )
-      .addOption( schema )
-      .addOption( ppd )
-      .addOption( expand )
-      .addOption( flatten )
       .addOption( output )
       .addOption( help );
   }
@@ -134,34 +98,14 @@ public final class ReaderTool{
     }
 
     String input = cl.getOptionValue( "input" , null );
-    String format = cl.getOptionValue( "format" , null );
-    if( format == null || format.isEmpty() ){
-      format = "json";
-    }
-    String schema = cl.getOptionValue( "schema" , null );
     String output = cl.getOptionValue( "output" , null );
-    String ppd = cl.getOptionValue( "projection_pushdown" , null );
-    String expand = cl.getOptionValue( "expand" , null );
-    String flatten = cl.getOptionValue( "flatten" , null );
 
     OutputStream out = FileUtil.create( output );
-    IStreamWriter writer = StreamWriterFactory.create( out , format , schema );
 
     Configuration config = new Configuration();
-    if( ppd != null ){
-      config.set( "spread.reader.read.column.names" , ppd );
-    }
-
-    if( expand != null ){
-      config.set( "spread.reader.expand.column" , expand );
-    }
-
-    if( flatten != null ){
-      config.set( "spread.reader.flatten.column" , flatten );
-    }
 
     InputStream in = FileUtil.fopen( input );
-    MDSSchemaReader reader = new MDSSchemaReader();
+    MDSStatsReader reader = new MDSStatsReader();
 
     if( "-".equals( input ) ){
       ByteArrayOutputStream bOut = new ByteArrayOutputStream();
@@ -174,19 +118,19 @@ public final class ReaderTool{
         totalLength += readLength;
       }
       in = new ByteArrayInputStream( bOut.toByteArray() );
-      reader.setNewStream( in , totalLength , config );
+      reader.readStream( in , totalLength , config );
     }
     else{
       File file = new File( input );
       long fileLength = file.length();
-      reader.setNewStream( in , fileLength , config );
+      reader.readStream( in , fileLength , config );
     }
 
-    while( reader.hasNext() ){
-      writer.write( reader.next() );
-    }
-    writer.close();
-    reader.close();
+    SpreadSummaryStats rootStats = reader.getTotalSummaryStats();
+
+    out.write( rootStats.toString().getBytes() );
+    out.write( NEW_LINE );
+    out.close();
 
     return 0;
   }

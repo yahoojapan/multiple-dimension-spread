@@ -130,15 +130,17 @@ public class ColumnStats{
     StringBuffer buffer = new StringBuffer();
     String columnPath;
     if( parentName == null ){
-      columnPath = columnName;
+      columnPath = String.format( "/%s" , columnName );
     }
     else{
       columnPath = String.format( "%s/%s" , parentName , columnName );
     }
 
-    buffer.append( String.format( "%s(ALL_COLUMN_TYPE) : %s\n" , columnPath , totalStats.toString() ) );
+    if( 1 < summaryContainer.size() ){
+      buffer.append( String.format( "%s<ALL[%d]> : %s\n" , columnPath , summaryContainer.size() , totalStats.toString() ) );
+    }
     for( Map.Entry<ColumnType,SummaryStats> entry : summaryContainer.entrySet() ){
-      buffer.append( String.format( "%s(%s) : %s\n" , columnPath , entry.getKey() , entry.getValue().toString() ) );
+      buffer.append( String.format( "%s<%s> : %s\n" , columnPath , entry.getKey() , entry.getValue().toString() ) );
     }
 
     for( Map.Entry<String,ColumnStats> entry : childContainer.entrySet() ){
