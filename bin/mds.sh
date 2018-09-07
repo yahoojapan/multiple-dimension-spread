@@ -23,8 +23,7 @@ fi
 JAVA_CMD="$JAVA_HOME/bin/java"
 
 if [ ! -e $JAVA_CMD ];then
-  echo "$JAVA_CMD is not found." >&2
-  exit 255
+  JAVA_CMD=java
 fi
 
 if [ $# -le 0 ];then
@@ -42,4 +41,4 @@ if [ "help" = "$1" ];then
   exit 0
 fi
 
-$JAVA_CMD -cp ".:$dependency_libdir/*:$libdir/*" jp.co.yahoo.dataplatform.mds.tools.MDSTool $@
+$JAVA_CMD -cp ".:$dependency_libdir/*:$libdir/*" jp.co.yahoo.dataplatform.mds.tools.MDSTool "$@"
