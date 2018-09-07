@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>gtest</groupId>
+  <artifactId>gtest</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>gtest</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-arrow</artifactId>
+      <version>$mds_version</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-common</artifactId>
+      <version>$mds_version</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-hadoop</artifactId>
+      <version>$mds_version</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-hive</artifactId>
+      <version>$mds_version</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-schema</artifactId>
+      <version>$mds_version</version>
+    </dependency>
+
+    <!-- dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-tools</artifactId>
+      <version>$mds_version</version>
+    </dependency -->
+
+    <dependency>
+        <groupId>jp.co.yahoo.dataplatform.schema</groupId>
+        <artifactId>schema-common</artifactId>
+        <version>$dp_schema_version</version>
+    </dependency>
+
+    <dependency>
+        <groupId>jp.co.yahoo.dataplatform.schema</groupId>
+        <artifactId>schema-hive</artifactId>
+        <version>$dp_schema_version</version>
+    </dependency>
+
+    <dependency>
+        <groupId>jp.co.yahoo.dataplatform.schema</groupId>
+        <artifactId>schema-jackson</artifactId>
+        <version>$dp_schema_version</version>
+    </dependency>
+
+    <dependency>
+        <groupId>jp.co.yahoo.dataplatform.schema</groupId>
+        <artifactId>schema-orc</artifactId>
+        <version>$dp_schema_version</version>
+    </dependency>
+
+    <dependency>
+        <groupId>jp.co.yahoo.dataplatform.config</groupId>
+        <artifactId>dataplatform-common-config</artifactId>
+        <version>$dp_config_version</version>
+    </dependency>
+  </dependencies>
+</project>

@@ -24,6 +24,12 @@ public final class MDSTool{
   private MDSTool(){}
 
   public static void printHelp(){
+    System.err.println( "create create file." );
+    System.err.println( "cat read mds file." );
+    System.err.println( "schema view mds file schema." );
+    System.err.println( "fstats view mds file stats." );
+    System.err.println( "cstats view column stats." );
+    System.err.println( "help view help." );
   }
 
   public static void main( final String[] args ) throws IOException{
@@ -49,6 +55,10 @@ public final class MDSTool{
     }
     else if( "cstats".equals( command ) ){
       ColumnStatsTool.main( commandArgs );
+    }
+    else if( "help".equals( command ) ){
+      printHelp();
+      System.exit( 0 );
     }
     else{
       System.err.println( String.format( "Unknown command %s" , command ) );
