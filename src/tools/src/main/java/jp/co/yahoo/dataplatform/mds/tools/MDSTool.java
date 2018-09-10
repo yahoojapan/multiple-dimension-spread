@@ -29,6 +29,7 @@ public final class MDSTool{
     System.err.println( "schema view mds file schema." );
     System.err.println( "fstats view mds file stats." );
     System.err.println( "cstats view column stats." );
+    System.err.println( "stest run storage perfomance test." );
     System.err.println( "help view help." );
   }
 
@@ -55,6 +56,9 @@ public final class MDSTool{
     }
     else if( "cstats".equals( command ) ){
       ColumnStatsTool.main( commandArgs );
+    }
+    else if( "stest".equals( command ) ){
+      StoragePerformanceTool.main( commandArgs );
     }
     else if( "help".equals( command ) ){
       printHelp();

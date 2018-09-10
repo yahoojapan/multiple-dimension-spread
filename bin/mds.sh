@@ -15,11 +15,6 @@ if [ ! -e "$libdir" ];then
   exit 255
 fi
 
-if [ -z "$JAVA_HOME" ]; then
-  echo "JAVA_HOME is not set." >&2
-  exit 255
-fi
-
 JAVA_CMD="$JAVA_HOME/bin/java"
 
 if [ ! -e $JAVA_CMD ];then
