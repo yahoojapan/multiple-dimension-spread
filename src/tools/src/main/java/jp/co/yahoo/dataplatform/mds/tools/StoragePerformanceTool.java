@@ -235,7 +235,7 @@ public final class StoragePerformanceTool{
       for( int i = 0 ; i < spread.size() ; i++ ){
         IColumn column = spread.getColumn(i);
         column.get(0).getRow();
-        performanceResultList.addAll( runPerformanceTest( "/" , column ) );
+        performanceResultList.addAll( runPerformanceTest( "" , column ) );
       }
       loopCount++;
     }
