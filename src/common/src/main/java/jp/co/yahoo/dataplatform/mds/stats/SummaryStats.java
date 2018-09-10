@@ -115,7 +115,7 @@ public class SummaryStats{
 
   @Override
   public String toString(){
-    return String.format( "Field count=%d , Raw data size=%d , Real data size=%d , Logical data size=%d , cardinality=%d , statsCount=%d , Average field size=%f , Average field real size=%f , Compress late=%f , Average row count=%f , Average cardinality=%f" , rowCount , rawDataSize , realDataSize , logicalDataSize , cardinality , statsCount , getAverageFieldSize() , getAverageFieldRealSize() , getCompressLate() , getAverageRowCount() , getAverageCardinality() );
+    return String.format( "Field count=%d , Raw data size=%d , Real data size=%d , Logical data size=%d , cardinality=%d , stats report count=%d , Average field size=%f , Average field real size=%f , Compress late=%f , Average row count per stats report count=%f , Average cardinality=%f" , rowCount , rawDataSize , realDataSize , logicalDataSize , cardinality , statsCount , getAverageFieldSize() , getAverageFieldRealSize() , getCompressLate() , getAverageRowCount() , getAverageCardinality() );
   }
 
 }

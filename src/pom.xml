@@ -33,6 +33,7 @@
     <module>hadoop</module>
     <module>hive</module>
     <module>arrow</module>
+    <module>tools</module>
     <module>example</module>
   </modules>
 

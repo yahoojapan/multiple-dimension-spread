@@ -45,7 +45,7 @@ public class DefaultCompressor implements ICompressor{
   public byte[] decompress( final byte[] data , final int start , final int length ) throws IOException{
     byte[] result = new byte[length];
     System.arraycopy( data , start , result , 0 , length );
-    return data;
+    return result;
   }
 
   @Override

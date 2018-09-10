@@ -1,0 +1,109 @@
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+    <artifactId>multiple-dimension-spread-base</artifactId>
+    <version>0.8.1_hive-1.2.1000.2.6.2.0-205-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>multiple-dimension-spread-tools</artifactId>
+  <packaging>jar</packaging>
+  <name>multiple dimension spread tools</name>
+  <description>Examples using Multiple-Dimension-Spread</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>2.7.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>1.2.1000.2.6.2.0-205</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-schema</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-hive</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.schema</groupId>
+      <artifactId>schema-common</artifactId>
+      <version>${schemalibVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.config</groupId>
+      <artifactId>dataplatform-common-config</artifactId>
+      <version>${configlibVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.4</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.30</version>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>hdp</id>
+      <url> http://repo.hortonworks.com/content/repositories/releases</url>
+      <name>HDP</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>spring</id>
+      <url>http://repo.spring.io/plugins-release/</url>
+      <name>SPRING</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>
