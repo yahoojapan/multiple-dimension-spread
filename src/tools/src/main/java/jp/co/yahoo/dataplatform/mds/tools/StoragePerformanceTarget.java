@@ -36,45 +36,33 @@ public final class StoragePerformanceTarget{
         return new IColumnBinaryMaker[]{
           new OptimizeDumpLongColumnBinaryMaker(),
           new OptimizeLongColumnBinaryMaker(),
-          new UnsafeOptimizeDumpLongColumnBinaryMaker(),
-          new UnsafeOptimizeLongColumnBinaryMaker(),
         };
       case SHORT:
         return new IColumnBinaryMaker[]{
           new OptimizeDumpLongColumnBinaryMaker(),
           new OptimizeLongColumnBinaryMaker(),
-          new UnsafeOptimizeDumpLongColumnBinaryMaker(),
-          new UnsafeOptimizeLongColumnBinaryMaker(),
         };
       case INTEGER:
         return new IColumnBinaryMaker[]{
           new OptimizeDumpLongColumnBinaryMaker(),
           new OptimizeLongColumnBinaryMaker(),
-          new UnsafeOptimizeDumpLongColumnBinaryMaker(),
-          new UnsafeOptimizeLongColumnBinaryMaker(),
         };
       case LONG:
         return new IColumnBinaryMaker[]{
           new OptimizeDumpLongColumnBinaryMaker(),
           new OptimizeLongColumnBinaryMaker(),
-          new UnsafeOptimizeDumpLongColumnBinaryMaker(),
-          new UnsafeOptimizeLongColumnBinaryMaker(),
         };
       case FLOAT:
         return new IColumnBinaryMaker[]{
           new DumpFloatColumnBinaryMaker(),
           new RangeDumpFloatColumnBinaryMaker(),
           new OptimizeFloatColumnBinaryMaker(),
-          new UnsafeOptimizeFloatColumnBinaryMaker(),
-          new UnsafeRangeDumpFloatColumnBinaryMaker(),
         };
       case DOUBLE:
         return new IColumnBinaryMaker[]{
           new DumpDoubleColumnBinaryMaker(),
           new RangeDumpDoubleColumnBinaryMaker(),
           new OptimizeDoubleColumnBinaryMaker(),
-          new UnsafeOptimizeDoubleColumnBinaryMaker(),
-          new UnsafeRangeDumpDoubleColumnBinaryMaker(),
         };
       case BYTES:
         return new IColumnBinaryMaker[]{
@@ -84,8 +72,6 @@ public final class StoragePerformanceTarget{
         return new IColumnBinaryMaker[]{
           new OptimizeDumpStringColumnBinaryMaker(),
           new OptimizeStringColumnBinaryMaker(),
-          new UnsafeOptimizeDumpStringColumnBinaryMaker(),
-          new UnsafeOptimizeStringColumnBinaryMaker(),
         };
       default:
         return new IColumnBinaryMaker[0];
