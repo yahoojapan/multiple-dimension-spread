@@ -27,7 +27,6 @@ import jp.co.yahoo.dataplatform.config.FindClass;
 
 public final class FindColumnBinaryMaker{
 
-  private final static FindColumnBinaryMaker OBJ = new FindColumnBinaryMaker();
   private final static Object LOCK = new Object();
   private final static Map<String,IColumnBinaryMaker> CACHE = new HashMap<String,IColumnBinaryMaker>();
 
@@ -40,7 +39,7 @@ public final class FindColumnBinaryMaker{
     if( target == null || target.isEmpty() ){
       throw new IOException( "IColumnBinaryMaker class name is null or empty." );
     }
-    Object obj = FindClass.getObject( target , true , OBJ.getClass().getClassLoader() );
+    Object obj = FindClass.getObject( target , true , FindColumnBinaryMaker.class.getClassLoader() );
     if( ! ( obj instanceof IColumnBinaryMaker ) ){
       throw new IOException( "Invalid IColumnBinaryMaker class : " + target );
     }

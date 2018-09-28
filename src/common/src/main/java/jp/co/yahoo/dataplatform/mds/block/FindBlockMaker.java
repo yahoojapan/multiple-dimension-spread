@@ -23,15 +23,13 @@ import jp.co.yahoo.dataplatform.config.FindClass;
 
 public final class FindBlockMaker{
 
-  private static final FindBlockMaker OBJ = new FindBlockMaker();
-
   private FindBlockMaker(){}
 
   public static IBlockMaker get( final String target ) throws IOException{
     if( target == null || target.isEmpty() ){
       throw new IOException( "IBlockMaker class name is null or empty." );
     }
-    Object obj = FindClass.getObject( target , true , OBJ.getClass().getClassLoader() );
+    Object obj = FindClass.getObject( target , true , FindBlockMaker.class.getClassLoader() );
     if( ! ( obj instanceof IBlockMaker ) ){
       throw new IOException( "Invalid IBlockMaker class : " + target );
     }
