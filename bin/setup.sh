@@ -42,7 +42,7 @@ function get_external_jars() {
   local not_found_files=()
   for fn in ${external_jar_files[@]}
   do
-    local src_fn=$(find $SCRIPT_DIR/../src -name $fn-*.jar | sort | tail -n 1)
+    local src_fn=$(find $SCRIPT_DIR/../src -name $fn-*.jar | sort | grep -v sources | grep -v javadoc)
     if [ ! -z "$src_fn" ]
     then cp $src_fn $libdir/$fn.jar
     else not_found_files+=($fn)
