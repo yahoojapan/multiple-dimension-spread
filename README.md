@@ -145,8 +145,12 @@ Please send a blank e-mail to the following address.
 
 [Archive](https://groups.google.com/forum/#!forum/open_mds) is useful for what was communicated at this project.
 
-## Bug tracker
-(under construction)
+## for Developer
+Please accept [Contributer licence agreement](https://gist.github.com/ydnjp/3095832f100d5c3d2592)
+when participating as a developer.
+
+We invite you to [JIRA](https://multiple-dimension-spread.atlassian.net) as a bug tracking,
+when you mentioned in the above Mailing list.
 
 
 ## System requirement
