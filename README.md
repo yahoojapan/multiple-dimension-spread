@@ -123,6 +123,7 @@ See [document Hive](docs/getting_started_hive.md) for further detail to use.
 
 
 ## Where can I get more help, if I need it?
+Support and discussion of MDS are on the Mailing list.
 Please refer the following subsection named "How to contribute".
 
 We plan to support and discussion of MDS on the Mailing list.
@@ -136,7 +137,13 @@ This project is on the [Apache License](https://www.apache.org/licenses/LICENSE-
 Please treat this project under this license.
 
 ## Mailing list
-(under construction)
+User support and discussion of MDS development are on the following Mailing list.
+Please send a blank e-mail to the following address.
+
+* subscribe: open_mds+subscribe@googlegroups.com
+* unsubscribe: open_mds+unsubscribe@googlegroups.com
+
+[Archive](https://groups.google.com/forum/#!forum/open_mds) is useful for what was communicated at this project.
 
 ## Bug tracker
 (under construction)

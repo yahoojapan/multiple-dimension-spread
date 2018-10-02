@@ -14,7 +14,12 @@ function java_exec() {
 
   local dn
   local lib_paths=($libdir/lib $libdir)
-  lib_paths+=($(find $libdir/mds -type d -d -2 | sed -e :loop -e 'N; $!b loop' -e 's/\n/ /g'))
+  lib_paths+=($(
+    find $libdir/mds -type d \
+    | grep -v version \
+    | sed -e :loop -e 'N; $!b loop' -e 's/\n/ /g' \
+  ))
+
   local class_paths='.'
   for dn in ${lib_paths[@]}
   do
