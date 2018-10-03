@@ -1,0 +1,7 @@
+#
+# copy hdfs.sh.template to hdfs.sh in this directory
+# and modify to your environment
+#
+hdfs_user='hdfs_user'
+hdfs_mds_lib='/mds_lib'
+

@@ -26,8 +26,6 @@ import jp.co.yahoo.dataplatform.config.FindClass;
 
 public final class FindBlockIndex{
 
-  private static final FindBlockIndex OBJ = new FindBlockIndex();
-
   private static final Map<String,IBlockIndex> CACHE = new HashMap<String,IBlockIndex>();
 
   private FindBlockIndex(){}
@@ -41,7 +39,7 @@ public final class FindBlockIndex{
     if( target == null || target.isEmpty() ){
       throw new IOException( "IBlockIndex class name is null or empty." );
     }
-    Object obj = FindClass.getObject( target , true , OBJ.getClass().getClassLoader() );
+    Object obj = FindClass.getObject( target , true , FindBlockIndex.class.getClassLoader() );
     if( ! ( obj instanceof IBlockIndex ) ){
       throw new IOException( "Invalid IBlockIndex class : " + target );
     }

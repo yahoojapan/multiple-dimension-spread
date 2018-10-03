@@ -26,7 +26,6 @@ import jp.co.yahoo.dataplatform.config.FindClass;
 
 public final class FindCompressor{
 
-  private final static FindCompressor OBJ = new FindCompressor();
   private final static Object LOCK = new Object();
   private final static Map<String,ICompressor> CACHE = new HashMap<String,ICompressor>();
 
@@ -36,7 +35,7 @@ public final class FindCompressor{
     if( CACHE.containsKey( target ) ){
       return CACHE.get( target );
     }
-    Object obj = FindClass.getObject( target , true , OBJ.getClass().getClassLoader() );
+    Object obj = FindClass.getObject( target , true , FindCompressor.class.getClassLoader() );
     if( ! ( obj instanceof ICompressor ) ){
       throw new IOException( "Invalid ICompressor class : " + target );
     }
