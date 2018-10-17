@@ -54,3 +54,6 @@ target/
 
 ## for tool
 jars
+
+## temp dir for work
+/tmp
