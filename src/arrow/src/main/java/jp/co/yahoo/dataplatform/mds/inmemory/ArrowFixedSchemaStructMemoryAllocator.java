@@ -23,8 +23,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.MapVector;
-import org.apache.arrow.vector.complex.NullableMapVector;
+import org.apache.arrow.vector.complex.StructVector;
 
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
@@ -33,16 +32,16 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 public class ArrowFixedSchemaStructMemoryAllocator implements IMemoryAllocator{
 
   private final Map<String,IMemoryAllocator> loaderMap;
-  private final NullableMapVector vector;
+  private final StructVector vector;
 
-  public ArrowFixedSchemaStructMemoryAllocator( final StructContainerField schema , final BufferAllocator allocator , final MapVector vector ) throws IOException{
-    this.vector = (NullableMapVector)vector;
+  public ArrowFixedSchemaStructMemoryAllocator( final StructContainerField schema , final BufferAllocator allocator , final StructVector vector ) throws IOException{
+    this.vector = vector;
     vector.allocateNew();
 
     loaderMap = new HashMap<String,IMemoryAllocator>();
     for( String key : schema.getKeys() ){
       IField childSchema = schema.get( key );
-      loaderMap.put( key , ArrowFixedSchemaMemoryAllocatorFactory.getFromMapVector( childSchema , key , allocator , vector ) );
+      loaderMap.put( key , ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , key , allocator , vector ) );
     }
   }
 

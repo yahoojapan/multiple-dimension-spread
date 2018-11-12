@@ -20,7 +20,7 @@ package jp.co.yahoo.dataplatform.mds;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.StructVector;
 
 import jp.co.yahoo.dataplatform.schema.design.StructContainerField;
 
@@ -36,7 +36,7 @@ public class FixedSchemaRootMemoryAllocator implements IRootMemoryAllocator{
   }
 
   @Override
-  public IMemoryAllocator create( final BufferAllocator allocator , final MapVector rootVector ) throws IOException{
+  public IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector ) throws IOException{
     return new ArrowFixedSchemaStructMemoryAllocator( schema , allocator , rootVector );
   }
   

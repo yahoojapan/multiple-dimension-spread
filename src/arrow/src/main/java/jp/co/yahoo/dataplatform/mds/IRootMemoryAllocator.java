@@ -20,12 +20,12 @@ package jp.co.yahoo.dataplatform.mds;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.StructVector;
 
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public interface IRootMemoryAllocator{
 
-  IMemoryAllocator create( final BufferAllocator allocator , final MapVector rootVector ) throws IOException;
+  IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector ) throws IOException;
   
 }
