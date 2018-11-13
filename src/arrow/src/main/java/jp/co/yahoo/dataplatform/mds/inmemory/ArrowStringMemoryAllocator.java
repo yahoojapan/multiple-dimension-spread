@@ -31,7 +31,7 @@ public class ArrowStringMemoryAllocator implements IMemoryAllocator{
 
   private final VarCharVector vector;
 
-  public ArrowStringMemoryAllocator( final VarCharVector vector ){
+  public ArrowStringMemoryAllocator( final VarCharVector vector , final int rowCount ){
     vector.allocateNew();
     this.vector = vector;
   }

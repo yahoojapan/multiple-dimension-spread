@@ -26,6 +26,6 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public interface IRootMemoryAllocator{
 
-  IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector ) throws IOException;
+  IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector , final int rowCount ) throws IOException;
   
 }

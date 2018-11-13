@@ -74,7 +74,7 @@ public class TestArrowArrayMemoryAllocator{
     parent.allocateNew();
 
     ListVector listVector = parent.addOrGetList( "target" );
-    IMemoryAllocator memoryAllocator = new ArrowArrayMemoryAllocator( allocator , listVector );
+    IMemoryAllocator memoryAllocator = new ArrowArrayMemoryAllocator( allocator , listVector , 7 );
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 
     for( int i = 0 ; i < 7 ; i++ ){

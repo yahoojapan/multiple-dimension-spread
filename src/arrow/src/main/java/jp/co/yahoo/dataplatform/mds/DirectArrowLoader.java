@@ -65,8 +65,9 @@ public class DirectArrowLoader implements IArrowLoader{
   @Override
   public ValueVector next() throws IOException{
     rootVector.clear();
-    IMemoryAllocator memoryAllocator = rootMemoryAllocator.create( allocator , rootVector );
     List<ColumnBinary> columnBinaryList = reader.nextRaw();
+    int rowCount = reader.getCurrentSpreadSize();
+    IMemoryAllocator memoryAllocator = rootMemoryAllocator.create( allocator , rootVector , rowCount );
 
     if( node != null ){
       BlockIndexNode blockIndexNode = new BlockIndexNode();

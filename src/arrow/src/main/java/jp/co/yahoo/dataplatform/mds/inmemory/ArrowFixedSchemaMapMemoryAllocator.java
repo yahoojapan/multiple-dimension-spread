@@ -31,10 +31,12 @@ public class ArrowFixedSchemaMapMemoryAllocator implements IMemoryAllocator{
   private final IField childSchema;
   private final StructVector vector;
   private final BufferAllocator allocator;
+  private final int rowCount;
 
-  public ArrowFixedSchemaMapMemoryAllocator( final MapContainerField schema , final BufferAllocator allocator , final StructVector vector ){
+  public ArrowFixedSchemaMapMemoryAllocator( final MapContainerField schema , final BufferAllocator allocator , final StructVector vector , final int rowCount ){
     this.allocator = allocator;
     this.vector = vector;
+    this.rowCount = rowCount;
     vector.allocateNew();
     childSchema = schema.getField();
   }
@@ -123,7 +125,7 @@ public class ArrowFixedSchemaMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , columnName , allocator , vector );
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , columnName , allocator , vector , rowCount );
   }
 
 }

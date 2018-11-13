@@ -29,8 +29,8 @@ public class ArrowLongMemoryAllocator implements IMemoryAllocator{
 
   private final BigIntVector vector;
 
-  public ArrowLongMemoryAllocator( final BigIntVector vector ){
-    vector.allocateNew();
+  public ArrowLongMemoryAllocator( final BigIntVector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 

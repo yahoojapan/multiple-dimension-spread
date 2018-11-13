@@ -31,8 +31,8 @@ public class ArrowShortMemoryAllocator implements IMemoryAllocator{
 
   private final SmallIntVector vector;
 
-  public ArrowShortMemoryAllocator( final SmallIntVector vector ){
-    vector.allocateNew();
+  public ArrowShortMemoryAllocator( final SmallIntVector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 

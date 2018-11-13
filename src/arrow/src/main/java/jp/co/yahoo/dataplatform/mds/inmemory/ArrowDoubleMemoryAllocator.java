@@ -29,8 +29,8 @@ public class ArrowDoubleMemoryAllocator implements IMemoryAllocator{
 
   private final Float8Vector vector;
 
-  public ArrowDoubleMemoryAllocator( final Float8Vector vector ){
-    vector.allocateNew();
+  public ArrowDoubleMemoryAllocator( final Float8Vector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 

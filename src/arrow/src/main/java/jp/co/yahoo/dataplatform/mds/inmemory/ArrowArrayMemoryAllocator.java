@@ -29,7 +29,7 @@ public class ArrowArrayMemoryAllocator implements IMemoryAllocator{
   private final ListVector vector;
   private final BufferAllocator allocator;
 
-  public ArrowArrayMemoryAllocator( final BufferAllocator allocator , final ListVector vector ){
+  public ArrowArrayMemoryAllocator( final BufferAllocator allocator , final ListVector vector , final int rowCount ){
     this.allocator = allocator;
     this.vector = vector;
     vector.allocateNew();
@@ -116,13 +116,8 @@ public class ArrowArrayMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
-  public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowMemoryAllocatorFactory.getFromListVector( type , columnName , allocator , vector );
-  }
-
-  @Override
   public IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
-    return ArrowMemoryAllocatorFactory.getFromListVector( type , "ARRAY_CHILD" , allocator , vector );
+    return ArrowMemoryAllocatorFactory.getFromListVector( type , "ARRAY_CHILD" , allocator , vector , childLength );
   }
 
 }

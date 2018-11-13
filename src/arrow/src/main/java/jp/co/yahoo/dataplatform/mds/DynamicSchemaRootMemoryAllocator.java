@@ -28,8 +28,8 @@ import jp.co.yahoo.dataplatform.mds.inmemory.ArrowMapMemoryAllocator;
 public class DynamicSchemaRootMemoryAllocator implements IRootMemoryAllocator{
 
   @Override
-  public IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector ) throws IOException{
-    return new ArrowMapMemoryAllocator( allocator , rootVector );
+  public IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector , final int rowCount ) throws IOException{
+    return new ArrowMapMemoryAllocator( allocator , rootVector , rowCount );
   }
   
 }

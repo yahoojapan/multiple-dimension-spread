@@ -28,10 +28,12 @@ public class ArrowUnionMemoryAllocator implements IMemoryAllocator{
 
   private final UnionVector vector;
   private final BufferAllocator allocator;
+  private final int rowCount;
 
-  public ArrowUnionMemoryAllocator( final BufferAllocator allocator , final UnionVector vector ){
+  public ArrowUnionMemoryAllocator( final BufferAllocator allocator , final UnionVector vector , final int rowCount ){
     this.allocator = allocator;
     this.vector = vector;
+    this.rowCount = rowCount;
     vector.allocateNew();
   }
 
@@ -116,7 +118,7 @@ public class ArrowUnionMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowMemoryAllocatorFactory.getFromUnionVector( type , columnName , allocator , vector );
+    return ArrowMemoryAllocatorFactory.getFromUnionVector( type , columnName , allocator , vector , rowCount );
   }
 
 }

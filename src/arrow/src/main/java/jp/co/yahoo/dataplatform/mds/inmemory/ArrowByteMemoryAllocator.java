@@ -32,8 +32,8 @@ public class ArrowByteMemoryAllocator implements IMemoryAllocator{
 
   private final TinyIntVector vector;
 
-  public ArrowByteMemoryAllocator( final TinyIntVector vector ){
-    vector.allocateNew();
+  public ArrowByteMemoryAllocator( final TinyIntVector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 
