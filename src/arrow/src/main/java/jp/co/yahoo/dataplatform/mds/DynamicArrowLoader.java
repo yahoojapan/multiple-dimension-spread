@@ -21,8 +21,7 @@ import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.ValueVector;
-import org.apache.arrow.vector.complex.MapVector;
-import org.apache.arrow.vector.complex.NullableMapVector;
+import org.apache.arrow.vector.complex.StructVector;
 import org.apache.arrow.vector.SchemaChangeCallBack;
 import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.ArrowType.Struct;
@@ -37,7 +36,7 @@ import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
 
 public class DynamicArrowLoader implements IArrowLoader{
 
-  private final MapVector rootVector;
+  private final StructVector rootVector;
   private final MDSReader reader;
   private final BufferAllocator allocator;
   private final IRootMemoryAllocator rootMemoryAllocator;
@@ -49,7 +48,7 @@ public class DynamicArrowLoader implements IArrowLoader{
     this.allocator = allocator;
     this.rootMemoryAllocator = rootMemoryAllocator;
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
-    rootVector = new NullableMapVector( "root" , allocator , new FieldType( true , Struct.INSTANCE , null , null ) , callBack );
+    rootVector = new StructVector( "root" , allocator , new FieldType( true , Struct.INSTANCE , null , null ) , callBack );
   }
 
   @Override

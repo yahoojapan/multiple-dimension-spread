@@ -28,7 +28,7 @@ import static org.testng.Assert.assertNull;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.SchemaChangeCallBack;
-import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.StructVector;
 import org.apache.arrow.vector.complex.reader.*;
 import org.apache.arrow.vector.complex.reader.BaseReader.*;
 import org.apache.arrow.vector.complex.impl.*;
@@ -49,16 +49,16 @@ public class TestArrowLongMemoryAllocator{
   public void T_setLong_1() throws IOException{
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
-    MapVector parent = new MapVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
+    StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromMapVector( ColumnType.LONG , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent );
 
     memoryAllocator.setLong( 0 , (long)100 );
     memoryAllocator.setLong( 1 , (long)200 );
     memoryAllocator.setLong( 5 , (long)255 );
     memoryAllocator.setLong( 1000 , (long)10 );
 
-    MapReader rootReader = parent.getReader();
+    StructReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
     assertEquals( reader.readLong().longValue() , (long)100 );
@@ -89,13 +89,13 @@ public class TestArrowLongMemoryAllocator{
 
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
-    MapVector parent = new MapVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
+    StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromMapVector( ColumnType.LONG , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent );
 
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 
-    MapReader rootReader = parent.getReader();
+    StructReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
     assertEquals( reader.readLong().longValue() , (long)100 );

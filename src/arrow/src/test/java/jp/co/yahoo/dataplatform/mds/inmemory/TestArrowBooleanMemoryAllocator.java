@@ -28,7 +28,7 @@ import static org.testng.Assert.assertNull;
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.SchemaChangeCallBack;
-import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.StructVector;
 import org.apache.arrow.vector.complex.reader.*;
 import org.apache.arrow.vector.complex.reader.BaseReader.*;
 import org.apache.arrow.vector.complex.impl.*;
@@ -49,16 +49,16 @@ public class TestArrowBooleanMemoryAllocator{
   public void T_setBoolean_1() throws IOException{
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
-    MapVector parent = new MapVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
+    StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromMapVector( ColumnType.BOOLEAN , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent );
 
     memoryAllocator.setBoolean( 0 , true );
     memoryAllocator.setBoolean( 1 , false );
     memoryAllocator.setBoolean( 5 , true );
     memoryAllocator.setBoolean( 1000 , true );
 
-    MapReader rootReader = parent.getReader();
+    StructReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
     assertEquals( reader.readBoolean().booleanValue() , true );
@@ -89,12 +89,12 @@ public class TestArrowBooleanMemoryAllocator{
 
     BufferAllocator allocator = new RootAllocator( 1024 * 1024 * 10 );
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
-    MapVector parent = new MapVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
+    StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromMapVector( ColumnType.BOOLEAN , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent );
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 
-    MapReader rootReader = parent.getReader();
+    StructReader rootReader = parent.getReader();
     FieldReader reader = rootReader.reader( "target" );
     reader.setPosition( 0 );
     assertEquals( reader.readBoolean().booleanValue() , true );

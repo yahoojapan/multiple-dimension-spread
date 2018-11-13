@@ -19,7 +19,7 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.vector.*;
-import org.apache.arrow.vector.complex.MapVector;
+import org.apache.arrow.vector.complex.StructVector;
 import org.apache.arrow.vector.complex.ListVector;
 import org.apache.arrow.vector.complex.UnionVector;
 import org.apache.arrow.vector.types.FloatingPointPrecision;
@@ -34,7 +34,7 @@ public final class ArrowMemoryAllocatorFactory{
 
   private ArrowMemoryAllocatorFactory(){}
 
-  public static IMemoryAllocator getFromMapVector( final ColumnType columnType , final String columnName , final BufferAllocator allocator , final MapVector vector ){
+  public static IMemoryAllocator getFromStructVector( final ColumnType columnType , final String columnName , final BufferAllocator allocator , final StructVector vector ){
     switch( columnType ){
       case UNION:
         UnionVector unionVector = vector.addOrGetUnion( columnName );
@@ -42,7 +42,7 @@ public final class ArrowMemoryAllocatorFactory{
       case ARRAY:
         return new ArrowArrayMemoryAllocator( allocator , vector.addOrGetList( columnName ) );
       case SPREAD:
-        MapVector mapVector = vector.addOrGetMap( columnName );
+        StructVector mapVector = vector.addOrGetStruct( columnName );
         return new ArrowMapMemoryAllocator( allocator , mapVector );
 
       case BOOLEAN:
@@ -90,7 +90,7 @@ public final class ArrowMemoryAllocatorFactory{
         AddOrGetResult<ListVector> listVector =  vector.addOrGetVector( new FieldType( true , ArrowType.List.INSTANCE , null , null ) );
         return new ArrowArrayMemoryAllocator( allocator , listVector.getVector() );
       case SPREAD:
-        AddOrGetResult<MapVector> mapVector =  vector.addOrGetVector( new FieldType( true , ArrowType.Struct.INSTANCE , null , null ) );
+        AddOrGetResult<StructVector> mapVector =  vector.addOrGetVector( new FieldType( true , ArrowType.Struct.INSTANCE , null , null ) );
         return new ArrowMapMemoryAllocator( allocator , mapVector.getVector() );
 
       case BOOLEAN:
@@ -136,7 +136,7 @@ public final class ArrowMemoryAllocatorFactory{
       case ARRAY:
         return new ArrowArrayMemoryAllocator( allocator , vector.getList() );
       case SPREAD:
-        return new ArrowMapMemoryAllocator( allocator , vector.getMap() );
+        return new ArrowMapMemoryAllocator( allocator , vector.getStruct() );
 
       case BOOLEAN:
         return new ArrowBooleanMemoryAllocator( vector.getBitVector() );

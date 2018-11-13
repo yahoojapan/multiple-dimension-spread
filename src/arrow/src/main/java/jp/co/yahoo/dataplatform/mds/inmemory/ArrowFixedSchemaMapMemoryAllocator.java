@@ -20,8 +20,7 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.MapVector;
-import org.apache.arrow.vector.complex.NullableMapVector;
+import org.apache.arrow.vector.complex.StructVector;
 
 import jp.co.yahoo.dataplatform.schema.design.IField;
 import jp.co.yahoo.dataplatform.schema.design.MapContainerField;
@@ -30,12 +29,12 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 public class ArrowFixedSchemaMapMemoryAllocator implements IMemoryAllocator{
 
   private final IField childSchema;
-  private final NullableMapVector vector;
+  private final StructVector vector;
   private final BufferAllocator allocator;
 
-  public ArrowFixedSchemaMapMemoryAllocator( final MapContainerField schema , final BufferAllocator allocator , final MapVector vector ){
+  public ArrowFixedSchemaMapMemoryAllocator( final MapContainerField schema , final BufferAllocator allocator , final StructVector vector ){
     this.allocator = allocator;
-    this.vector = (NullableMapVector)vector;
+    this.vector = vector;
     vector.allocateNew();
     childSchema = schema.getField();
   }
@@ -124,7 +123,7 @@ public class ArrowFixedSchemaMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowFixedSchemaMemoryAllocatorFactory.getFromMapVector( childSchema , columnName , allocator , vector );
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , columnName , allocator , vector );
   }
 
 }

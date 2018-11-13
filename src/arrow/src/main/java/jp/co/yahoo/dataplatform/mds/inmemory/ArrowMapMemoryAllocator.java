@@ -20,19 +20,18 @@ package jp.co.yahoo.dataplatform.mds.inmemory;
 import java.io.IOException;
 
 import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.MapVector;
-import org.apache.arrow.vector.complex.NullableMapVector;
+import org.apache.arrow.vector.complex.StructVector;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
 public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
-  private final NullableMapVector vector;
+  private final StructVector vector;
   private final BufferAllocator allocator;
 
-  public ArrowMapMemoryAllocator( final BufferAllocator allocator , final MapVector vector ){
+  public ArrowMapMemoryAllocator( final BufferAllocator allocator , final StructVector vector ){
     this.allocator = allocator;
-    this.vector = (NullableMapVector)vector;
+    this.vector = vector;
     vector.allocateNew();
   }
 
@@ -121,7 +120,7 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowMemoryAllocatorFactory.getFromMapVector( type , columnName , allocator , vector );
+    return ArrowMemoryAllocatorFactory.getFromStructVector( type , columnName , allocator , vector );
   }
 
 }
