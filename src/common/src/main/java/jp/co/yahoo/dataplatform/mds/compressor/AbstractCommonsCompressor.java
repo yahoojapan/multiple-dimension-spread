@@ -26,38 +26,29 @@ import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 
 import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
-import net.jpountz.lz4.LZ4BlockOutputStream;
-import net.jpountz.lz4.LZ4BlockInputStream;
 
-public class LZ4Compressor implements ICompressor{
+public abstract class AbstractCommonsCompressor implements ICompressor{
 
-  private static final byte[] LENGTH_DUMMY = new byte[Integer.BYTES];
+  abstract InputStream createInputStream( final InputStream in ) throws IOException;
+
+  abstract OutputStream createOutputStream( final OutputStream out ) throws IOException;
 
   @Override
   public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-    bOut.write( LENGTH_DUMMY , 0 , LENGTH_DUMMY.length );
-    LZ4BlockOutputStream out = new LZ4BlockOutputStream( bOut );
+    OutputStream out = createOutputStream( bOut );
 
     out.write( data , start , length );
-    out.flush();
-    out.finish();
+    out.close();
     byte[] compressByte = bOut.toByteArray();
-    ByteBuffer.wrap( compressByte ).putInt( length );
+    byte[] retVal = new byte[ Integer.BYTES + compressByte.length ];
+    ByteBuffer wrapBuffer = ByteBuffer.wrap( retVal );
+    wrapBuffer.putInt( length );
+    wrapBuffer.put( compressByte );
 
     bOut.close();
-    out.close();
 
-    return compressByte;
-  }
-
-  @Override                                                                                                   public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
-    LZ4BlockOutputStream lzOut = new LZ4BlockOutputStream( out );
-
-    lzOut.write( data , start , length );
-    lzOut.flush();
-    lzOut.finish();
-    lzOut.close();
+    return retVal;
   }
 
   @Override
@@ -72,10 +63,11 @@ public class LZ4Compressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
-    LZ4BlockInputStream in = new LZ4BlockInputStream( bIn );
+    InputStream in = createInputStream( bIn );
 
     byte[] retVal = new byte[dataLength];
     InputStreamUtils.read( in , retVal , 0 , dataLength );
+    in.close();
 
     return retVal;
   }
@@ -86,18 +78,12 @@ public class LZ4Compressor implements ICompressor{
     int dataLength = wrapBuffer.getInt();
 
     ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
-    LZ4BlockInputStream in = new LZ4BlockInputStream( bIn );
+    InputStream in = createInputStream( bIn );
 
     InputStreamUtils.read( in , buffer , 0 , dataLength );
+    in.close();
 
     return dataLength;
-  }
-
-  @Override
-  public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
-    return new BufferedInputStream( new LZ4BlockInputStream( bIn ) );
   }
 
 }

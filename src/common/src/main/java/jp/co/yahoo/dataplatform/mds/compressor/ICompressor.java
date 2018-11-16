@@ -25,14 +25,10 @@ public interface ICompressor{
 
   byte[] compress( final byte[] data , final int start , final int length ) throws IOException;
 
-  void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException;
-
   int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException; 
 
   byte[] decompress( final byte[] data , final int start , final int length ) throws IOException;
 
   int decompressAndSet( final byte[] data , final int start , final int length , final byte[] buffer ) throws IOException;
-
-  InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException;
 
 }
