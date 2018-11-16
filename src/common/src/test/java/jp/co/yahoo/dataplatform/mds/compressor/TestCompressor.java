@@ -33,7 +33,11 @@ public class TestCompressor {
     return new String[]{
       DefaultCompressor.class.getName(),
       GzipCompressor.class.getName(),
-      LZ4Compressor.class.getName()
+      BZip2CommonsCompressor.class.getName(),
+      DeflateCommonsCompressor.class.getName(),
+      FramedSnappyCommonsCompressor.class.getName(),
+      FramedLZ4CommonsCompressor.class.getName(),
+      ZstdCommonsCompressor.class.getName(),
     };
   }
 

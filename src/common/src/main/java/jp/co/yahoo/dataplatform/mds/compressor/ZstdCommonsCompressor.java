@@ -18,35 +18,22 @@
 package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
+import java.io.InputStream;
 
-public class DefaultCompressor implements ICompressor{
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream;
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorOutputStream;
+
+public class ZstdCommonsCompressor extends AbstractCommonsCompressor{
 
   @Override
-  public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
-    byte[] result = new byte[length];
-    System.arraycopy( data , start , result , 0 , length );
-    return result;
+  public InputStream createInputStream( final InputStream in ) throws IOException{
+    return new ZstdCompressorInputStream( in );
   }
 
   @Override
-  public int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException {
-    return length;
-  }
-
-  @Override
-  public byte[] decompress( final byte[] data , final int start , final int length ) throws IOException{
-    byte[] result = new byte[length];
-    System.arraycopy( data , start , result , 0 , length );
-    return result;
-  }
-
-  @Override
-  public int decompressAndSet( final byte[] data , final int start , final int length , final byte[] buffer ) throws IOException{
-    System.arraycopy( data , start , buffer , 0 , length );
-    return length;
+  public OutputStream createOutputStream( final OutputStream out ) throws IOException{
+    return new ZstdCompressorOutputStream( out );
   }
 
 }
