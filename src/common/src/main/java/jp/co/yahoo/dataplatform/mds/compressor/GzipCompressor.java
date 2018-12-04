@@ -53,15 +53,6 @@ public class GzipCompressor implements ICompressor{
   }
 
   @Override
-  public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
-    GZIPOutputStream gzipOut = new GZIPOutputStream( out );
-
-    gzipOut.write( data , start , length );
-    gzipOut.flush();
-    gzipOut.finish();
-  }
-
-  @Override
   public int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException {
     ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
     return wrapBuffer.getInt();
@@ -92,13 +83,6 @@ public class GzipCompressor implements ICompressor{
     InputStreamUtils.read( in , buffer , 0 , dataLength );
 
     return dataLength;
-  }
-
-  @Override
-  public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
-    ByteBuffer wrapBuffer = ByteBuffer.wrap( data , start , length );
-    ByteArrayInputStream bIn = new ByteArrayInputStream( data , start + Integer.BYTES , length );
-    return new BufferedInputStream( new GZIPInputStream( bIn , 1024 * 256 ) , 1024 * 256 );
   }
 
 }

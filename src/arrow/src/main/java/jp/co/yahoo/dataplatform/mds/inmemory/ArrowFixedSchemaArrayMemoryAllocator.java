@@ -32,7 +32,7 @@ public class ArrowFixedSchemaArrayMemoryAllocator implements IMemoryAllocator{
   private final ListVector vector;
   private final BufferAllocator allocator;
 
-  public ArrowFixedSchemaArrayMemoryAllocator( final ArrayContainerField schema , final BufferAllocator allocator , final ListVector vector ){
+  public ArrowFixedSchemaArrayMemoryAllocator( final ArrayContainerField schema , final BufferAllocator allocator , final ListVector vector , final int rowCount ){
     this.allocator = allocator;
     this.vector = vector;
     vector.allocateNew();
@@ -120,13 +120,8 @@ public class ArrowFixedSchemaArrayMemoryAllocator implements IMemoryAllocator{
   }
 
   @Override
-  public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , columnName , allocator , vector );
-  }
-
-  @Override
   public IMemoryAllocator getArrayChild( final int childLength , final ColumnType type ) throws IOException{
-    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , "ARRAY_CHILD" , allocator , vector );
+    return ArrowFixedSchemaMemoryAllocatorFactory.getFromListVector( childSchema , "ARRAY_CHILD" , allocator , vector , childLength );
   }
 
 }

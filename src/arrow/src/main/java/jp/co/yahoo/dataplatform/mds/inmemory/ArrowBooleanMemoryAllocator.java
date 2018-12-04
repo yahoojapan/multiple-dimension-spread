@@ -29,8 +29,8 @@ public class ArrowBooleanMemoryAllocator implements IMemoryAllocator{
 
   private final BitVector vector;
 
-  public ArrowBooleanMemoryAllocator( final BitVector vector ){
-    vector.allocateNew();
+  public ArrowBooleanMemoryAllocator( final BitVector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 

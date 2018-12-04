@@ -36,8 +36,8 @@ public class FixedSchemaRootMemoryAllocator implements IRootMemoryAllocator{
   }
 
   @Override
-  public IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector ) throws IOException{
-    return new ArrowFixedSchemaStructMemoryAllocator( schema , allocator , rootVector );
+  public IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector , final int rowCount ) throws IOException{
+    return new ArrowFixedSchemaStructMemoryAllocator( schema , allocator , rootVector , rowCount );
   }
   
 }

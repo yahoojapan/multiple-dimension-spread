@@ -34,14 +34,14 @@ public class ArrowFixedSchemaStructMemoryAllocator implements IMemoryAllocator{
   private final Map<String,IMemoryAllocator> loaderMap;
   private final StructVector vector;
 
-  public ArrowFixedSchemaStructMemoryAllocator( final StructContainerField schema , final BufferAllocator allocator , final StructVector vector ) throws IOException{
+  public ArrowFixedSchemaStructMemoryAllocator( final StructContainerField schema , final BufferAllocator allocator , final StructVector vector , final int rowCount ) throws IOException{
     this.vector = vector;
     vector.allocateNew();
 
     loaderMap = new HashMap<String,IMemoryAllocator>();
     for( String key : schema.getKeys() ){
       IField childSchema = schema.get( key );
-      loaderMap.put( key , ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , key , allocator , vector ) );
+      loaderMap.put( key , ArrowFixedSchemaMemoryAllocatorFactory.getFromStructVector( childSchema , key , allocator , vector , rowCount ) );
     }
   }
 

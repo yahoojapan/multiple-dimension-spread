@@ -82,8 +82,6 @@ public final class StoragePerformanceTarget{
     return new ICompressor[]{
       new DefaultCompressor(),
       new GzipCompressor(),
-      new LZ4Compressor(),
-      new ZSTDCompressor(),
     };
   }
 

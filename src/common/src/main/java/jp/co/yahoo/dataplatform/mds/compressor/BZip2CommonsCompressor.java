@@ -15,17 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.co.yahoo.dataplatform.mds;
+package jp.co.yahoo.dataplatform.mds.compressor;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 
-import org.apache.arrow.memory.BufferAllocator;
-import org.apache.arrow.vector.complex.StructVector;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
-import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
+public class BZip2CommonsCompressor extends AbstractCommonsCompressor{
 
-public interface IRootMemoryAllocator{
+  @Override
+  public InputStream createInputStream( final InputStream in ) throws IOException{
+    return new BZip2CompressorInputStream( in );
+  }
 
-  IMemoryAllocator create( final BufferAllocator allocator , final StructVector rootVector , final int rowCount ) throws IOException;
-  
+  @Override
+  public OutputStream createOutputStream( final OutputStream out ) throws IOException{
+    return new BZip2CompressorOutputStream( out );
+  }
+
 }

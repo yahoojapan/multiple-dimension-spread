@@ -32,11 +32,6 @@ public class DefaultCompressor implements ICompressor{
   }
 
   @Override
-  public void compress( final byte[] data , final int start , final int length , final OutputStream out ) throws IOException{
-    out.write( data , start , length );
-  }
-
-  @Override
   public int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException {
     return length;
   }
@@ -52,11 +47,6 @@ public class DefaultCompressor implements ICompressor{
   public int decompressAndSet( final byte[] data , final int start , final int length , final byte[] buffer ) throws IOException{
     System.arraycopy( data , start , buffer , 0 , length );
     return length;
-  }
-
-  @Override
-  public InputStream getDecompressInputStream( final byte[] data , final int start , final int length ) throws IOException{
-    return new ByteArrayInputStream( data , start , length );
   }
 
 }

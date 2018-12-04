@@ -64,8 +64,8 @@ public class DynamicArrowLoader implements IArrowLoader{
   @Override
   public ValueVector next() throws IOException{
     rootVector.clear();
-    IMemoryAllocator memoryAllocator = rootMemoryAllocator.create( allocator , rootVector );
     Spread spread = reader.next();
+    IMemoryAllocator memoryAllocator = rootMemoryAllocator.create( allocator , rootVector , spread.size() );
     IExpressionIndex index = new AllExpressionIndex( spread.size() );
     if( node != null ){
       index = IndexFactory.toExpressionIndex( spread , node.exec( spread ) );

@@ -30,7 +30,7 @@ public class ArrowBytesMemoryAllocator implements IMemoryAllocator{
 
   private final VarBinaryVector vector;
 
-  public ArrowBytesMemoryAllocator( final VarBinaryVector vector ){
+  public ArrowBytesMemoryAllocator( final VarBinaryVector vector , final int rowCount ){
     vector.allocateNew();
     this.vector = vector;
   }

@@ -29,8 +29,8 @@ public class ArrowFloatMemoryAllocator implements IMemoryAllocator{
 
   private final Float4Vector vector;
 
-  public ArrowFloatMemoryAllocator( final Float4Vector vector ){
-    vector.allocateNew();
+  public ArrowFloatMemoryAllocator( final Float4Vector vector , final int rowCount ){
+    vector.allocateNew( rowCount );
     this.vector = vector;
   }
 

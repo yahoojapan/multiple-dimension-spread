@@ -28,10 +28,12 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
   private final StructVector vector;
   private final BufferAllocator allocator;
+  private final int rowCount;
 
-  public ArrowMapMemoryAllocator( final BufferAllocator allocator , final StructVector vector ){
+  public ArrowMapMemoryAllocator( final BufferAllocator allocator , final StructVector vector , final int rowCount ){
     this.allocator = allocator;
     this.vector = vector;
+    this.rowCount = rowCount;
     vector.allocateNew();
   }
 
@@ -120,7 +122,7 @@ public class ArrowMapMemoryAllocator implements IMemoryAllocator{
 
   @Override
   public IMemoryAllocator getChild( final String columnName , final ColumnType type ) throws IOException{
-    return ArrowMemoryAllocatorFactory.getFromStructVector( type , columnName , allocator , vector );
+    return ArrowMemoryAllocatorFactory.getFromStructVector( type , columnName , allocator , vector , rowCount );
   }
 
 }

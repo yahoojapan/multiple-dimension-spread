@@ -51,7 +51,7 @@ public class TestArrowLongMemoryAllocator{
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
     StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent , 1001 );
 
     memoryAllocator.setLong( 0 , (long)100 );
     memoryAllocator.setLong( 1 , (long)200 );
@@ -91,7 +91,7 @@ public class TestArrowLongMemoryAllocator{
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
     StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.LONG , "target" , allocator , parent , 3 );
 
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 

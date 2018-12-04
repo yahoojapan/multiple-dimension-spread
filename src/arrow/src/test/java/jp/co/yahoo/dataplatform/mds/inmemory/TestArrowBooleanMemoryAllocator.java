@@ -51,7 +51,7 @@ public class TestArrowBooleanMemoryAllocator{
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
     StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent , 4 );
 
     memoryAllocator.setBoolean( 0 , true );
     memoryAllocator.setBoolean( 1 , false );
@@ -91,7 +91,7 @@ public class TestArrowBooleanMemoryAllocator{
     SchemaChangeCallBack callBack = new SchemaChangeCallBack();
     StructVector parent = new StructVector("root", allocator, new FieldType(false, Struct.INSTANCE, null, null), callBack);
     parent.allocateNew();
-    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent );
+    IMemoryAllocator memoryAllocator = ArrowMemoryAllocatorFactory.getFromStructVector( ColumnType.BOOLEAN , "target" , allocator , parent , 3 );
     maker.loadInMemoryStorage( columnBinary , memoryAllocator );
 
     StructReader rootReader = parent.getReader();
