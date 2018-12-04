@@ -26,6 +26,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public final class FileUtil{
 
   public static InputStream fopen( final String input ) throws IOException{
@@ -41,9 +44,12 @@ public final class FileUtil{
       return new BufferedInputStream( System.in );
     }
 
-    File file = new File( input );
+    return fopen( new File( input ) );
+  }
+
+  public static InputStream fopen( final File file ) throws IOException{
     if( ! file.exists() ){
-      throw new IOException( String.format( "Input path does not find : %s" , input ) );
+      throw new IOException( String.format( "Input path does not find : %s" , file.toString() ) );
     }
 
     return new FileInputStream( file );
@@ -68,6 +74,27 @@ public final class FileUtil{
     }
 
     return new FileOutputStream( file );
+  }
+
+  public static List<File> pathToFileList( final String target ){
+    return pathToFileList( new File( target ) );
+  }
+
+  public static List<File> pathToFileList( final File path ){
+    List<File> result = new ArrayList<File>();
+    if( path.isHidden() ){
+      return result;
+    }
+
+    if( path.isDirectory() ){
+      for( File childFile : path.listFiles() ){
+        result.addAll( pathToFileList( childFile ) );
+      }
+    }
+    else if( path.isFile() ){
+      result.add( path );
+    }
+    return result;
   }
 
 }

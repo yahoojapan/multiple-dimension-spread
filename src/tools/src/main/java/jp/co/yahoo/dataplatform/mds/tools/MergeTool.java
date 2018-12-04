@@ -24,6 +24,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import java.util.List;
+
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -36,34 +38,22 @@ import org.apache.commons.cli.HelpFormatter;
 import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.schema.formatter.IStreamWriter;
 import jp.co.yahoo.dataplatform.schema.formatter.IMessageWriter;
-import jp.co.yahoo.dataplatform.mds.schema.parser.MDSSchemaReader;
+import jp.co.yahoo.dataplatform.mds.MDSWriter;
+import jp.co.yahoo.dataplatform.mds.MDSReader;
 
-public final class ReaderTool{
+public final class MergeTool{
 
-  private ReaderTool(){}
+  private MergeTool(){}
 
   public static Options createOptions( final String[] args ){
-    Option format = OptionBuilder.
-      withLongOpt("format").
-      withDescription("Output data format. [json|].").
-      hasArg().
-      withArgName("format").
-      create( 'f' );
 
     Option input = OptionBuilder.
       withLongOpt("input").
-      withDescription("Input file path.  \"-\" standard input").
+      withDescription("Input file paths.").
       hasArg().
       isRequired().
       withArgName("input").
       create( 'i' );
-
-    Option schema = OptionBuilder.
-      withLongOpt("schema").
-      withDescription("If need a schema with input data format please enter it.").
-      hasArg().
-      withArgName("schema").
-      create( 's' );
 
     Option ppd = OptionBuilder.
       withLongOpt("projection_pushdown").
@@ -71,13 +61,6 @@ public final class ReaderTool{
       hasArg().
       withArgName("projection_pushdown").
       create( 'p' );
-
-    Option expand = OptionBuilder.
-      withLongOpt("expand").
-      withDescription("Use expand function.").
-      hasArg().
-      withArgName("expand").
-      create( 'e' );
 
     Option flatten = OptionBuilder.
       withLongOpt("flatten").
@@ -90,6 +73,7 @@ public final class ReaderTool{
       withLongOpt("output").
       withDescription("output file path. \"-\" standard output").
       hasArg().
+      isRequired().
       withArgName("output").
       create( 'o' );
 
@@ -102,11 +86,8 @@ public final class ReaderTool{
     Options  options = new Options();
 
     return options
-      .addOption( format )
       .addOption( input )
-      .addOption( schema )
       .addOption( ppd )
-      .addOption( expand )
       .addOption( flatten )
       .addOption( output )
       .addOption( help );
@@ -133,59 +114,35 @@ public final class ReaderTool{
     }
 
     String input = cl.getOptionValue( "input" , null );
-    String format = cl.getOptionValue( "format" , "json" );
-    if( format.isEmpty() ){
-      format = "json";
-    }
-    String schema = cl.getOptionValue( "schema" , null );
-    String output = cl.getOptionValue( "output" , "-" );
+    String output = cl.getOptionValue( "output" , null );
     String ppd = cl.getOptionValue( "projection_pushdown" , null );
-    String expand = cl.getOptionValue( "expand" , null );
     String flatten = cl.getOptionValue( "flatten" , null );
 
     OutputStream out = FileUtil.create( output );
-    IStreamWriter writer = StreamWriterFactory.create( out , format , schema );
 
     Configuration config = new Configuration();
     if( ppd != null ){
       config.set( "spread.reader.read.column.names" , ppd );
     }
 
-    if( expand != null ){
-      config.set( "spread.reader.expand.column" , expand );
-    }
-
     if( flatten != null ){
       config.set( "spread.reader.flatten.column" , flatten );
     }
 
-    InputStream in = FileUtil.fopen( input );
-    MDSSchemaReader reader = new MDSSchemaReader();
+    MDSReader reader = new MDSReader();
+    MDSWriter writer = new MDSWriter( out , config );
 
-    if( "-".equals( input ) ){
-      ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-      byte[] buffer = new byte[1024*10];
-      int readLength = in.read( buffer );
-      long totalLength = readLength;
-      while( 0 <= readLength ){
-        bOut.write( buffer );
-        readLength = in.read( buffer );
-        totalLength += readLength;
-      }
-      in = new ByteArrayInputStream( bOut.toByteArray() );
-      reader.setNewStream( in , totalLength , config );
-    }
-    else{
-      File file = new File( input );
+    List<File> mergeList = FileUtil.pathToFileList( input );
+    for( File file : mergeList ){
+      InputStream in = FileUtil.fopen( file );
       long fileLength = file.length();
       reader.setNewStream( in , fileLength , config );
-    }
-
-    while( reader.hasNext() ){
-      writer.write( reader.next() );
+      while( reader.hasNext() ){
+        writer.appendRow( reader.nextRaw() , reader.getCurrentSpreadSize() );
+      }
+      reader.close();
     }
     writer.close();
-    reader.close();
 
     return 0;
   }
