@@ -60,6 +60,9 @@ public final class MDSTool{
     else if( "stest".equals( command ) ){
       StoragePerformanceTool.main( commandArgs );
     }
+    else if( "merge".equals( command ) ){
+      MergeTool.main( commandArgs );
+    }
     else if( "help".equals( command ) ){
       printHelp();
       System.exit( 0 );
