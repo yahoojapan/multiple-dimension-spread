@@ -203,9 +203,70 @@ The class for decompressing has a class name in ColumnBinary.
 I will get a class to do decompress with Util.
 Use this class to decompress binary byte arrays from ColumnBinary.
 
+```
+    int columnSize = ByteBuffer.wrap( binary ).getInt();
+    int nullByteLength = Byte.BYTES * columnSize;
+    int intBinaryLength = Integer.BYTES * columnSize;
+    ByteBuffer nullBuffer = ByteBuffer.wrap( binary , Integer.BYTES , nullByteLength );
+    ByteBuffer intBuffer = ByteBuffer.wrap( binary , Integer.BYTES + nullByteLength , intBinaryLength );
+
+    // Column creation and data set.
+    IColumn column = new PrimitiveColumn( ColumnType.INTEGER , columnBinary.columnName );
+    for( int i = 0 ; i < columnSize ; i++ ){
+      byte isNull = nullBuffer.get();
+      int number = intBuffer.getInt();
+      if( isNull == (byte)0 ){
+        column.add( ColumnType.INTEGER , new IntegerObj( number ) , i );
+      }
+    }
+    return column;
+```
+
+It converts from binary to Int and adds it to Column only when the byte which holds null is 0.
 
 ## A simple example of in-memory loading
 
+```
+  void loadInMemoryStorage( final ColumnBinary columnBinary , final IMemoryAllocator allocator ) throws IOException;
+```
+
+This section describes the implementation of loadInMemoryStorage().
+Skip the same process as toColumn.
+
+```
+    // Load data structure using IMemoryAllocator.
+    for( int i = 0 ; i < columnSize ; i++ ){
+      byte isNull = nullBuffer.get();
+      int number = intBuffer.getInt();
+      if( isNull == (byte)0 ){
+        allocator.setInteger( i , number );
+      }
+      else{
+        allocator.setNull( i );
+      }
+    }
+```
+
+The point different from toColumn is to set data using API of allocator.
+Since this column is Int type, we use setInteger ().
+Because the allocator is an interface, if you guarantee to call the same set as the type of the column, you do not have to guarantee whether it is added to the data structure held by the allocator.
+
+```
+    // Finally, set the size of the column. Load processing needs to fill in NULL value.
+    allocator.setValueCount( columnSize );
+```
+The allocator must set the column size at the end.
+The allocator does not know the column size.
+For example, allocator substitutes Null using column size.
+
 ## Unit test
+There is a common unit test.
+Although it is not tested until its own implementation, there are test cases abstractly using columns.
+
+If you are developing in common repository, please use it in the following directory according to the column type.
+
+[Common unit test](../../../src/common/src/test/java/jp/co/yahoo/dataplatform/mds/blackbox)
+
+If you are developing in another repository please inherit it and use it.
 
 [TestExampleIntegerPrimitiveColumn.java](../../../src/example/src/test/java/jp/co/yahoo/dataplatform/mds/example/blackbox/TestExampleIntegerPrimitiveColumn.java)
