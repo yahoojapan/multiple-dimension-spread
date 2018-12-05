@@ -33,6 +33,13 @@
     </dependency>
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-common</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-schema</artifactId>
       <version>${project.version}</version>
     </dependency>
