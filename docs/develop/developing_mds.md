@@ -9,8 +9,10 @@ This section explains how to develop A encoding / decoding
 * [Overview of Spread]()
 * [Overview of column]()
 * [Overview of column binary](binary/column_binary.md)
-* [Overview of analizer]()
-* [Overview of optimizer]()
+
+# Statistics/Analyzer/Optimizer
+
+* [Definition of data size](statistics/data_size.md)
 
 # File/Block
 
