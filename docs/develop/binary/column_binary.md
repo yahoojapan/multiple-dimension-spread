@@ -7,6 +7,8 @@ In order to write to a file, it is necessary to mutually convert each column to 
 There is IColumnBinaryMaker as an interface for converting.
 You can add your own implementation by implementing interconversion interface.
 
+![Convert columns](column_binary.png)
+
 # Class with column binary
 ColumnBinary is a class that expresses the data structure in memory as binary.
 This class has arrays of not only byte arrays but also statistical information, class information used for conversion, compression, and child ColumnBinary class.
@@ -31,6 +33,7 @@ This class has arrays of not only byte arrays but also statistical information, 
 ```
 
 | variable | summary |
+|:-----------|:------------|
 | makerClassName  | Class name of IColumnBinaryMaker used for conversion  |
 | compressorClassName | Class name used for compression  |
 | columnName | Column name |
@@ -85,6 +88,10 @@ This function sets the index of Predicate pushdown.
 Since it is not required, this function does nothing if it does not have an index.
 
 # Example
+In this section, we will introduce an example of implementing Int type column conversion.
+Please see below for the code of this class.
+
+
 
 ## A simple example of column encoding
 
@@ -92,3 +99,6 @@ Since it is not required, this function does nothing if it does not have an inde
 
 ## A simple example of in-memory loading
 
+## Unit test
+
+[TestExampleIntegerPrimitiveColumn.java](../../../src/example/src/test/java/jp/co/yahoo/dataplatform/mds/example/blackbox/TestExampleIntegerPrimitiveColumn.java)
