@@ -269,4 +269,4 @@ If you are developing in common repository, please use it in the following direc
 
 If you are developing in another repository please inherit it and use it.
 
-[TestExampleIntegerPrimitiveColumn.java](../../../src/example/src/test/java/jp/co/yahoo/dataplatform/mds/example/blackbox/TestExampleIntegerPrimitiveColumn.java)
+[For example](../../../src/example/src/test/java/jp/co/yahoo/dataplatform/mds/example/blackbox/TestExampleIntegerPrimitiveColumn.java)
