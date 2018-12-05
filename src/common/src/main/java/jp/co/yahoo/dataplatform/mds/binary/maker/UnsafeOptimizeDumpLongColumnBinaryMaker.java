@@ -33,6 +33,7 @@ import jp.co.yahoo.dataplatform.schema.objects.LongObj;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.DataType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
@@ -530,7 +531,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
     }
     binaryMaker.create( valueArray , binaryRaw , nullBinaryLength , valueLength , order , rowCount );
 
-    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
+    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length , DataType.NUMBER );
 
     byte[] binary = new byte[ Long.BYTES * 2 + Byte.BYTES * 2 + Integer.BYTES + compressBinary.length ];
 

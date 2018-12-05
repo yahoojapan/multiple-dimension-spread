@@ -32,7 +32,7 @@ public class ZstdCommonsCompressor extends AbstractCommonsCompressor{
   }
 
   @Override
-  public OutputStream createOutputStream( final OutputStream out ) throws IOException{
+  public OutputStream createOutputStream( final OutputStream out , final DataType dataType ) throws IOException{
     return new ZstdCompressorOutputStream( out );
   }
 

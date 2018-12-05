@@ -32,9 +32,9 @@ public class ShortOptimizer implements IOptimizer{
   private final IColumnBinaryMaker[] makerArray;
 
   public ShortOptimizer( final Configuration config ) throws IOException{
-    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" );
+    uniqMaker = FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" );
     makerArray = new IColumnBinaryMaker[]{
-      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ),
+      FindColumnBinaryMaker.get( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ),
     };
   }
 

@@ -17,23 +17,10 @@
  */
 package jp.co.yahoo.dataplatform.mds.compressor;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
+public enum DataType{
 
-import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorInputStream;
-import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorOutputStream;
-
-public class FramedLZ4CommonsCompressor extends AbstractCommonsCompressor{
-
-  @Override
-  public InputStream createInputStream( final InputStream in ) throws IOException{
-    return new FramedLZ4CompressorInputStream( in );
-  }
-
-  @Override
-  public OutputStream createOutputStream( final OutputStream out , final DataType dataType ) throws IOException{
-    return new FramedLZ4CompressorOutputStream( out );
-  }
+  TEXT,
+  NUMBER,
+  BINARY,
 
 }
