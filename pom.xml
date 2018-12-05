@@ -16,7 +16,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>jp.co.yahoo.dataplatform.mds</groupId>
   <artifactId>multiple-dimension-spread</artifactId>
-  <version>0.8.6_hive-1.2.1000.2.6.4.0-91</version>
+  <version>0.8.7_hive-1.2.1000.2.6.4.0-91</version>
   <packaging>pom</packaging>
   <name>Yahoo dataplatform multiple dimension spread</name>
   <description>Multiple-Dimension-Spread (MDS) is a Schema-less columnar storage format.</description>
@@ -60,7 +60,7 @@
   </developers>
 
   <properties>
-    <configlibVersion>1.2.0</configlibVersion>
+    <configlibVersion>1.2.1.1</configlibVersion>
     <schemalibVersion>1.2.4_hive-1.2.1000.2.6.4.0-91</schemalibVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <target_jdk_version>1.8</target_jdk_version>
