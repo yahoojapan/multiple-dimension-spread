@@ -91,7 +91,7 @@ Since it is not required, this function does nothing if it does not have an inde
 In this section, we will introduce an example of implementing Int type column conversion.
 Please see below for the code of this class.
 
-
+[SimpleIntegerColumnBinaryMaker.java](../../../src/example/src/main/java/jp/co/yahoo/dataplatform/mds/example/binary/SimpleIntegerColumnBinaryMaker.java)
 
 ## A simple example of column encoding
 
