@@ -6,9 +6,9 @@ Documentation on each implementation.
 
 This section explains how to develop A encoding / decoding
 
-* [Overview of Spread](spread/spread.md)
-* [Overview of column](spread/column.md)
-* [Overview of column binary]()
+* [Overview of Spread]()
+* [Overview of column]()
+* [Overview of column binary](binary/column_binary.md)
 * [Overview of analizer]()
 * [Overview of optimizer]()
 
