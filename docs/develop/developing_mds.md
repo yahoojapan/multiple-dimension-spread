@@ -4,7 +4,7 @@ Documentation on each implementation.
 
 # Spread/Column
 
-This section explains how to develop A encoding / decoding
+This section explains how to develop column encoding / decoding
 
 * [Overview of Spread]()
 * [Overview of column]()
