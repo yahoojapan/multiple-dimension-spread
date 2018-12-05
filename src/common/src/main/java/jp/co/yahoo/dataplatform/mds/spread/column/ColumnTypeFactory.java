@@ -19,12 +19,15 @@ package jp.co.yahoo.dataplatform.mds.spread.column;
 
 import java.io.IOException;
 
+import java.util.Objects;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 
 import jp.co.yahoo.dataplatform.mds.constants.PrimitiveByteLength;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
 
+import jp.co.yahoo.dataplatform.schema.objects.PrimitiveType;
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 
 public final class ColumnTypeFactory{
@@ -51,24 +54,24 @@ public final class ColumnTypeFactory{
   public static ColumnType get( final Object obj ) throws IOException{
     if( obj instanceof PrimitiveObject ){
       switch( ( (PrimitiveObject)obj ).getPrimitiveType() ){
+        case STRING:
+          return ColumnType.STRING;
+        case INTEGER:
+          return ColumnType.INTEGER;
+        case LONG:
+          return ColumnType.LONG;
+        case DOUBLE:
+          return ColumnType.DOUBLE;
         case BOOLEAN:
           return ColumnType.BOOLEAN;
         case BYTE:
           return ColumnType.BYTE;
         case BYTES:
           return ColumnType.BYTES;
-        case DOUBLE:
-          return ColumnType.DOUBLE;
         case FLOAT:
           return ColumnType.FLOAT;
-        case INTEGER:
-          return ColumnType.INTEGER;
-        case LONG:
-          return ColumnType.LONG;
         case SHORT:
           return ColumnType.SHORT;
-        case STRING:
-          return ColumnType.STRING;
         case NULL:
         default:
           return ColumnType.NULL;
@@ -251,11 +254,7 @@ public final class ColumnTypeFactory{
       case BYTE:
         return Byte.BYTES;
       case BYTES:
-        byte[] targetBytes = object.getBytes();
-        if( targetBytes == null ){
-          return Integer.BYTES;
-        }
-        return Integer.BYTES + targetBytes.length;
+        return Integer.BYTES + object.getObjectSize();
       case DOUBLE:
         return Double.BYTES;
       case FLOAT:
@@ -267,16 +266,11 @@ public final class ColumnTypeFactory{
       case SHORT:
         return Short.BYTES;
       case STRING:
-        String targetStr = object.getString();
-        if( targetStr == null ){
-          return Integer.BYTES;
-        }
-        return Integer.BYTES + targetStr.length() * Character.BYTES;
+        return Integer.BYTES + object.getObjectSize();
 
       default:
         return 0;
     }
-
   }
 
 }

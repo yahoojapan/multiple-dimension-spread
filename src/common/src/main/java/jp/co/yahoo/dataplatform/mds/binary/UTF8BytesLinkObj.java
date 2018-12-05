@@ -123,6 +123,11 @@ public class UTF8BytesLinkObj extends StringObj implements IBytesLink {
     throw new IOException( "Unsupported set method." );
   }
 
+  @Override
+  public int getObjectSize(){
+    return length;
+  }
+
   private void writeObject( final ObjectOutputStream out ) throws IOException{
     out.write( length );
     out.write( value , start , length );

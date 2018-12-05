@@ -24,6 +24,8 @@ import jp.co.yahoo.dataplatform.config.Configuration;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
+import jp.co.yahoo.dataplatform.mds.compressor.CompressionPolicy;
+import jp.co.yahoo.dataplatform.mds.compressor.DataType;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
@@ -48,6 +50,8 @@ public class ColumnBinaryMakerConfig{
   public IColumnBinaryMaker shortMakerClass;
   public IColumnBinaryMaker stringMakerClass;
 
+  public CompressionPolicy compressionPolicy;
+
   public ColumnBinaryMakerConfig() throws IOException{
     compressorClass = FindCompressor.get( GzipCompressor.class.getName() );
 
@@ -56,15 +60,17 @@ public class ColumnBinaryMakerConfig{
     spreadMakerClass = FindColumnBinaryMaker.get( DumpSpreadColumnBinaryMaker.class.getName() );
 
     booleanMakerClass = FindColumnBinaryMaker.get( DumpBooleanColumnBinaryMaker.class.getName() );
-    byteMakerClass = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
-    doubleMakerClass = FindColumnBinaryMaker.get( RangeDumpDoubleColumnBinaryMaker.class.getName() );
-    floatMakerClass = FindColumnBinaryMaker.get( RangeDumpFloatColumnBinaryMaker.class.getName() );
-    integerMakerClass = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
-    longMakerClass = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
-    shortMakerClass = FindColumnBinaryMaker.get( OptimizeDumpLongColumnBinaryMaker.class.getName() );
+    byteMakerClass = FindColumnBinaryMaker.get( UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() );
+    doubleMakerClass = FindColumnBinaryMaker.get( UnsafeRangeDumpDoubleColumnBinaryMaker.class.getName() );
+    floatMakerClass = FindColumnBinaryMaker.get( UnsafeRangeDumpFloatColumnBinaryMaker.class.getName() );
+    integerMakerClass = FindColumnBinaryMaker.get( UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() );
+    longMakerClass = FindColumnBinaryMaker.get( UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() );
+    shortMakerClass = FindColumnBinaryMaker.get( UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() );
 
-    stringMakerClass = FindColumnBinaryMaker.get( OptimizeDumpStringColumnBinaryMaker.class.getName() );
+    stringMakerClass = FindColumnBinaryMaker.get( UnsafeOptimizeDumpStringColumnBinaryMaker.class.getName() );
     bytesMakerClass = FindColumnBinaryMaker.get( DumpBytesColumnBinaryMaker.class.getName() );
+
+    compressionPolicy = CompressionPolicy.DEFAULT;
   }
 
   public ColumnBinaryMakerConfig( final ColumnBinaryMakerConfig otherConfig ){

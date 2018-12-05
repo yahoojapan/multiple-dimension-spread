@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.DataType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -101,11 +102,11 @@ public class UnsafeRangeDumpDoubleColumnBinaryMaker implements IColumnBinaryMake
     byte[] compressBinaryRaw;
     if( hasNull ){
       rawLength =  parentsBinaryRaw.length - ( Double.BYTES * ( column.size() - rowCount ) );
-      compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , 0 , rawLength );
+      compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , 0 , rawLength , DataType.NUMBER );
     }
     else{
       rawLength = Byte.BYTES + column.size() * Double.BYTES;
-      compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , column.size() , parentsBinaryRaw.length - column.size() );
+      compressBinaryRaw = currentConfig.compressorClass.compress( parentsBinaryRaw , column.size() , parentsBinaryRaw.length - column.size() , DataType.NUMBER );
     }
     byte[] binary = new byte[ HEADER_SIZE + compressBinaryRaw.length ];
     ByteBuffer wrapBuffer = ByteBuffer.wrap( binary );

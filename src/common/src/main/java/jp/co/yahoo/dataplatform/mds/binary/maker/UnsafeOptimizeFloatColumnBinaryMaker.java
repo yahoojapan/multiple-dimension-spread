@@ -33,6 +33,7 @@ import jp.co.yahoo.dataplatform.schema.objects.FloatObj;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.DataType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
@@ -275,7 +276,7 @@ public class UnsafeOptimizeFloatColumnBinaryMaker implements IColumnBinaryMaker{
     indexMaker.create( indexArray , binaryRaw , 0 , indexLength , order );
     dicMaker.create( dicList , binaryRaw , indexLength , dicLength , order );
 
-    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
+    byte[] compressBinary = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length , DataType.NUMBER );
 
     byte[] binary = new byte[ Float.BYTES * 2 + Byte.BYTES + compressBinary.length ];
 

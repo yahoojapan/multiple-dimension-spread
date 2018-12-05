@@ -26,8 +26,13 @@ public final class CompressorNameShortCut{
   static{
     CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor"   , "default" );
     CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.GzipCompressor"   , "gzip" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.LZ4Compressor"   , "lz4" );
-    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.ZSTDCompressor"   , "zstd" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.GzipCommonsCompressor"   , "gz" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.DeflateCommonsCompressor"   , "deflater" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.BZip2CommonsCompressor"   , "bzip2" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.FramedLZ4CommonsCompressor"   , "lz4" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.FramedSnappyCommonsCompressor"   , "snappy" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.LZMACommonsCompressor"   , "lzma" );
+    CLASS_NAME_PAIR.set( "jp.co.yahoo.dataplatform.mds.compressor.ZstdCommonsCompressor"   , "zstd" );
   }
 
   private CompressorNameShortCut(){}

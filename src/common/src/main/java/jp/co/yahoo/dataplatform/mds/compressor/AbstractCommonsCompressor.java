@@ -31,12 +31,12 @@ public abstract class AbstractCommonsCompressor implements ICompressor{
 
   abstract InputStream createInputStream( final InputStream in ) throws IOException;
 
-  abstract OutputStream createOutputStream( final OutputStream out ) throws IOException;
+  abstract OutputStream createOutputStream( final OutputStream out , final DataType dataType ) throws IOException;
 
   @Override
-  public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
+  public byte[] compress( final byte[] data , final int start , final int length , final DataType dataType ) throws IOException{
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-    OutputStream out = createOutputStream( bOut );
+    OutputStream out = createOutputStream( bOut , dataType );
 
     out.write( data , start , length );
     out.close();

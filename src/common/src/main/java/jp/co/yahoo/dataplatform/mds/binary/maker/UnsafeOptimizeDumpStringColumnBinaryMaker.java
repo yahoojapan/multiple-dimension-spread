@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import jp.co.yahoo.dataplatform.mds.compressor.FindCompressor;
 import jp.co.yahoo.dataplatform.mds.compressor.ICompressor;
+import jp.co.yahoo.dataplatform.mds.compressor.DataType;
 import jp.co.yahoo.dataplatform.mds.spread.column.ICell;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveCell;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
@@ -366,7 +367,7 @@ public class UnsafeOptimizeDumpStringColumnBinaryMaker implements IColumnBinaryM
     for( int i = 0 ; i < objList.length ; i++ ){
       wrapBuffer.put( objList[i] );
     }
-    byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length );
+    byte[] compressBinaryRaw = currentConfig.compressorClass.compress( binaryRaw , 0 , binaryRaw.length , DataType.NUMBER );
 
     int minCharLength = Character.BYTES * min.length();
     int maxCharLength = Character.BYTES * max.length();

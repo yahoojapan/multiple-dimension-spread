@@ -21,19 +21,24 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.InputStream;
 
-import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorInputStream;
-import org.apache.commons.compress.compressors.lz4.FramedLZ4CompressorOutputStream;
+import java.util.zip.Deflater;
 
-public class FramedLZ4CommonsCompressor extends AbstractCommonsCompressor{
+import org.apache.commons.compress.compressors.gzip.GzipParameters;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+
+public class GzipCommonsCompressor extends AbstractCommonsCompressor{
 
   @Override
   public InputStream createInputStream( final InputStream in ) throws IOException{
-    return new FramedLZ4CompressorInputStream( in );
+    return new GzipCompressorInputStream( in );
   }
 
   @Override
   public OutputStream createOutputStream( final OutputStream out , final DataType dataType ) throws IOException{
-    return new FramedLZ4CompressorOutputStream( out );
+    GzipParameters op = new GzipParameters();
+    op.setCompressionLevel(  6 );
+    return new GzipCompressorOutputStream( out , op );
   }
 
 }

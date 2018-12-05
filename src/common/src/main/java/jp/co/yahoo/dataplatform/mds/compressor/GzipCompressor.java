@@ -33,7 +33,7 @@ import jp.co.yahoo.dataplatform.mds.util.InputStreamUtils;
 public class GzipCompressor implements ICompressor{
 
   @Override
-  public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
+  public byte[] compress( final byte[] data , final int start , final int length , final DataType dataType ) throws IOException{
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
     GZIPOutputStream out = new GZIPOutputStream( bOut );
 

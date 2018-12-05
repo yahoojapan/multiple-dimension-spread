@@ -53,6 +53,7 @@ public class MDSSerde extends AbstractSerDe {
   private final HiveMessageReader messageReader = new HiveMessageReader();
   private final Map<String,Integer> filedIndexMap = new HashMap<String,Integer>();
 
+  private HiveStructParser parser;
   private ObjectInspector inspector;
 
   private StructTypeInfo getAllReadTypeInfo( final String columnNameProperty , final String columnTypeProperty ){
@@ -145,8 +146,11 @@ public class MDSSerde extends AbstractSerDe {
   public Writable serialize( final Object obj, final ObjectInspector objInspector ) throws SerDeException{
     ParserWritable parserWritable = new ParserWritable();
     try{
-      HiveStructParser parser = (HiveStructParser)( messageReader.create( objInspector , obj ) );
-      parser.setFieldIndexMap( filedIndexMap );
+      if( parser == null ){
+        parser = (HiveStructParser)( messageReader.create( objInspector ) );
+        parser.setFieldIndexMap( filedIndexMap );
+      }
+      parser.setObject( obj );
       parserWritable.set( parser );
     }catch( IOException e ){
       throw new SerDeException( e );

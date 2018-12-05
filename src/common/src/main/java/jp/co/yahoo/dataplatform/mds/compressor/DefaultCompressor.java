@@ -25,7 +25,7 @@ import java.io.OutputStream;
 public class DefaultCompressor implements ICompressor{
 
   @Override
-  public byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
+  public byte[] compress( final byte[] data , final int start , final int length , final DataType dataType ) throws IOException{
     byte[] result = new byte[length];
     System.arraycopy( data , start , result , 0 , length );
     return result;

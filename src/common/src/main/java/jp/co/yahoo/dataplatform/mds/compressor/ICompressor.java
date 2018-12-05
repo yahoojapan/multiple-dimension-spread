@@ -23,7 +23,11 @@ import java.io.OutputStream;
 
 public interface ICompressor{
 
-  byte[] compress( final byte[] data , final int start , final int length ) throws IOException;
+  default byte[] compress( final byte[] data , final int start , final int length ) throws IOException{
+    return compress( data , start , length , DataType.TEXT );
+  }
+
+  byte[] compress( final byte[] data , final int start , final int length , final DataType dataType ) throws IOException;
 
   int getDecompressSize( final byte[] data , final int start , final int length ) throws IOException; 
 

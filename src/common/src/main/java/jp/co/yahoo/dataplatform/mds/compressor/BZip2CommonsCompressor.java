@@ -32,7 +32,7 @@ public class BZip2CommonsCompressor extends AbstractCommonsCompressor{
   }
 
   @Override
-  public OutputStream createOutputStream( final OutputStream out ) throws IOException{
+  public OutputStream createOutputStream( final OutputStream out , final DataType dataType ) throws IOException{
     return new BZip2CompressorOutputStream( out );
   }
 
