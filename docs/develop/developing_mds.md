@@ -2,8 +2,20 @@
 
 Documentation on each implementation.
 
-# Column binary
+# Spread/Column
 
 This section explains how to develop A encoding / decoding
 
-* [Overview of column binary](binary/column_binary.md)
+* [Overview of Spread](spread/spread.md)
+* [Overview of column](spread/column.md)
+* [Overview of column binary]()
+* [Overview of analizer]()
+* [Overview of optimizer]()
+
+# File/Block
+
+
+# Writer/Reader/Loader
+
+# Compressor
+
