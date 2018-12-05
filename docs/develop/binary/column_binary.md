@@ -96,10 +96,10 @@ Please see below for the code of this class.
 ## A simple example of column encoding
 
 ```
-IColumn toColumn( final ColumnBinary columnBinary ) throws IOException;
+  ColumnBinary toBinary( final ColumnBinaryMakerConfig commonConfig , final ColumnBinaryMakerCustomConfigNode currentConfigNode , final IColumn column ) throws IOException;
 ```
 
-This section describes the implementation of toClumn ().
+This section describes the implementation of toBinary().
 
 In this example, it holds the information of the Int type column containing Null.
 Therefore, the binary layout is a byte array representing the column length and NULL and a byte array of Int.
@@ -182,6 +182,27 @@ Create a ColumnBinary.
 The returned object is included in toBinary () as an argument.
 
 ## A simple example of column decoding
+
+```
+IColumn toColumn( final ColumnBinary columnBinary ) throws IOException;
+```
+
+This section describes the implementation of toClumn().
+
+Convert binary to MDS column objects.
+In this example, PrimitiveColumn is used, but in case of seeking performance etc., delay processing and light column mounting etc are required.
+Please refer to the implementation included below common if performance is required.
+
+```
+    // Decompress binary
+    ICompressor compressor = FindCompressor.get( columnBinary.compressorClassName );
+    byte[] binary = compressor.decompress( columnBinary.binary , columnBinary.binaryStart , columnBinary.binaryLength );
+```
+
+The class for decompressing has a class name in ColumnBinary.
+I will get a class to do decompress with Util.
+Use this class to decompress binary byte arrays from ColumnBinary.
+
 
 ## A simple example of in-memory loading
 
