@@ -95,6 +95,92 @@ Please see below for the code of this class.
 
 ## A simple example of column encoding
 
+```
+IColumn toColumn( final ColumnBinary columnBinary ) throws IOException;
+```
+
+This section describes the implementation of toClumn ().
+
+In this example, it holds the information of the Int type column containing Null.
+Therefore, the binary layout is a byte array representing the column length and NULL and a byte array of Int.
+Conversion of Int to binary is done by using ByteBuffer.
+
+```
+    // Use common settings. If there is a setting unique to this column, use that setting.
+    ColumnBinaryMakerConfig currentConfig = commonConfig;
+    if( currentConfigNode != null ){
+      currentConfig = currentConfigNode.getCurrentConfig();
+    }
+```
+
+This code has selected the setting to adapt. If there is a setting unique to this column, this class adopts that setting.If there is not, this class adopts common setting.
+
+This setting will be passed from Writer when converting Spread.
+
+```
+    // Calculate buffer size from column size.
+    // In this example, 0 and 1 are represented by bytes in the expression of NULL.
+    // Therefore, the buffer size is the sum of the byte size used to represent NULL and the Int byte size represe
+nting Int and the number of columns.
+    int nullByteLength = column.size() * Byte.BYTES;
+    int intBinaryLength = column.size() * Integer.BYTES;
+    byte[] buffer = new byte[ Integer.BYTES + nullByteLength + intBinaryLength ];
+
+    // Substitute numeric and NULL information into buffer
+    ByteBuffer.wrap( buffer , 0 , Integer.BYTES ).putInt( column.size() );
+    ByteBuffer nullBuffer = ByteBuffer.wrap( buffer , Integer.BYTES , column.size() );
+    ByteBuffer intBuffer = ByteBuffer.wrap( buffer , Integer.BYTES + nullByteLength , intBinaryLength );
+    int rows = 0;
+    for( int i = 0 ; i < column.size() ; i++ ){
+      ICell cell = column.get(i);
+      if( cell.getType() == ColumnType.NULL ){
+        nullBuffer.put( (byte)1 );
+        intBuffer.putInt( 0 );
+      }
+      else{
+        nullBuffer.put( (byte)0 );
+        int num = ( (PrimitiveCell)cell ).getRow().getInt();
+        intBuffer.putInt( num );
+        rows++;
+      }
+    }
+```
+Calculate the buffer size from the column size beforehand and create a byte array.
+It then loops by the size of the column and retrieves the data from the column.
+
+Get Cell from the column and insert 1 into the null buffer offset if the column type is NULL.
+Otherwise, we will get the data in the Int type and insert it into the offset of the Int type buffer.
+
+In this example we implement an implementation that does not contain unintended columns, but you may want to check if it is Int column type strictly.
+
+```
+    // Compress buffer
+    byte[] compressBinary = currentConfig.compressorClass.compress( buffer , 0 , buffer.length );
+```
+
+About compression can be obtained from setting.
+It is possible to ignore this setting, but you should not.
+
+```
+    // Create a new ColumnBinary
+    return new ColumnBinary(
+      this.getClass().getName(),
+      currentConfig.compressorClass.getClass().getName(),
+      column.getColumnName(),
+      ColumnType.INTEGER,
+      rows,
+      compressBinary.length,
+      intBinaryLength,
+      -1,
+      compressBinary,
+      0,
+      compressBinary.length,
+      null
+    );
+```
+Create a ColumnBinary.
+The returned object is included in toBinary () as an argument.
+
 ## A simple example of column decoding
 
 ## A simple example of in-memory loading
