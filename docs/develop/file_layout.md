@@ -24,3 +24,6 @@ Spread is kept up to the block size limit, and when the block size is over it is
 Since the class for generating blocks is an interface, it can be changed.
 In the current implementation, the block is divided into meta information and data part on Spread.
 It also has the index of the entire block as a header.
+
+# Write and read MDS file
+![Write and read](mds_rw.png)
