@@ -2,6 +2,10 @@
 
 Documentation on each implementation.
 
+# File/Block
+
+* [File layout](file_layout.md)
+
 # Spread/Column
 
 This section explains how to develop column encoding / decoding
@@ -13,9 +17,6 @@ This section explains how to develop column encoding / decoding
 # Statistics/Analyzer/Optimizer
 
 * [Definition of data size](statistics/data_size.md)
-
-# File/Block
-
 
 # Writer/Reader/Loader
 
