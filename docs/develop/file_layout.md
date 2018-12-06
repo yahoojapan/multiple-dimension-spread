@@ -3,6 +3,9 @@ This section is about MDS file layout.
 
 # Overview
 
+The file layout of MDS is as shown below.
+
+!(file_layout)[file_layout.png]
 
 ## File
 
