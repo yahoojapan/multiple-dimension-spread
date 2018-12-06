@@ -40,7 +40,7 @@ This class has arrays of not only byte arrays but also statistical information, 
 | columnType | Column type |
 | rowCount | Number of elements in this column. |
 | rawDataSize | Binary byte size. |
-| logicalDataSize | Logical data size of this column. |
+| logicalDataSize | Logical data size of this column.<br>[What is logical data size?](../statistics/data_size.md) |
 | cardinality | Cardinality. Not required. If it can not be calculated, -1. |
 | binaryStart | Starting position of byte array |
 | binaryLength | The length of the byte array |
