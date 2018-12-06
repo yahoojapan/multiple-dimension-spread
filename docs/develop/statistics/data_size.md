@@ -1,9 +1,11 @@
-# Why define the data size?
+# What is logical data size?
 
 In MDS, data size is counted as statistics.
 MDS counts three data sizes.
 One is the data size when binary, the second is the data size when binary is compressed, and the third is the logical data size.
 The data size defined here is the logical data size.
+
+# Why define the data size?
 
 MDS balances processing performance and compression efficiency.
 Therefore, it is impossible to accurately measure the performance with the binary data size which varies depending on the implementation.
