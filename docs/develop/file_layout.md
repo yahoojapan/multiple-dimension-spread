@@ -5,7 +5,7 @@ This section is about MDS file layout.
 
 The file layout of MDS is as shown below.
 
-![file_layout](file_layout.png)
+![file_layout_2](file_layout.png)
 
 ## File
 
