@@ -75,3 +75,20 @@ External information that is unknown at the time of file conversion is necessary
 Currently it provides only a mechanism that can be set.
 
 ## Pushdown
+MDS supports Projection Pushdown and Pridicate Pushdown.
+This can improve processing performance and reduce disk and network I/O
+
+### Projection Pushdown
+
+### Pridicate Pushdown
+
+## Expand complex schema
+In MDS, data structure can be changed when reading.
+This assumes use when the performance can not be demonstrated in a nested data structure such as a query engine.
+Basically, the query engine shows excellent performance in a flat schema.
+
+MDS provides two kinds of functions to make it a flat schema.
+The first is the function to expand array.
+The second is the function to flatten the nest structure.
+
+### Expand
