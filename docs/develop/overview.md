@@ -36,8 +36,6 @@ MDSReader expands to units of Spread.
 
 ## Fast merge of files
 
-![file_merge](file_merge.png)
-
 MDS does not have a schema, so it is possible to merge in binary state.
 When creating a column structure from a message, it consumes a lot of CPU resources such as serialization, encoding and compression.
 However, since MDS does not consume these CPU resources, it can solve bottlenecks in disk and network IO.
@@ -56,8 +54,6 @@ MDS does not implement serialization and deserialization, but manipulates messag
 
 
 ## Construct dynamic column structure
-
-![dynamic schema](dynamic_schema.png)
 
 The concept of MDS does not require a schema at the time of writing.
 Therefore, in MDS, the column structure is created dynamically from the data structure of the message.
