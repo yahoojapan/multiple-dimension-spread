@@ -14,5 +14,3 @@ This section explains how to develop column encoding / decoding
 
 * [Definition of data size](statistics/data_size.md)
 
-# Compressor
-

@@ -247,10 +247,7 @@ Compile each source following instructions.
     $ mvn clean install
 
 # Next Reading
-* [Java](docs/getting_started_java.md)
-* [Hadoop InputFormat](docs/getting_started_hadoop.md)
 * [Hive](docs/getting_started_hive.md)
-* [Arrow](docs/getting_started_arrow.md)
 
 # MISC
 ## Change Logs
