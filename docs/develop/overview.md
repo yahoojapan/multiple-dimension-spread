@@ -1,7 +1,4 @@
 # File layout
-This section is about MDS file layout.
-
-# Overview
 
 The file layout of MDS is as shown below.
 
@@ -35,3 +32,4 @@ MDS uses [dataplatform-schema-lib](https://github.com/yahoojapan/dataplatform-sc
 This library provides common operations for messages.
 MDS does not implement serialization and deserialization, but manipulates messages using the interface of this library.
 
+![schema-lib](schema-lib.png)
