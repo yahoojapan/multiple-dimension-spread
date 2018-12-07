@@ -133,7 +133,7 @@ However, please contact us via GitHub until ML is opened.
 We welcome to join this project widely.
 
 ## Document
-[MDS document](docs/develop/developing_mds.md)
+See [document MDS](docs/develop/developing_mds.md)
 
 ## License
 This project is on the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
