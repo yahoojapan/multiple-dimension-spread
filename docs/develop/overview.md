@@ -57,7 +57,7 @@ MDS does not implement serialization and deserialization, but manipulates messag
 
 ## Construct dynamic column structure
 
-![dynamic schema](!dynamic_schema.png)
+![dynamic schema](dynamic_schema.png)
 
 The concept of MDS does not require a schema at the time of writing.
 Therefore, in MDS, the column structure is created dynamically from the data structure of the message.
