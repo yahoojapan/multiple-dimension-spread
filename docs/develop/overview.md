@@ -34,6 +34,16 @@ MDSRecordReader creates an object that provides Spread in units of rows.
 MDSWriter converts Spread to binary, generates blocks from binary Spread, and creates files that combine blocks.
 MDSReader expands to units of Spread.
 
+## Fast merge of files
+
+MDS does not have a schema, so it is possible to merge in binary state.
+When creating a column structure from a message, it consumes a lot of CPU resources such as serialization, encoding and compression.
+However, since MDS does not consume these CPU resources, it can solve bottlenecks in disk and network IO.
+
+## Splitable
+
+MDS can split the process in units of blocks.
+
 ## Serializing and deserializing Message
 
 ![schema-lib](schema-lib.png)
@@ -64,4 +74,4 @@ Regarding the selection of the compression method, the cost of referring to data
 External information that is unknown at the time of file conversion is necessary, but I can not think of a good method.
 Currently it provides only a mechanism that can be set.
 
-## 
+## Pushdown
