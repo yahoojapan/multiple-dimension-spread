@@ -83,7 +83,7 @@ This can improve processing performance and reduce disk and network I/O.
 ![projection pushdown](projection_pushdown.png)
 
 ### Pridicate Pushdown
-![pridicate pushdown](pridicate_pushdown.png)
+![pridicate pushdown](predicate_pushdown.png)
 
 ## Expand complex schema
 In MDS, data structure can be changed when reading.
