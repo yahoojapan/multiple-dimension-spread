@@ -9,7 +9,6 @@ Documentation on each implementation.
 This section explains how to develop column encoding / decoding
 
 * [Overview of column binary](binary/column_binary.md)
-* [How to index Column](binary/column_index.md)
 
 # Statistics/Analyzer/Optimizer
 
