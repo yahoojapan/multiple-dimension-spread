@@ -3,7 +3,7 @@
 Documentation on each implementation.
 
 # Overview
-* [File layout](file_layout.md)}
+* [File layout](file_layout.md)
 * [Read and write](read_and_write.md)
 * [Overview of Spread]()
 * [Overview of column]()
