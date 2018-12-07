@@ -76,7 +76,7 @@ Currently it provides only a mechanism that can be set.
 
 ## Pushdown
 MDS supports Projection Pushdown and Pridicate Pushdown.
-This can improve processing performance and reduce disk and network I/O
+This can improve processing performance and reduce disk and network I/O.
 
 ### Projection Pushdown
 
@@ -92,3 +92,15 @@ The first is the function to expand array.
 The second is the function to flatten the nest structure.
 
 ### Expand
+This function expands when the specified column is array.
+For columns other than array, you can access the data by calculating the corresponding line number.
+
+### Flatten
+This function moves the specified column to the first level.
+Columns that can be moved are other than array.
+This is because the row length of Spread is different, so the column length can not be consistent.
+
+## Expand Flatten
+By combining expand and flatten, it is possible to express complex data with a simple schema.
+
+### Expand and Flatten
