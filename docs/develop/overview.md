@@ -2,7 +2,7 @@
 
 The file layout of MDS is as shown below.
 
-
+![file layout](mds_file_layout.png)
 
 ## File
 
@@ -36,6 +36,8 @@ MDSReader expands to units of Spread.
 
 ## Fast merge of files
 
+![file_merge](file_merge.png)
+
 MDS does not have a schema, so it is possible to merge in binary state.
 When creating a column structure from a message, it consumes a lot of CPU resources such as serialization, encoding and compression.
 However, since MDS does not consume these CPU resources, it can solve bottlenecks in disk and network IO.
@@ -54,6 +56,9 @@ MDS does not implement serialization and deserialization, but manipulates messag
 
 
 ## Construct dynamic column structure
+
+![dynamic schema](!dynamic_schema.png)
+
 The concept of MDS does not require a schema at the time of writing.
 Therefore, in MDS, the column structure is created dynamically from the data structure of the message.
 
@@ -79,8 +84,10 @@ MDS supports Projection Pushdown and Pridicate Pushdown.
 This can improve processing performance and reduce disk and network I/O.
 
 ### Projection Pushdown
+![projection pushdown](projection_pushdown.png)
 
 ### Pridicate Pushdown
+![pridicate pushdown](pridicate_pushdown.png)
 
 ## Expand complex schema
 In MDS, data structure can be changed when reading.
@@ -92,6 +99,8 @@ The first is the function to expand array.
 The second is the function to flatten the nest structure.
 
 By combining expand and flatten, it is possible to express complex data with a simple schema.
+
+![expand and flatten](expand_and_flatten.png)
 
 ### Expand
 This function expands when the specified column is array.
