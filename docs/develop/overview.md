@@ -2,7 +2,7 @@
 
 The file layout of MDS is as shown below.
 
-![file_layout_2](file_layout_2.png)
+
 
 ## File
 
@@ -51,3 +51,17 @@ We refer to all fields of the message and judge each type.
 If a column already exists, substitute it, and if it does not exist, create a new column.
 
 The mechanism for dynamically creating this data structure is used not only for messages but also for expression by merging data structures among Spreads included in blocks.
+
+## Encoding of columns
+In MDS, you can change the encoding setting for each column.
+Two settings can be set for encoding and compression.
+By using this, it is possible to optimize individually, such as lightly compressing data that is frequently referred to, efficiently compressing data with less reference.
+
+As for the encoding of the column, I prepare an interface which analyzes Spread and select method.
+By default, we adopt the one estimated to reduce the data size after conversion from multiple encoding methods.
+
+Regarding the selection of the compression method, the cost of referring to data and the accumulation period are required.
+External information that is unknown at the time of file conversion is necessary, but I can not think of a good method.
+Currently it provides only a mechanism that can be set.
+
+## 
