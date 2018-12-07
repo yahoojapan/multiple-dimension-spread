@@ -132,6 +132,9 @@ However, please contact us via GitHub until ML is opened.
 # How to contribute
 We welcome to join this project widely.
 
+## Document
+See [document MDS](docs/develop/developing_mds.md)
+
 ## License
 This project is on the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
 Please treat this project under this license.
@@ -247,10 +250,7 @@ Compile each source following instructions.
     $ mvn clean install
 
 # Next Reading
-* [Java](docs/getting_started_java.md)
-* [Hadoop InputFormat](docs/getting_started_hadoop.md)
 * [Hive](docs/getting_started_hive.md)
-* [Arrow](docs/getting_started_arrow.md)
 
 # MISC
 ## Change Logs
