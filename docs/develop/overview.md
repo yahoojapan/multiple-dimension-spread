@@ -22,6 +22,11 @@ Since the class for generating blocks is an interface, it can be changed.
 In the current implementation, the block is divided into meta information and data part on Spread.
 It also has the index of the entire block as a header.
 
+## Spread
+Spread is a collection of several messages.
+Each column is binary when it is written to a file. Internally this binary is managed by an object called ColumnBinary.
+Spread consists of a collection of ColumnBinary.
+
 # Read and write
 
 ![Read and write](mds_rw.png)
