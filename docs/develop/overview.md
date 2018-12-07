@@ -43,3 +43,11 @@ This library provides common operations for messages.
 MDS does not implement serialization and deserialization, but manipulates messages using the interface of this library.
 
 
+## Construct dynamic column structure
+The concept of MDS does not require a schema at the time of writing.
+Therefore, in MDS, the column structure is created dynamically from the data structure of the message.
+
+We refer to all fields of the message and judge each type.
+If a column already exists, substitute it, and if it does not exist, create a new column.
+
+The mechanism for dynamically creating this data structure is used not only for messages but also for expression by merging data structures among Spreads included in blocks.
