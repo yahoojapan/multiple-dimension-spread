@@ -264,7 +264,8 @@ Compile each source following instructions.
     $ mvn clean install
 
 # Next Reading
-* [Hive](docs/getting_started_hive.md)
+* [How to use Java](docs/to_use/java.md)
+* [How to use Hive](docs/getting_started_hive.md)
 
 # MISC
 ## Change Logs
