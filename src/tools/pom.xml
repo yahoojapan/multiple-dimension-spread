@@ -39,6 +39,17 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>org.apache.arrow</groupId>
+      <artifactId>arrow-vector</artifactId>
+      <version>0.11.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>4.1.17.Final</version>
+    </dependency>
+    <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-common</artifactId>
       <version>${project.version}</version>
@@ -51,6 +62,11 @@
     <dependency>
       <groupId>jp.co.yahoo.dataplatform.mds</groupId>
       <artifactId>multiple-dimension-spread-hive</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.co.yahoo.dataplatform.mds</groupId>
+      <artifactId>multiple-dimension-spread-arrow</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

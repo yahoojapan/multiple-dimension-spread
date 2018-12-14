@@ -28,6 +28,9 @@ function java_exec() {
   local JAVA_CMD="$JAVA_HOME/bin/java"
   if [ ! -e $JAVA_CMD ]; then JAVA_CMD=java; fi
 
+  local HEAP_SIZE=${HEAP_SIZE:-256m}
+  local JAVA_OPTS=${JAVA_OPTS:-}
+
   local dn
   local lib_paths=($libdir/lib $libdir)
   lib_paths+=($(
@@ -41,7 +44,7 @@ function java_exec() {
   do
     class_paths="$class_paths:$dn/*"
   done
-  $JAVA_CMD -cp "$class_paths" jp.co.yahoo.dataplatform.mds.tools.MDSTool $*
+  $JAVA_CMD $JAVA_OPTS -Xmx$HEAP_SIZE -Xms$HEAP_SIZE -cp "$class_paths" jp.co.yahoo.dataplatform.mds.tools.MDSTool $*
 }
 
 function show_usage() {
