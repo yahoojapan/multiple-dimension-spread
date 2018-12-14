@@ -264,6 +264,7 @@ Compile each source following instructions.
     $ mvn clean install
 
 # Next Reading
+* [How to use command line tool](docs/to_use/cli.md)
 * [How to use Java](docs/to_use/java.md)
 * [How to use Hive](docs/getting_started_hive.md)
 
