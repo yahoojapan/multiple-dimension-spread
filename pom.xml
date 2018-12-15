@@ -68,6 +68,8 @@
     <maven-surefire-report-plugin.version>${maven-surefire-plugin.version}</maven-surefire-report-plugin.version>
     <maven-clover2-plugin.version>4.0.6</maven-clover2-plugin.version>
     <buildtype>test</buildtype>
+    <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
+    <spotbugs.version>3.1.9</spotbugs.version>
   </properties>
 
   <distributionManagement>
@@ -209,12 +211,12 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>3.1.8</version>
+        <version>${spotbugs-maven-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs</artifactId>
-            <version>3.1.9</version>
+            <version>${spotbugs.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -230,6 +232,11 @@
         <configuration>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs-maven-plugin.version}</version>
       </plugin>
     </plugins>
   </reporting>
