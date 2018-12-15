@@ -63,6 +63,9 @@ public final class MDSTool{
     else if( "merge".equals( command ) ){
       MergeTool.main( commandArgs );
     }
+    else if( "to_arrow".equals( command ) ){
+      ConvertArrowFormatTool.main( commandArgs );
+    }
     else if( "help".equals( command ) ){
       printHelp();
       System.exit( 0 );
