@@ -257,10 +257,6 @@ public class SpreadColumn implements IColumn{
       return result.toString();
     }
 
-    @Override
-    public boolean isPrimitive(){
-      return false;
-    }
   }
 
 }

@@ -59,9 +59,4 @@ public class PrimitiveCell implements ICell<PrimitiveObject,PrimitiveObject>{
     return result.toString();
   }
 
-  @Override
-  public boolean isPrimitive(){
-    return true;
-  }
-
 }

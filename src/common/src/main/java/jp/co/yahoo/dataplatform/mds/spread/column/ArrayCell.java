@@ -74,9 +74,4 @@ public class ArrayCell implements ICell<SpreadArrayLink,List<ICell>>{
     return result.toString();
   }
 
-  @Override
-  public boolean isPrimitive(){
-    return false;
-  }
-
 }

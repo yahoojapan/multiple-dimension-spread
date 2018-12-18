@@ -50,9 +50,4 @@ public final class NullCell implements ICell<Object,Object>{
     return result.toString();
   }
 
-  @Override
-  public boolean isPrimitive(){
-    return false;
-  }
-
 }
