@@ -16,7 +16,7 @@
 [Apache Arrow](https://arrow.apache.org/) provides a common specification for exchanging data on memory.
 As MDS also exchanges data with other OSS, it supports Apache Arrow.
 
-! [Support Apache Arrow](mds_arrow.png)
+![Support Apache Arrow](mds_arrow.png)
 
 # What does MDS support?
 
