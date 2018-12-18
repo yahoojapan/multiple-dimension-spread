@@ -1,3 +1,17 @@
+<!---
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
 # Command line tool
 
 # Preparation
@@ -176,4 +190,45 @@ Merging MDS files.
 Example of execution
 ```
 $ bin/mds.sh merge -i "/tmp/sample.mds,/tmp/sample.mds"  -o "/tmp/merge_sample.mds"
+```
+
+## to_arrow
+Commands for creating Apache Arrow files from MDS files.
+
+| args | Required | detail |
+|:-----|:--------:|:-------|
+| -e,--expand <expand> | false | Use expand function. |
+| -h,--help | false | Output usage. |
+| -i,--input <input> | true | Input file path. Input file path.  "-" is standard input. |
+| -o,--output <output> | true | Output file path. "-" is standard output |
+| -p,--projection_pushdown <projection_pushdown> | false | Use projection pushdown. |
+| -x,--flatten <flatten> | false | Use flatten function. |
+
+Example of execution
+```
+$ ./bin/mds.sh to_arrow -i /tmp/sample.mds -o "/tmp/sample.arrow"
+```
+
+Examples of using data in [pyarrow(https://arrow.apache.org/docs/python/)]
+
+- sample.py
+```
+import pyarrow as pa
+
+reader = pa.RecordBatchFileReader( pa.OSFile( "/tmp/sample.arrow" ) )
+
+for i in range( reader.num_record_batches ):
+  rb = reader.get_record_batch(i)
+  print( rb.num_rows )
+  df = rb.to_pandas()
+  print( df["name"].value_counts() )
+```
+
+Runnning command
+```
+$ python sample.py
+2
+apple     1
+orange    1
+Name: name, dtype: int64
 ```

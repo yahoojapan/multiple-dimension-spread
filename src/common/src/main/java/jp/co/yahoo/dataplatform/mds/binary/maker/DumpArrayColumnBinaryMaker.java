@@ -170,11 +170,6 @@ public class DumpArrayColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public int getMaxIndex(){
-      return cellArray.length - 1;
-    }
-
-    @Override
     public int size(){
       return cellArray.length;
     }

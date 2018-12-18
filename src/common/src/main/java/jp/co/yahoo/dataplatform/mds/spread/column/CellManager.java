@@ -63,11 +63,6 @@ public class CellManager implements ICellManager{
   }
 
   @Override
-  public int getMaxIndex(){
-    return maxIndex;
-  }
-
-  @Override
   public int size(){
     if( cellIndex.isEmpty() ){
       return 0;
@@ -129,10 +124,6 @@ public class CellManager implements ICellManager{
 
     public int getStartIndex(){
       return startIndex;
-    }
-
-    public int getMaxIndex(){
-      return maxIndex;
     }
 
     public CellIndex( final int startIndex ){
