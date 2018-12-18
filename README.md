@@ -193,7 +193,7 @@ MDS sources are there.
 
 * [multiple-dimension-spread](https://github.com/yahoojapan/multiple-dimension-spread.git)
 * [dataplatform-config](https://github.com/yahoojapan/dataplatform-schema-lib.git)
-* [dataplatform-schema-lib](https://github.com/yahoojapan/dataplatform-config.git)
+* [dataplatform-schema-lib](https://github.com/yahoojapan/dataplatform-schema-lib)
 
 ### Preparement
 Install gpg and create a gpg key for maven plugin to use git clone.
