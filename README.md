@@ -166,7 +166,7 @@ Please send a blank e-mail to the following address.
 Please accept [Contributer licence agreement](https://gist.github.com/ydnjp/3095832f100d5c3d2592)
 when participating as a developer.
 
-We invite you to [JIRA](https://multiple-dimension-spread.atlassian.net) as a bug tracking,
+We invite you to [JIRA](https://multiple-dimension-spread.atlassian.net/projects/MDS) as a bug tracking,
 when you mentioned in the above Mailing list.
 
 
