@@ -291,11 +291,6 @@ public class ArrayColumn implements IColumn{
       return RESULT.toString();
     }
 
-    @Override
-    public boolean isPrimitive(){
-      return false;
-    }
-
   }
 
 }

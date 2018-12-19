@@ -25,6 +25,4 @@ public interface ICell<S,R>{
 
   ColumnType getType();
 
-  boolean isPrimitive();
-
 }
