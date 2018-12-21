@@ -1,7 +1,17 @@
-# Java Maven CircleCI 2.0 configuration file
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Check https://circleci.com/docs/2.0/language-java/ for more details
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 version: 2
 jobs:
   build:
@@ -37,5 +47,48 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
-      # run tests!
-      - run: mvn integration-test
+      # check 
+      - run: mvn apache-rat:check
+
+      # run test and package
+      - run: mvn clean package
+
+      # Save JUnit result.
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex "./src/.*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit     
+
+      # run site
+      - run: mvn site
+
+      - run:
+          command: |
+            cp -r ./src/arrow/target/site ~/site_arrow
+            cp -r ./src/common/target/site ~/site_common
+            cp -r ./src/example/target/site ~/site_example
+            cp -r ./src/hive/target/site ~/site_hive
+            cp -r ./src/legacy-maker/target/site ~/site_legacy-maker
+            cp -r ./src/schema/target/site ~/site_schema
+            cp -r ./src/tools/target/site ~/site_tools
+
+      - store_artifacts:
+          path: ~/site_arrow
+      - store_artifacts:
+          path: ~/site_common
+      - store_artifacts:
+          path: ~/site_example
+      - store_artifacts:
+          path: ~/site_hive
+      - store_artifacts:
+          path: ~/site_legacy-maker
+      - store_artifacts:
+          path: ~/site_schema
+      - store_artifacts:
+          path: ~/site_tools
