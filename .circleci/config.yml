@@ -48,7 +48,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # check 
-      - run: apache-rat:check
+      - run: mvn apache-rat:check
 
       # run tests!
       - run: mvn integration-test
