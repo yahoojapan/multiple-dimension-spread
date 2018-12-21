@@ -22,10 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class DummyBlockIndex implements IBlockIndex{

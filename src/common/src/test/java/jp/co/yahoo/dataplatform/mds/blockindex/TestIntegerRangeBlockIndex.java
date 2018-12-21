@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -34,54 +38,53 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class TestIntegerRangeBlockIndex{
 
-  @DataProvider(name = "T_canBlockSkip_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)21 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)9 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)15 ) ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)10 ) ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)20 ) ) , false },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)21 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)9 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)15 ) ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)10 ) ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( (int)20 ) ) , false ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)9 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)10 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)11 ) ) , false },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)9 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)10 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LT , new IntegerObj( (int)11 ) ) , false ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)9 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)10 ) ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)11 ) ) , false },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)9 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)10 ) ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.LE , new IntegerObj( (int)11 ) ) , false ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)21 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)20 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)19 ) ) , false },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)21 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)20 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GT , new IntegerObj( (int)19 ) ) , false ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)21 ) ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)20 ) ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)19 ) ) , false },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)21 ) ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)20 ) ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberFilter( NumberFilterType.GE , new IntegerObj( (int)19 ) ) , false ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)5 ) , true , new IntegerObj( (int)15 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)21 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)25 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)20 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)20 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)16 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)9 ) , true , new IntegerObj( (int)9 ) , true ) , true },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)21 ) , true , new IntegerObj( (int)21 ) , true ) , true },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)5 ) , true , new IntegerObj( (int)15 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)21 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)25 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)20 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)20 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)16 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)9 ) , true , new IntegerObj( (int)9 ) , true ) , true ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( false , new IntegerObj( (int)21 ) , true , new IntegerObj( (int)21 ) , true ) , true ),
 
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)5 ) , true , new IntegerObj( (int)15 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)21 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)25 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)20 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)20 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)16 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)9 ) , true , new IntegerObj( (int)9 ) , true ) , false },
-      { new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)21 ) , true , new IntegerObj( (int)21 ) , true ) , false },
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)5 ) , true , new IntegerObj( (int)15 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)21 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)25 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)20 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)10 ) , true , new IntegerObj( (int)10 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)20 ) , true , new IntegerObj( (int)20 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)15 ) , true , new IntegerObj( (int)16 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)9 ) , true , new IntegerObj( (int)9 ) , true ) , false ),
+      arguments( new IntegerRangeBlockIndex( (int)10 , (int)20 ) , new NumberRangeFilter( true , new IntegerObj( (int)21 ) , true , new IntegerObj( (int)21 ) , true ) , false )
 
-    };
+    );
   }
 
   @Test
@@ -171,7 +174,8 @@ public class TestIntegerRangeBlockIndex{
     assertEquals( bIndex2.getMax() , bIndex.getMax() );
   }
 
-  @Test( dataProvider = "T_canBlockSkip_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
     if( result ){
       assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );

@@ -21,12 +21,15 @@ import java.io.IOException;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Stream;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -40,48 +43,47 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestNumberCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) },
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) ),
 
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) },
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) ),
 
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
-      { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },
-    };
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) ),
+      arguments( createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) )
+    );
   }
 
-  public IColumn createByteTestData( final String targetClassName ) throws IOException{
+  public static IColumn createByteTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTE , "column" );
     column.add( ColumnType.BYTE , new ByteObj( (byte)-10 ) , 0 );
     column.add( ColumnType.BYTE , new ByteObj( (byte)-11 ) , 1 );
@@ -112,7 +114,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createShortTestData( final String targetClassName ) throws IOException{
+  public static IColumn createShortTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.SHORT , "column" );
     column.add( ColumnType.SHORT , new ShortObj( (short)-10 ) , 0 );
     column.add( ColumnType.SHORT , new ShortObj( (short)-11 ) , 1 );
@@ -143,7 +145,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createIntTestData( final String targetClassName ) throws IOException{
+  public static IColumn createIntTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.INTEGER , "column" );
     column.add( ColumnType.INTEGER , new IntegerObj( -10 ) , 0 );
     column.add( ColumnType.INTEGER , new IntegerObj( -11 ) , 1 );
@@ -174,7 +176,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createLongTestData( final String targetClassName ) throws IOException{
+  public static IColumn createLongTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.LONG , "column" );
     column.add( ColumnType.LONG , new LongObj( -10 ) , 0 );
     column.add( ColumnType.LONG , new LongObj( -11 ) , 1 );
@@ -205,7 +207,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createFloatTestData( final String targetClassName ) throws IOException{
+  public static IColumn createFloatTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.FLOAT , "column" );
     column.add( ColumnType.FLOAT , new FloatObj( -10.0f ) , 0 );
     column.add( ColumnType.FLOAT , new FloatObj( -11.0f ) , 1 );
@@ -236,7 +238,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createDoubleTestData( final String targetClassName ) throws IOException{
+  public static IColumn createDoubleTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "column" );
     column.add( ColumnType.DOUBLE , new DoubleObj( -10.0d ) , 0 );
     column.add( ColumnType.DOUBLE , new DoubleObj( -11.0d ) , 1 );
@@ -267,7 +269,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createStringTestData( final String targetClassName ) throws IOException{
+  public static IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "-10" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "-11" ) , 1 );
@@ -298,7 +300,7 @@ public class TestNumberCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  public static IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "-10".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "-11".getBytes() ) , 1 );
@@ -338,7 +340,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-10 ) , new ShortObj( (short)-10 ) , new IntegerObj( -10 ) , new LongObj( -10 ) , new FloatObj( -10.0f ) , new DoubleObj( -10.0d ) };
@@ -356,7 +359,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 22 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)22 ) , new ShortObj( (short)22 ) , new IntegerObj( 22 ) , new LongObj( 22 ) , new FloatObj( 22.0f ) , new DoubleObj( 22.0d ) };
@@ -374,7 +378,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)29 ) , new ShortObj( (short)29 ) , new IntegerObj( 29 ) , new LongObj( 29 ) , new FloatObj( 29.0f ) , new DoubleObj( 29.0d ) };
@@ -392,7 +397,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notequal_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-10 ) , new ShortObj( (short)-10 ) , new IntegerObj( -10 ) , new LongObj( -10 ) , new FloatObj( -10.0f ) , new DoubleObj( -10.0d ) };
@@ -410,7 +416,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notequal_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)22 ) , new ShortObj( (short)22 ) , new IntegerObj( 22 ) , new LongObj( 22 ) , new FloatObj( 22.0f ) , new DoubleObj( 22.0d ) };
@@ -428,7 +435,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notequal_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)29 ) , new ShortObj( (short)29 ) , new IntegerObj( 29 ) , new LongObj( 29 ) , new FloatObj( 29.0f ) , new DoubleObj( 29.0d ) };
@@ -447,7 +455,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 9 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-18 ) , new ShortObj( (short)-18 ) , new IntegerObj( -18 ) , new LongObj( -18 ) , new FloatObj( -18.0f ) , new DoubleObj( -18.0d ) };
@@ -465,7 +474,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)29 ) , new ShortObj( (short)29 ) , new IntegerObj( 29 ) , new LongObj( 29 ) , new FloatObj( 29.0f ) , new DoubleObj( 29.0d ) };
@@ -483,7 +493,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)0 ) , new ShortObj( (short)0 ) , new IntegerObj( 0 ) , new LongObj( 0 ) , new FloatObj( 0.0f ) , new DoubleObj( 0.0d ) };
@@ -502,7 +513,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 8 , 9 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-18 ) , new ShortObj( (short)-18 ) , new IntegerObj( -18 ) , new LongObj( -18 ) , new FloatObj( -18.0f ) , new DoubleObj( -18.0d ) };
@@ -520,7 +532,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)29 ) , new ShortObj( (short)29 ) , new IntegerObj( 29 ) , new LongObj( 29 ) , new FloatObj( 29.0f ) , new DoubleObj( 29.0d ) };
@@ -538,7 +551,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)0 ) , new ShortObj( (short)0 ) , new IntegerObj( 0 ) , new LongObj( 0 ) , new FloatObj( 0.0f ) , new DoubleObj( 0.0d ) };
@@ -557,7 +571,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-19 ) , new ShortObj( (short)-19 ) , new IntegerObj( -19 ) , new LongObj( -19 ) , new FloatObj( -19.0f ) , new DoubleObj( -19.0d ) };
@@ -575,7 +590,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)28 ) , new ShortObj( (short)28 ) , new IntegerObj( 28 ) , new LongObj( 28 ) , new FloatObj( 28.0f ) , new DoubleObj( 28.0d ) };
@@ -593,7 +609,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)0 ) , new ShortObj( (short)0 ) , new IntegerObj( 0 ) , new LongObj( 0 ) , new FloatObj( 0.0f ) , new DoubleObj( 0.0d ) };
@@ -612,7 +629,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_obj_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)-19 ) , new ShortObj( (short)-19 ) , new IntegerObj( -19 ) , new LongObj( -19 ) , new FloatObj( -19.0f ) , new DoubleObj( -19.0d ) };
@@ -630,7 +648,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_obj_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)28 ) , new ShortObj( (short)28 ) , new IntegerObj( 28 ) , new LongObj( 28 ) , new FloatObj( 28.0f ) , new DoubleObj( 28.0d ) };
@@ -648,7 +667,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_obj_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData = new PrimitiveObject[]{ new ByteObj( (byte)0 ) , new ShortObj( (short)0 ) , new IntegerObj( 0 ) , new LongObj( 0 ) , new FloatObj( 0.0f ) , new DoubleObj( 0.0d ) };
@@ -667,7 +687,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 , 25 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -687,7 +708,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 21 , 22 , 23 , 24 , 25 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -707,7 +729,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 20 , 21 , 22 , 23 , 24 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -727,7 +750,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_4( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 21 , 22 , 23 , 24  };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -747,7 +771,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_5( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -767,7 +792,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_6( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -787,7 +813,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_7( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };
@@ -807,7 +834,8 @@ public class TestNumberCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_8( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 25 , 26 , 27 , 28 , 29 };
     PrimitiveObject[] compareData1 = new PrimitiveObject[]{ new ByteObj( (byte)20 ) , new ShortObj( (short)20 ) , new IntegerObj( 20 ) , new LongObj( 20 ) , new FloatObj( 20.0f ) , new DoubleObj( 20.0d ) };

@@ -18,13 +18,15 @@
 package jp.co.yahoo.dataplatform.mds.blackbox;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -38,14 +40,13 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestIntegerPrimitiveColumn {
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" },
-      { "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" },
-    };
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" )
+    );
   }
 
   public IColumn createNotNullColumn( final String targetClassName ) throws IOException{
@@ -103,7 +104,8 @@ public class TestIntegerPrimitiveColumn {
     return FindColumnBinaryMaker.get( columnBinary.makerClassName ).toColumn( columnBinary );
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notNull_1( final String targetClassName ) throws IOException{
     IColumn column = createNotNullColumn( targetClassName );
     assertEquals( ( (PrimitiveObject)( column.get(0).getRow() ) ).getInt() , Integer.MAX_VALUE );
@@ -119,14 +121,16 @@ public class TestIntegerPrimitiveColumn {
     assertEquals( ( (PrimitiveObject)( column.get(10).getRow() ) ).getInt() , (int)0 );
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_null_1( final String targetClassName ) throws IOException{
     IColumn column = createNullColumn( targetClassName );
     assertNull( column.get(0).getRow() );
     assertNull( column.get(1).getRow() );
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_hasNull_1( final String targetClassName ) throws IOException{
     IColumn column = createHasNullColumn( targetClassName );
     assertEquals( ( (PrimitiveObject)( column.get(0).getRow() ) ).getInt() , (int)0 );
@@ -140,7 +144,8 @@ public class TestIntegerPrimitiveColumn {
     assertEquals( ( (PrimitiveObject)( column.get(8).getRow() ) ).getInt() , (int)8 );
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lastCell_1( final String targetClassName ) throws IOException{
     IColumn column = createLastCellColumn( targetClassName );
     for( int i = 0 ; i < 10000 ; i++ ){

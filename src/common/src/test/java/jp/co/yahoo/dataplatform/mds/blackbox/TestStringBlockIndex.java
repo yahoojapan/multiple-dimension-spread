@@ -21,9 +21,15 @@ import java.io.IOException;
 
 import java.util.*;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -38,17 +44,16 @@ import jp.co.yahoo.dataplatform.mds.blockindex.*;
 
 public class TestStringBlockIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) },
-    };
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments(  createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) )
+    );
   }
 
-  public IBlockIndex createStringTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "y" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "b" ) , 1 );
@@ -90,7 +95,8 @@ public class TestStringBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_perfectMatch_1( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 4 };
     IFilter filter = new PerfectMatchStringFilter( "b" );
@@ -108,7 +114,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_perfectMatch_2( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 2 };
     IFilter filter = new PerfectMatchStringFilter( "y" );
@@ -126,7 +133,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_perfectMatch_3( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 3 };
     IFilter filter = new PerfectMatchStringFilter( "d" );
@@ -144,7 +152,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_1( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 4 };
     IFilter filter = new ForwardMatchStringFilter( "b" );
@@ -162,7 +171,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_2( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 };
     IFilter filter = new ForwardMatchStringFilter( "bb" );
@@ -180,7 +190,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_3( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 3 };
     IFilter filter = new ForwardMatchStringFilter( "d" );
@@ -198,7 +209,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_4( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 3 };
     IFilter filter = new ForwardMatchStringFilter( "x" );
@@ -216,7 +228,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_5( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 };
     IFilter filter = new ForwardMatchStringFilter( "xx" );
@@ -234,7 +247,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_vackwardMatch_5( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 };
     IFilter filter = new BackwardMatchStringFilter( "a" );
@@ -242,7 +256,8 @@ public class TestStringBlockIndex{
     assertNull( resultIndexList );
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_1( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 3 };
     IFilter filter = new RangeStringCompareFilter( "bb" , true , "x" , true );
@@ -260,7 +275,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_2( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 3 };
     IFilter filter = new RangeStringCompareFilter( "bb" , false , "x" , true );
@@ -278,7 +294,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_3( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 3 };
     IFilter filter = new RangeStringCompareFilter( "bb" , true , "x" , false );
@@ -296,7 +313,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_4( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 3 };
     IFilter filter = new RangeStringCompareFilter( "bb" , false , "x" , false );
@@ -314,7 +332,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_5( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 2 , 3 , 4 };
     IFilter filter = new RangeStringCompareFilter( "bb" , true , "x" , true , true );
@@ -332,7 +351,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_6( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 };
     IFilter filter = new RangeStringCompareFilter( "bb" , false , "x" , true , true );
@@ -350,7 +370,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_7( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 2 , 3 , 4 };
     IFilter filter = new RangeStringCompareFilter( "bb" , true , "x" , false , true );
@@ -368,7 +389,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_8( final IBlockIndex index ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 };
     IFilter filter = new RangeStringCompareFilter( "bb" , false , "x" , false , true );
@@ -386,7 +408,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_dictionaryString_1( final IBlockIndex index ) throws IOException{
     Set<String> d = new HashSet<String>();
     d.add( "e" );
@@ -407,7 +430,8 @@ public class TestStringBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_dictionaryString_2( final IBlockIndex index ) throws IOException{
     Set<String> d = new HashSet<String>();
     d.add( "x" );

@@ -19,28 +19,32 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class TestRangeBlockIndexNameShortCut{
 
-  @DataProvider(name = "T_get_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.blockindex.ByteRangeBlockIndex" , "R0" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.ShortRangeBlockIndex" , "R1" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.IntegerRangeBlockIndex" , "R2" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.LongRangeBlockIndex" , "R3" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex" , "R4" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex" , "R5" },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex" , "R6" },
-    };
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.ByteRangeBlockIndex" , "R0" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.ShortRangeBlockIndex" , "R1" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.IntegerRangeBlockIndex" , "R2" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.LongRangeBlockIndex" , "R3" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex" , "R4" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex" , "R5" ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex" , "R6" )
+    );
   }
 
-  @Test( dataProvider = "T_get_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_get_1( final String c , final String sc ) throws IOException{
     assertEquals( sc , RangeBlockIndexNameShortCut.getShortCutName( c ) );
     assertEquals( c , RangeBlockIndexNameShortCut.getClassName( sc ) );

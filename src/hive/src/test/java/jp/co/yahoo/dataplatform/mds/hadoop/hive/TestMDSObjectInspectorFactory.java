@@ -17,12 +17,20 @@
  */
 package jp.co.yahoo.dataplatform.mds.hadoop.hive;
 
+import java.io.IOException;
+
 import java.util.List;
 import java.util.ArrayList;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import org.apache.hadoop.hive.serde2.typeinfo.*;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
@@ -48,14 +56,22 @@ public class TestMDSObjectInspectorFactory{
     assertTrue( oi instanceof ByteObjectInspector );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_craeteObjectInspectorFromTypeInfo_4(){
-    ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.dateTypeInfo );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.dateTypeInfo );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_craeteObjectInspectorFromTypeInfo_5(){
-    ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.decimalTypeInfo );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.decimalTypeInfo );
+      }
+    );
   }
 
   @Test
@@ -94,19 +110,31 @@ public class TestMDSObjectInspectorFactory{
     assertTrue( oi instanceof StringObjectInspector );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_craeteObjectInspectorFromTypeInfo_12(){
-    ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.timestampTypeInfo );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.timestampTypeInfo );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_craeteObjectInspectorFromTypeInfo_13(){
-    ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.unknownTypeInfo );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.unknownTypeInfo );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_craeteObjectInspectorFromTypeInfo_14(){
-    ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.voidTypeInfo );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        ObjectInspector oi = MDSObjectInspectorFactory.craeteObjectInspectorFromTypeInfo( TypeInfoFactory.voidTypeInfo );
+      }
+    );
   }
 
   @Test

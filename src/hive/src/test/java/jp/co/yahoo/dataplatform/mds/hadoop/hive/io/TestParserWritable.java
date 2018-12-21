@@ -19,25 +19,38 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.io;
 
 import java.io.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.*;
 
 public class TestParserWritable{
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_write_1() throws IOException{
     ParserWritable writable = new ParserWritable();
-    writable.write( null );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        writable.write( null );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_readFields_1() throws IOException{
     ParserWritable writable = new ParserWritable();
-    writable.readFields( null );
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        writable.readFields( null );
+      }
+    );
   }
 
 }

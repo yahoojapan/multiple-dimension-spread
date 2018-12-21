@@ -18,12 +18,15 @@
 package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -34,68 +37,67 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class TestFloatRangeBlockIndex{
 
-  @DataProvider(name = "T_canBlockSkip_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)21 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)9 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)15 ) ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)10 ) ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)20 ) ) , false },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)21 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)9 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)15 ) ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)10 ) ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.EQUAL , new FloatObj( (float)20 ) ) , false ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)9 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)10 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)11 ) ) , false },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)9 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)10 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LT , new FloatObj( (float)11 ) ) , false ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)9 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)10 ) ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)11 ) ) , false },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)9 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)10 ) ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.LE , new FloatObj( (float)11 ) ) , false ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)21 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)20 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)19 ) ) , false },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)21 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)20 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GT , new FloatObj( (float)19 ) ) , false ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)21 ) ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)20 ) ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)19 ) ) , false },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)21 ) ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)20 ) ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberFilter( NumberFilterType.GE , new FloatObj( (float)19 ) ) , false ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)5 ) , true , new FloatObj( (float)15 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)20 ) , true , new FloatObj( (float)21 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)15 ) , true , new FloatObj( (float)25 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)20 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)20 ) , true , new FloatObj( (float)20 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)15 ) , true , new FloatObj( (float)16 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)9 ) , true , new FloatObj( (float)9 ) , true ) , true },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)21 ) , true , new FloatObj( (float)21 ) , true ) , true },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)5 ) , true , new FloatObj( (float)15 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)20 ) , true , new FloatObj( (float)21 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)15 ) , true , new FloatObj( (float)25 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)20 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)20 ) , true , new FloatObj( (float)20 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)15 ) , true , new FloatObj( (float)16 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)9 ) , true , new FloatObj( (float)9 ) , true ) , true ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( false , new FloatObj( (float)21 ) , true , new FloatObj( (float)21 ) , true ) , true ),
 
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)5 ) , true , new FloatObj( (float)15 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)20 ) , true , new FloatObj( (float)21 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)15 ) , true , new FloatObj( (float)25 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)20 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)20 ) , true , new FloatObj( (float)20 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)15 ) , true , new FloatObj( (float)16 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)9 ) , true , new FloatObj( (float)9 ) , true ) , false },
-      { new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)21 ) , true , new FloatObj( (float)21 ) , true ) , false },
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)5 ) , true , new FloatObj( (float)15 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)20 ) , true , new FloatObj( (float)21 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)15 ) , true , new FloatObj( (float)25 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)20 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)10 ) , true , new FloatObj( (float)10 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)20 ) , true , new FloatObj( (float)20 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)15 ) , true , new FloatObj( (float)16 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)9 ) , true , new FloatObj( (float)9 ) , true ) , false ),
+      arguments( new FloatRangeBlockIndex( (float)10 , (float)20 ) , new NumberRangeFilter( true , new FloatObj( (float)21 ) , true , new FloatObj( (float)21 ) , true ) , false )
 
-    };
+    );
   }
 
   @Test
   public void T_newInstance_1(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
   }
 
   @Test
   public void T_newInstance_2(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex();
-    assertEquals( Float.MAX_VALUE , bIndex.getMin() );
-    assertEquals( Float.MIN_VALUE , bIndex.getMax() );
+    assertEquals( Float.MAX_VALUE , bIndex.getMin().floatValue() );
+    assertEquals( Float.MIN_VALUE , bIndex.getMax().floatValue() );
   }
 
   @Test
@@ -107,48 +109,48 @@ public class TestFloatRangeBlockIndex{
   @Test
   public void T_merge_1(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
     assertTrue( bIndex.merge( new FloatRangeBlockIndex( (float)110 , (float)150 ) ) );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)150 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)150 , bIndex.getMax().floatValue() );
   }
 
   @Test
   public void T_merge_2(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
     assertTrue( bIndex.merge( new FloatRangeBlockIndex( (float)9 , (float)20 ) ) );
-    assertEquals( (float)9 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)9 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
   }
 
   @Test
   public void T_merge_3(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
     assertTrue( bIndex.merge( new FloatRangeBlockIndex( (float)10 , (float)21 ) ) );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)21 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)21 , bIndex.getMax().floatValue() );
   }
 
   @Test
   public void T_merge_4(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
     assertTrue( bIndex.merge( new FloatRangeBlockIndex( (float)9 , (float)21 ) ) );
-    assertEquals( (float)9 , bIndex.getMin() );
-    assertEquals( (float)21 , bIndex.getMax() );
+    assertEquals( (float)9 , bIndex.getMin().floatValue() );
+    assertEquals( (float)21 , bIndex.getMax().floatValue() );
   }
 
   @Test
   public void T_merge_5(){
     FloatRangeBlockIndex bIndex = new FloatRangeBlockIndex( (float)10 , (float)20 );
-    assertEquals( (float)10 , bIndex.getMin() );
-    assertEquals( (float)20 , bIndex.getMax() );
+    assertEquals( (float)10 , bIndex.getMin().floatValue() );
+    assertEquals( (float)20 , bIndex.getMax().floatValue() );
     assertFalse( bIndex.merge( UnsupportedBlockIndex.INSTANCE ) );
   }
 
@@ -164,14 +166,15 @@ public class TestFloatRangeBlockIndex{
     byte[] binary = bIndex.toBinary();
     assertEquals( binary.length , bIndex.getBinarySize() );
     FloatRangeBlockIndex bIndex2 = new FloatRangeBlockIndex();
-    assertEquals( Float.MAX_VALUE , bIndex2.getMin() );
-    assertEquals( Float.MIN_VALUE , bIndex2.getMax() );
+    assertEquals( Float.MAX_VALUE , bIndex2.getMin().floatValue() );
+    assertEquals( Float.MIN_VALUE , bIndex2.getMax().floatValue() );
     bIndex2.setFromBinary( binary , 0 , binary.length );
-    assertEquals( bIndex2.getMin() , bIndex.getMin() );
-    assertEquals( bIndex2.getMax() , bIndex.getMax() );
+    assertEquals( bIndex2.getMin().floatValue() , bIndex.getMin().floatValue() );
+    assertEquals( bIndex2.getMax().floatValue() , bIndex.getMax().floatValue() );
   }
 
-  @Test( dataProvider = "T_canBlockSkip_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
     if( result ){
       assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );

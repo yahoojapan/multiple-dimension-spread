@@ -26,9 +26,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
@@ -49,18 +55,24 @@ public class TestMDSSchemaStreamWriter{
     }
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_write_1() throws IOException{
     MDSSchemaStreamWriter writer = new MDSSchemaStreamWriter( new ByteArrayOutputStream() , new Configuration() );
-    writer.write( new StringObj( "hoge" ) );
-    writer.close();
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        writer.write( new StringObj( "hoge" ) );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { UnsupportedOperationException.class } )
+  @Test
   public void T_write_2() throws IOException{
     MDSSchemaStreamWriter writer = new MDSSchemaStreamWriter( new ByteArrayOutputStream() , new Configuration() );
-    writer.write( new ArrayList<Object>() );
-    writer.close();
+    assertThrows( UnsupportedOperationException.class ,
+      () -> {
+        writer.write( new ArrayList<Object>() );
+      }
+    );
   }
 
   @Test

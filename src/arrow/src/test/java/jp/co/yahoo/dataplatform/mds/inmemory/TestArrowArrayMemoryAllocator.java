@@ -22,11 +22,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.memory.BufferAllocator;
@@ -81,20 +85,6 @@ public class TestArrowArrayMemoryAllocator{
       System.out.println( "count:" + listVector.getInnerValueCountAt(i) );
       System.out.println( "obj:" + listVector.getObject(i) );
     }
-/*
-    reader.setPosition( 0 );
-    assertEquals( reader.read().booleanValue() , true );
-    reader.setPosition( 1 );
-    assertEquals( reader.readBoolean().booleanValue() , false );
-    reader.setPosition( 5 );
-    assertEquals( reader.readBoolean().booleanValue() , true );
-    reader.setPosition( 2 );
-    assertEquals( reader.readBoolean() , null );
-    reader.setPosition( 3 );
-    assertEquals( reader.readBoolean() , null );
-    reader.setPosition( 4 );
-    assertEquals( reader.readBoolean() , null );
-*/
   }
 
 }

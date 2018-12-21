@@ -20,13 +20,17 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.pushdown;
 import java.util.List;
 import java.util.ArrayList;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExtractNode;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
 
 import org.apache.hadoop.hive.serde2.typeinfo.*;
 import org.apache.hadoop.hive.ql.plan.*;
@@ -34,7 +38,7 @@ import org.apache.hadoop.hive.ql.udf.generic.*;
 
 public class TestCreateExtractNodeUtil{
 
-  private ExprNodeDesc createExprNodeGenericFuncDesc(){
+  private static ExprNodeDesc createExprNodeGenericFuncDesc(){
     GenericUDFIndex udfIndex = new GenericUDFIndex();
     List<ExprNodeDesc> childList = new ArrayList<ExprNodeDesc>();
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
@@ -43,17 +47,17 @@ public class TestCreateExtractNodeUtil{
     return funcDesc;
   }
 
-  @DataProvider(name = "T_getExtractNode_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) },
-      { new ExprNodeFieldDesc( TypeInfoFactory.booleanTypeInfo , new ExprNodeColumnDesc() , "col1" , false ) },
-      { createExprNodeGenericFuncDesc() },
-    };
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) ),
+      arguments( new ExprNodeFieldDesc( TypeInfoFactory.booleanTypeInfo , new ExprNodeColumnDesc() , "col1" , false ) ),
+      arguments( createExprNodeGenericFuncDesc() )
+    );
   }
   
 
-  @Test( dataProvider = "T_getExtractNode_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_getExtractNode_1( final ExprNodeDesc nodeDesc ){
     System.out.println( nodeDesc.toString() );
     assertTrue( CreateExtractNodeUtil.getExtractNode( nodeDesc ) instanceof IExtractNode);
@@ -62,7 +66,7 @@ public class TestCreateExtractNodeUtil{
   @Test
   public void T_getExtractNode_2(){
     ExprNodeConstantDesc nodeDesc = new ExprNodeConstantDesc();
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNode( nodeDesc ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNode( nodeDesc ) , null );
   }
 
   @Test
@@ -72,7 +76,7 @@ public class TestCreateExtractNodeUtil{
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
     childList.add( new ExprNodeConstantDesc( TypeInfoFactory.stringTypeInfo , "child_name" ) );
     ExprNodeGenericFuncDesc funcDesc = new ExprNodeGenericFuncDesc( TypeInfoFactory.booleanTypeInfo , udf , childList );
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
   }
 
   @Test
@@ -83,7 +87,7 @@ public class TestCreateExtractNodeUtil{
     childList.add( new ExprNodeConstantDesc( TypeInfoFactory.stringTypeInfo , "child_name" ) );
     childList.add( new ExprNodeConstantDesc( TypeInfoFactory.stringTypeInfo , "child_name" ) );
     ExprNodeGenericFuncDesc funcDesc = new ExprNodeGenericFuncDesc( TypeInfoFactory.booleanTypeInfo , udf , childList );
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
   }
 
   @Test
@@ -93,7 +97,7 @@ public class TestCreateExtractNodeUtil{
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
     ExprNodeGenericFuncDesc funcDesc = new ExprNodeGenericFuncDesc( TypeInfoFactory.booleanTypeInfo , udf , childList );
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
   }
 
   @Test
@@ -107,7 +111,7 @@ public class TestCreateExtractNodeUtil{
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
     childList.add( new ExprNodeConstantDesc( info , "child_name" ) );
     ExprNodeGenericFuncDesc funcDesc = new ExprNodeGenericFuncDesc( TypeInfoFactory.booleanTypeInfo , udf , childList );
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
   }
 
   @Test
@@ -117,7 +121,7 @@ public class TestCreateExtractNodeUtil{
     childList.add( new ExprNodeColumnDesc( TypeInfoFactory.booleanTypeInfo , "col1" , "col1" , false  ) );
     childList.add( new ExprNodeConstantDesc( TypeInfoFactory.booleanTypeInfo , "child_name" ) );
     ExprNodeGenericFuncDesc funcDesc = new ExprNodeGenericFuncDesc( TypeInfoFactory.booleanTypeInfo , udf , childList );
-    Assert.assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
+    assertEquals( CreateExtractNodeUtil.getExtractNodeFromGenericIndex( funcDesc , udf ) , null );
   }
 
 }

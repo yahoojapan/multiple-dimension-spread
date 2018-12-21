@@ -19,15 +19,21 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.io.vector;
 
 import java.io.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.PrimitiveColumn;
 import jp.co.yahoo.dataplatform.mds.spread.expression.AllExpressionIndex;
 import jp.co.yahoo.dataplatform.mds.spread.expression.IExpressionIndex;
-import org.testng.annotations.Test;
 
 import org.apache.hadoop.hive.ql.exec.vector.*;
 

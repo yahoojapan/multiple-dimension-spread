@@ -24,13 +24,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.PerfectMatchStringFilter;
 import jp.co.yahoo.dataplatform.mds.spread.expression.*;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
 
 import jp.co.yahoo.dataplatform.schema.objects.PrimitiveObject;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
@@ -42,11 +48,9 @@ import jp.co.yahoo.dataplatform.mds.spread.Spread;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 
 public class TestGetPrimitiveObjectArray{
-  private ByteArrayOutputStream out;
 
-  @BeforeClass
-  public void setup() throws IOException{
-    out = new ByteArrayOutputStream();
+  public byte[] create() throws IOException{
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
     Configuration config = new Configuration();
     config.set( "spread.column.maker.setting" , "{ \"column_name\" : \"root\" , \"string_maker_class\" : \"jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker\" }" );
     try( MDSRecordWriter writer = new MDSRecordWriter( out , config ) ){
@@ -60,18 +64,17 @@ public class TestGetPrimitiveObjectArray{
         line = in.readLine();
       }
     }
+    return out.toByteArray();
   }
 
   @Test
   public void T_1() throws IOException{
     try(MDSReader reader = new MDSReader()) {
       Configuration readerConfig = new Configuration();
-      byte[] data = out.toByteArray();
+      byte[] data = create();
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
-        //IExpressionNode node = new AndExpressionNode();
-        //node.addChildNode( new ExecuterNode( new StringExtractNode( "key1" ) , new PerfectMatchStringFilter( "a" ) ) );
         Spread spread = reader.next();
         IColumn key1Column = spread.getColumn("key1");
         IExpressionIndex indexList = new AllExpressionIndex(spread.size());
@@ -92,7 +95,7 @@ public class TestGetPrimitiveObjectArray{
   public void T_2() throws IOException{
     try(MDSReader reader = new MDSReader()){
     Configuration readerConfig = new Configuration();
-    byte[] data = out.toByteArray();
+    byte[] data = create();
     InputStream fileIn = new ByteArrayInputStream( data );
     reader.setNewStream( fileIn , data.length , readerConfig );
     while( reader.hasNext() ) {
@@ -117,7 +120,7 @@ public class TestGetPrimitiveObjectArray{
     try(MDSReader reader = new MDSReader()) {
       Configuration readerConfig = new Configuration();
       readerConfig.set("spread.reader.expand.column", "{ \"base\" : { \"node\" : \"key2\" , \"link_name\" : \"expand_key2\" } }");
-      byte[] data = out.toByteArray();
+      byte[] data = create();
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
@@ -146,12 +149,11 @@ public class TestGetPrimitiveObjectArray{
     try(MDSReader reader = new MDSReader()) {
       Configuration readerConfig = new Configuration();
       readerConfig.set("spread.reader.expand.column", "{ \"base\" : { \"node\" : \"key2\" , \"link_name\" : \"expand_key2\" } }");
-      byte[] data = out.toByteArray();
+      byte[] data = create();
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {
         IExpressionNode node = new AndExpressionNode();
-        //node.addChildNode( new ExecuterNode( new StringExtractNode( "key1" ) , new PerfectMatchStringFilter( "a" ) ) );
         Spread spread = reader.next();
         IExpressionIndex indexList = IndexFactory.toExpressionIndex(spread, node.exec(spread));
         IColumn key1Column = spread.getColumn("key1");
@@ -181,7 +183,7 @@ public class TestGetPrimitiveObjectArray{
     try (MDSReader reader = new MDSReader()) {
       Configuration readerConfig = new Configuration();
       readerConfig.set("spread.reader.expand.column", "{ \"base\" : { \"node\" : \"key2\" , \"link_name\" : \"expand_key2\" } }");
-      byte[] data = out.toByteArray();
+      byte[] data = create();
       InputStream fileIn = new ByteArrayInputStream(data);
       reader.setNewStream(fileIn, data.length, readerConfig);
       while (reader.hasNext()) {

@@ -21,9 +21,11 @@ import java.io.*;
 
 import java.util.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 import jp.co.yahoo.dataplatform.schema.objects.*;

@@ -22,11 +22,15 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -40,51 +44,50 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestStringCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) },
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) ),
 
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) },
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) ),
 
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) },
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) ),
 
-      { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },
-    };
+      arguments( createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) )
+    );
   }
 
-  public IColumn createByteTestData( final String targetClassName ) throws IOException{
+  public static IColumn createByteTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTE , "column" );
     column.add( ColumnType.BYTE , new ByteObj( (byte)0 ) , 0 );
     column.add( ColumnType.BYTE , new ByteObj( (byte)1 ) , 1 );
@@ -115,7 +118,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createShortTestData( final String targetClassName ) throws IOException{
+  public static IColumn createShortTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.SHORT , "column" );
     column.add( ColumnType.SHORT , new ShortObj( (short)0 ) , 0 );
     column.add( ColumnType.SHORT , new ShortObj( (short)1 ) , 1 );
@@ -146,7 +149,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createIntTestData( final String targetClassName ) throws IOException{
+  public static IColumn createIntTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.INTEGER , "column" );
     column.add( ColumnType.INTEGER , new IntegerObj( 0 ) , 0 );
     column.add( ColumnType.INTEGER , new IntegerObj( 1 ) , 1 );
@@ -177,7 +180,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createLongTestData( final String targetClassName ) throws IOException{
+  public static IColumn createLongTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.LONG , "column" );
     column.add( ColumnType.LONG , new LongObj( 0 ) , 0 );
     column.add( ColumnType.LONG , new LongObj( 1 ) , 1 );
@@ -208,7 +211,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createFloatTestData( final String targetClassName ) throws IOException{
+  public static IColumn createFloatTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.FLOAT , "column" );
     column.add( ColumnType.FLOAT , new FloatObj( 0.0f ) , 0 );
     column.add( ColumnType.FLOAT , new FloatObj( 1.0f ) , 1 );
@@ -239,7 +242,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createDoubleTestData( final String targetClassName ) throws IOException{
+  public static IColumn createDoubleTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "column" );
     column.add( ColumnType.DOUBLE , new DoubleObj( 0.0d ) , 0 );
     column.add( ColumnType.DOUBLE , new DoubleObj( 1.0d ) , 1 );
@@ -270,7 +273,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createStringTestData( final String targetClassName ) throws IOException{
+  public static IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "0" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "1" ) , 1 );
@@ -301,7 +304,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  public static IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "0".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "1".getBytes() ) , 1 );
@@ -332,7 +335,7 @@ public class TestStringCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public void dumpFilterResult( final boolean[] result ){
+  public static void dumpFilterResult( final boolean[] result ){
     System.out.println( "-----------------------" );
     System.out.println( "String cell index test result." );
     System.out.println( "-----------------------" );
@@ -341,7 +344,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_perfectMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 23 };
     IFilter filter = new PerfectMatchStringFilter( "23" );
@@ -356,7 +360,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 2 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new PartialMatchStringFilter( "2" );
@@ -372,7 +377,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 3 , 23 };
     IFilter filter = new PartialMatchStringFilter( "3" );
@@ -388,7 +394,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 9 , 29 };
     IFilter filter = new PartialMatchStringFilter( "9" );
@@ -404,7 +411,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_4( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 29 };
     IFilter filter = new PartialMatchStringFilter( "29" );
@@ -420,7 +428,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 };
     IFilter filter = new ForwardMatchStringFilter( "0" );
@@ -436,7 +445,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 2 , 20 };
     IFilter filter = new ForwardMatchStringFilter( "2" );
@@ -452,7 +462,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_backwardMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 20 };
     IFilter filter = new BackwardMatchStringFilter( "0" );
@@ -468,7 +479,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_backwardMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 20 };
     IFilter filter = new BackwardMatchStringFilter( "20" );
@@ -484,7 +496,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "1" , true );
@@ -500,7 +513,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 1 };
     IFilter filter = new RangeStringCompareFilter( "0" , false , "1" , true );
@@ -516,7 +530,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "1" , false );
@@ -532,7 +547,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_4( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 1 };
     IFilter filter = new RangeStringCompareFilter( "0" , false , "2" , false );
@@ -548,7 +564,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_5( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "1" , true , true );
@@ -564,7 +581,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_6( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new RangeStringCompareFilter( "0" , false , "1" , true , true );
@@ -580,7 +598,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_7( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 ,16 , 17 , 18 , 19 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "1" , false , true );
@@ -596,7 +615,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_8( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new RangeStringCompareFilter( "0" , false , "1" , false , true );
@@ -612,7 +632,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_dictionaryString_1( final IColumn column ) throws IOException{
     Set<String> dic = new HashSet<String>();
     dic.add( "9" );
@@ -631,7 +652,8 @@ public class TestStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_dictionaryString_2( final IColumn column ) throws IOException{
     Set<String> dic = new HashSet<String>();
     dic.add( "0" );

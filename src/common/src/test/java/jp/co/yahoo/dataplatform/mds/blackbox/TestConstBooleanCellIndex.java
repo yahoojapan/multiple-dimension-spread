@@ -21,12 +21,17 @@ import java.io.IOException;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Stream;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -40,25 +45,23 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestConstBooleanCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createConstTestData( new BooleanObj( true ) ) },
-      { createConstTestData( new StringObj( "true" ) ) },
-      { createConstTestData( new BytesObj( "true".getBytes() ) ) },
-    };
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createConstTestData( new BooleanObj( true ) ) ),
+      arguments( createConstTestData( new StringObj( "true" ) ) ),
+      arguments( createConstTestData( new BytesObj( "true".getBytes() ) ) )
+    );
   }
 
-  @DataProvider(name = "target_class_2")
-  public Object[][] data2() throws IOException{
-    return new Object[][] {
-      { createConstTestData( new BooleanObj( true ) ) },
-      { createConstTestData( new StringObj( "true" ) ) },
-      { createConstTestData( new BytesObj( "true".getBytes() ) ) },
-    };
+  public static Stream<Arguments> data2() throws IOException{
+    return Stream.of(
+      arguments( createConstTestData( new BooleanObj( true ) ) ),
+      arguments( createConstTestData( new StringObj( "true" ) ) ),
+      arguments( createConstTestData( new BytesObj( "true".getBytes() ) ) )
+    );
   }
 
-  private IColumn createConstTestData( final PrimitiveObject value ) throws IOException{
+  private static IColumn createConstTestData( final PrimitiveObject value ) throws IOException{
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( value , "t" , 10 );
     return maker.toColumn( columnBinary );
@@ -73,7 +76,8 @@ public class TestConstBooleanCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class_2" )
+  @ParameterizedTest
+  @MethodSource( "data2" )
   public void T_match_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new BooleanFilter( false );

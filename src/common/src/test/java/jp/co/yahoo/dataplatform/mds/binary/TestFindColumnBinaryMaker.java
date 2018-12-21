@@ -19,9 +19,11 @@ package jp.co.yahoo.dataplatform.mds.binary;
 
 import java.io.IOException;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IColumnBinaryMaker;
 import jp.co.yahoo.dataplatform.mds.binary.maker.UnsupportedColumnBinaryMaker;
@@ -34,27 +36,40 @@ public class TestFindColumnBinaryMaker{
     assertTrue( maker instanceof UnsupportedColumnBinaryMaker );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_2() throws IOException{
-    IColumnBinaryMaker maker = FindColumnBinaryMaker.get( null );
-    assertTrue( maker instanceof UnsupportedColumnBinaryMaker );
+    assertThrows( IOException.class ,
+      () -> {
+        IColumnBinaryMaker maker = FindColumnBinaryMaker.get( null );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_3() throws IOException{
-    IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "" );
-    assertTrue( maker instanceof UnsupportedColumnBinaryMaker );
+    assertThrows( IOException.class ,
+      () -> {
+        IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "" );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_4() throws IOException{
-    IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "java.lang.String" );
+    assertThrows( IOException.class ,
+      () -> {
+        IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "java.lang.String" );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_5() throws IOException{
-    IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "____TEST____" );
-    assertTrue( maker instanceof UnsupportedColumnBinaryMaker );
+    assertThrows( IOException.class ,
+      () -> {
+        IColumnBinaryMaker maker = FindColumnBinaryMaker.get( "____TEST____" );
+      }
+    );
   }
 
 }

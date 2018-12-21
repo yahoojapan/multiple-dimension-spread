@@ -19,9 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
@@ -127,7 +133,7 @@ public class TestBlockIndexNode{
     assertTrue( bIndex instanceof DummyBlockIndex );
   }
 
-  @Test( expectedExceptions = { IndexOutOfBoundsException.class } )
+  @Test
   public void T_binary_2() throws IOException{
     BlockIndexNode b = new BlockIndexNode();
     BlockIndexNode b2 = new BlockIndexNode();
@@ -135,7 +141,11 @@ public class TestBlockIndexNode{
     b.putChildNode( "hoge" , b2 );
 
     byte[] binary = new byte[1];
-    b.toBinary( binary , 0 );
+    assertThrows( IndexOutOfBoundsException.class ,
+      () -> {
+        b.toBinary( binary , 0 );
+      }
+    );
   }
 
   @Test

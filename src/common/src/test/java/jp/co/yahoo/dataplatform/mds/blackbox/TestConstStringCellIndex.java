@@ -21,12 +21,15 @@ import java.io.IOException;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.stream.Stream;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -40,22 +43,21 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestConstStringCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createConstTestData( new ByteObj( (byte)15 ) ) },
-      { createConstTestData( new ShortObj( (short)15 ) ) },
-      { createConstTestData( new IntegerObj( 15 ) ) },
-      { createConstTestData( new LongObj( 15 ) ) },
-      { createConstTestData( new FloatObj( 15.0f ) ) },
-      { createConstTestData( new DoubleObj( 15.0d ) ) },
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createConstTestData( new ByteObj( (byte)15 ) ) ),
+      arguments( createConstTestData( new ShortObj( (short)15 ) ) ),
+      arguments( createConstTestData( new IntegerObj( 15 ) ) ),
+      arguments( createConstTestData( new LongObj( 15 ) ) ),
+      arguments( createConstTestData( new FloatObj( 15.0f ) ) ),
+      arguments( createConstTestData( new DoubleObj( 15.0d ) ) ),
 
-      { createConstTestData( new StringObj( "15" ) ) },
-      { createConstTestData( new BytesObj( "15".getBytes() ) ) },
-    };
+      arguments( createConstTestData( new StringObj( "15" ) ) ),
+      arguments( createConstTestData( new BytesObj( "15".getBytes() ) ) )
+    );
   }
 
-  private IColumn createConstTestData( final PrimitiveObject value ) throws IOException{
+  private static IColumn createConstTestData( final PrimitiveObject value ) throws IOException{
     ConstantColumnBinaryMaker maker = new ConstantColumnBinaryMaker();
     ColumnBinary columnBinary = ConstantColumnBinaryMaker.createColumnBinary( value , "t" , 10 );
     return maker.toColumn( columnBinary );
@@ -70,7 +72,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_perfectMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new PerfectMatchStringFilter( "15" );
@@ -85,7 +88,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new PartialMatchStringFilter( "1" );
@@ -101,7 +105,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_partialMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new PartialMatchStringFilter( "15" );
@@ -117,7 +122,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new ForwardMatchStringFilter( "1" );
@@ -133,7 +139,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_forwardMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new ForwardMatchStringFilter( "15" );
@@ -149,7 +156,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_backwardMatch_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new BackwardMatchStringFilter( "5" );
@@ -165,7 +173,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_backwardMatch_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new BackwardMatchStringFilter( "15" );
@@ -181,7 +190,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "15" , true , "15" , true );
@@ -197,7 +207,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "1" , false , "15" , true );
@@ -213,7 +224,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_3( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "15" , true , "16" , false );
@@ -229,7 +241,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_4( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "1" , false , "16" , false );
@@ -245,7 +258,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_5( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "14" , true , true );
@@ -261,7 +275,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_6( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "15" , false , "2" , true , true );
@@ -277,7 +292,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_7( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "0" , true , "15" , false , true );
@@ -293,7 +309,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compareString_8( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
     IFilter filter = new RangeStringCompareFilter( "05" , false , "15" , false , true );
@@ -309,7 +326,8 @@ public class TestConstStringCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_dictionaryString_1( final IColumn column ) throws IOException{
     Set<String> dic = new HashSet<String>();
     dic.add( "15" );

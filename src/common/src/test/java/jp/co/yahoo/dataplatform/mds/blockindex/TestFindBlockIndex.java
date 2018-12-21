@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -34,43 +38,59 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class TestFindBlockIndex{
 
-  @DataProvider(name = "T_get_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { "jp.co.yahoo.dataplatform.mds.blockindex.ByteRangeBlockIndex" , ByteRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.ShortRangeBlockIndex" , ShortRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.IntegerRangeBlockIndex" , IntegerRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.LongRangeBlockIndex" , LongRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex" , FloatRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex" , DoubleRangeBlockIndex.class },
-      { "jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex" , StringRangeBlockIndex.class },
-    };
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.ByteRangeBlockIndex" , ByteRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.ShortRangeBlockIndex" , ShortRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.IntegerRangeBlockIndex" , IntegerRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.LongRangeBlockIndex" , LongRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.FloatRangeBlockIndex" , FloatRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.DoubleRangeBlockIndex" , DoubleRangeBlockIndex.class ),
+      arguments( "jp.co.yahoo.dataplatform.mds.blockindex.StringRangeBlockIndex" , StringRangeBlockIndex.class )
+    );
   }
 
-  @Test( dataProvider = "T_get_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_get_1( final String sc , final Class c ) throws IOException{
     IBlockIndex obj = FindBlockIndex.get( sc );
     assertEquals( obj.getClass().getName() ,  c.getName() );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_2() throws IOException{
-    FindBlockIndex.get( null );
+    assertThrows( IOException.class ,
+      () -> {
+        FindBlockIndex.get( null );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_3() throws IOException{
-    FindBlockIndex.get( "" );
+    assertThrows( IOException.class ,
+      () -> {
+        FindBlockIndex.get( "" );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_4() throws IOException{
-    FindBlockIndex.get( "java.lang.String" );
+    assertThrows( IOException.class ,
+      () -> {
+        FindBlockIndex.get( "java.lang.String" );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_get_5() throws IOException{
-    FindBlockIndex.get( "___HOGEHOGE__" );
+    assertThrows( IOException.class ,
+      () -> {
+        FindBlockIndex.get( "___HOGEHOGE__" );
+      }
+    );
   }
 
 }
