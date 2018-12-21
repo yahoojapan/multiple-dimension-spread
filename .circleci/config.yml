@@ -1,7 +1,17 @@
-# Java Maven CircleCI 2.0 configuration file
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
-# Check https://circleci.com/docs/2.0/language-java/ for more details
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 version: 2
 jobs:
   build:
@@ -37,5 +47,44 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
+      # check 
+      - run: apache-rat:check
+
       # run tests!
       - run: mvn integration-test
+
+      # Save JUnit result.
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex "./src/.*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit     
+
+      # run clover
+      - run: mvn clean clover:setup test clover:aggregate clover:clover
+      - store_test_results:
+          path: ./target/site/clover
+      - store_artifacts:
+          path: ./target/site/clover 
+
+      # run site
+      - run: mvn clean site
+      - store_artifacts:
+          path: ./src/arrow/target/site
+      - store_artifacts:
+          path: ./src/common/target/site
+      - store_artifacts:
+          path: ./src/example/target/site
+      - store_artifacts:
+          path: ./src/hive/target/site
+      - store_artifacts:
+          path: ./src/legacy-maker/target/site
+      - store_artifacts:
+          path: ./src/schema/target/site
+      - store_artifacts:
+          path: ./src/tools/target/site
