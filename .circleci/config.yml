@@ -50,8 +50,8 @@ jobs:
       # check 
       - run: mvn apache-rat:check
 
-      # run tests!
-      - run: mvn integration-test
+      # run test and package
+      - run: mvn clean package
 
       # Save JUnit result.
       - run:
@@ -66,7 +66,7 @@ jobs:
           path: ~/junit     
 
       # run site
-      - run: mvn clean site
+      - run: mvn site
 
       - run:
           command: |
