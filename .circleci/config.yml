@@ -76,7 +76,7 @@ jobs:
             cp -r ./src/hive/target/site ~/site_hive
             cp -r ./src/legacy-maker/target/site ~/site_legacy-maker
             cp -r ./src/schema/target/site ~/site_schema
-            cp -r ./src/schema/target/tools ~/site_tools
+            cp -r ./src/tools/target/site ~/site_tools
 
       - store_artifacts:
           path: ~/site_arrow
