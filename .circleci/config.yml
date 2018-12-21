@@ -67,16 +67,17 @@ jobs:
 
       # run site
       - run: mvn clean site
+
       - run:
-        name: Save site
-        command: |
-          cp -r ./src/arrow/target/site ~/site_arrow
-          cp -r ./src/common/target/site ~/site_common
-          cp -r ./src/example/target/site ~/site_example
-          cp -r ./src/hive/target/site ~/site_hive
-          cp -r ./src/legacy-maker/target/site ~/site_legacy-maker
-          cp -r ./src/schema/target/site ~/site_schema
-          cp -r ./src/schema/target/tools ~/site_tools
+          command: |
+            cp -r ./src/arrow/target/site ~/site_arrow
+            cp -r ./src/common/target/site ~/site_common
+            cp -r ./src/example/target/site ~/site_example
+            cp -r ./src/hive/target/site ~/site_hive
+            cp -r ./src/legacy-maker/target/site ~/site_legacy-maker
+            cp -r ./src/schema/target/site ~/site_schema
+            cp -r ./src/schema/target/tools ~/site_tools
+
       - store_artifacts:
           path: ~/site_arrow
       - store_artifacts:
