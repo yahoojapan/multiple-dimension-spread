@@ -122,9 +122,9 @@
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <useSystemClassLoader>false</useSystemClassLoader>
-          <forkCount>3</forkCount>
+          <forkCount>2</forkCount>
           <reuseForks>true</reuseForks>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+          <argLine>-Xmx1536m -XX:MaxPermSize=512m</argLine>
         </configuration>
         <dependencies>
           <dependency>
