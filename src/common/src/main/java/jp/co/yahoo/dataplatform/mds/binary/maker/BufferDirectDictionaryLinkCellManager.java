@@ -72,11 +72,6 @@ public class BufferDirectDictionaryLinkCellManager implements IDictionaryCellMan
   }
 
   @Override
-  public int getMaxIndex(){
-    return indexSize - 1;
-  }
-
-  @Override
   public int size(){
     return indexSize;
   }

@@ -68,11 +68,6 @@ public class BufferDirectCellManager implements ICellManager {
   }
 
   @Override
-  public int getMaxIndex(){
-    return indexSize - 1;
-  }
-
-  @Override
   public int size(){
     return indexSize;
   }
