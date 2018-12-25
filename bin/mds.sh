@@ -28,7 +28,7 @@ function java_exec() {
   local JAVA_CMD="$JAVA_HOME/bin/java"
   if [ ! -e $JAVA_CMD ]; then JAVA_CMD=java; fi
 
-  local HEAP_SIZE=${HEAP_SIZE:-256m}
+  local HEAP_SIZE=${HEAP_SIZE:-512m}
   local JAVA_OPTS=${JAVA_OPTS:-}
 
   local dn
