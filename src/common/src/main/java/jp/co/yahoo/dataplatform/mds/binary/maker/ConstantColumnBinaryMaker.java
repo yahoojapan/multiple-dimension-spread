@@ -276,11 +276,6 @@ public class ConstantColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public int getMaxIndex(){
-      return length - 1;
-    }
-
-    @Override
     public int size(){
       return length;
     }

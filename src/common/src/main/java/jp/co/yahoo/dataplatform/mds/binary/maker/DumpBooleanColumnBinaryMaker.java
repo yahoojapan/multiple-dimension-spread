@@ -150,11 +150,6 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
     }
 
     @Override
-    public int getMaxIndex(){
-      return buffer.length - 1;
-    }
-
-    @Override
     public int size(){
       return buffer.length;
     }

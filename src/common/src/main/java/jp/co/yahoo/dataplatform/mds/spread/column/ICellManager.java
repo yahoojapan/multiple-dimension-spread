@@ -32,8 +32,6 @@ public interface ICellManager{
 
   ICell get( final int index , final ICell defaultCell );
 
-  int getMaxIndex();
-
   int size();
 
   void clear();
