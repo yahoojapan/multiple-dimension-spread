@@ -21,10 +21,16 @@ import java.io.IOException;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinary;
 import jp.co.yahoo.dataplatform.mds.binary.ColumnBinaryMakerConfig;
@@ -33,8 +39,6 @@ import jp.co.yahoo.dataplatform.mds.spread.column.ArrayColumn;
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 import jp.co.yahoo.dataplatform.mds.spread.column.IColumn;
 import jp.co.yahoo.dataplatform.mds.inmemory.IMemoryAllocator;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -150,7 +154,7 @@ public class TestDumpArrayColumnBinaryMaker{
 
     assertEquals( columnBinary.columnName , "array" );
     assertEquals( columnBinary.rowCount , 4 );
-    Assert.assertEquals( columnBinary.columnType , ColumnType.ARRAY );
+    assertEquals( columnBinary.columnType , ColumnType.ARRAY );
 
     IColumn decodeColumn = maker.toColumn( columnBinary );
     IColumn expandColumn = decodeColumn.getColumn(0);
@@ -186,7 +190,7 @@ public class TestDumpArrayColumnBinaryMaker{
 
     assertEquals( columnBinary.columnName , "array" );
     assertEquals( columnBinary.rowCount , 6 );
-    Assert.assertEquals( columnBinary.columnType , ColumnType.ARRAY );
+    assertEquals( columnBinary.columnType , ColumnType.ARRAY );
 
     TestArrayMemoryAllocator allocator = new TestArrayMemoryAllocator();
     maker.loadInMemoryStorage( columnBinary , allocator );

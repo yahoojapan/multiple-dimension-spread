@@ -17,10 +17,14 @@
  */
 package jp.co.yahoo.dataplatform.mds.spread.expand;
 
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,7 +38,7 @@ public class TestNotExpandFunction {
     private NotExpandFunction target = new NotExpandFunction();
     Spread spread = new Spread();
 
-    @BeforeTest
+    @BeforeEach
     public void setup() throws IOException {
         Map<String, Object> dataContainer = new HashMap<String, Object>();
         dataContainer.put("stringKey", new StringObj("val0"));

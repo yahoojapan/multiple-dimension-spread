@@ -22,14 +22,14 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import jp.co.yahoo.dataplatform.mds.compressor.DefaultCompressor;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import jp.co.yahoo.dataplatform.schema.parser.JacksonMessageReader;
 import jp.co.yahoo.dataplatform.schema.parser.IParser;
 
@@ -49,53 +49,53 @@ public class TestColumnBinaryMakerCustomConfigNode{
 
     ColumnBinaryMakerConfig rootConfig = configNode.getCurrentConfig();
     assertEquals( defaultConfig.compressorClass.getClass().getName() , rootConfig.compressorClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.unionMakerClass.getClass().getName() , rootConfig.unionMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.arrayMakerClass.getClass().getName() , rootConfig.arrayMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.spreadMakerClass.getClass().getName() , rootConfig.spreadMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.booleanMakerClass.getClass().getName() , rootConfig.booleanMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.byteMakerClass.getClass().getName() , rootConfig.byteMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.bytesMakerClass.getClass().getName() , rootConfig.bytesMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.doubleMakerClass.getClass().getName() , rootConfig.doubleMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.floatMakerClass.getClass().getName() , rootConfig.floatMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.integerMakerClass.getClass().getName() , rootConfig.integerMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.longMakerClass.getClass().getName() , rootConfig.longMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.shortMakerClass.getClass().getName() , rootConfig.shortMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.unionMakerClass.getClass().getName() , rootConfig.unionMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.arrayMakerClass.getClass().getName() , rootConfig.arrayMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.spreadMakerClass.getClass().getName() , rootConfig.spreadMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.booleanMakerClass.getClass().getName() , rootConfig.booleanMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.byteMakerClass.getClass().getName() , rootConfig.byteMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.bytesMakerClass.getClass().getName() , rootConfig.bytesMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.doubleMakerClass.getClass().getName() , rootConfig.doubleMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.floatMakerClass.getClass().getName() , rootConfig.floatMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.integerMakerClass.getClass().getName() , rootConfig.integerMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.longMakerClass.getClass().getName() , rootConfig.longMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.shortMakerClass.getClass().getName() , rootConfig.shortMakerClass.getClass().getName() );
 
     assertEquals( configNode.getColumnName() , "root" );
 
     ColumnBinaryMakerCustomConfigNode pagedataConfigNode = configNode.getChildConfigNode( "pagedata" );
     ColumnBinaryMakerConfig pagedataConfig = pagedataConfigNode.getCurrentConfig();
     assertEquals( defaultConfig.compressorClass.getClass().getName() , pagedataConfig.compressorClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.unionMakerClass.getClass().getName() , pagedataConfig.unionMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.arrayMakerClass.getClass().getName() , pagedataConfig.arrayMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.spreadMakerClass.getClass().getName() , pagedataConfig.spreadMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.booleanMakerClass.getClass().getName() , pagedataConfig.booleanMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.byteMakerClass.getClass().getName() , pagedataConfig.byteMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.bytesMakerClass.getClass().getName() , pagedataConfig.bytesMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.doubleMakerClass.getClass().getName() , pagedataConfig.doubleMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.floatMakerClass.getClass().getName() , pagedataConfig.floatMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.integerMakerClass.getClass().getName() , pagedataConfig.integerMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.longMakerClass.getClass().getName() , pagedataConfig.longMakerClass.getClass().getName() );
-    Assert.assertEquals( defaultConfig.shortMakerClass.getClass().getName() , pagedataConfig.shortMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.unionMakerClass.getClass().getName() , pagedataConfig.unionMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.arrayMakerClass.getClass().getName() , pagedataConfig.arrayMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.spreadMakerClass.getClass().getName() , pagedataConfig.spreadMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.booleanMakerClass.getClass().getName() , pagedataConfig.booleanMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.byteMakerClass.getClass().getName() , pagedataConfig.byteMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.bytesMakerClass.getClass().getName() , pagedataConfig.bytesMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.doubleMakerClass.getClass().getName() , pagedataConfig.doubleMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.floatMakerClass.getClass().getName() , pagedataConfig.floatMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.integerMakerClass.getClass().getName() , pagedataConfig.integerMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.longMakerClass.getClass().getName() , pagedataConfig.longMakerClass.getClass().getName() );
+    assertEquals( defaultConfig.shortMakerClass.getClass().getName() , pagedataConfig.shortMakerClass.getClass().getName() );
 
     ColumnBinaryMakerCustomConfigNode queryConfigNode = pagedataConfigNode.getChildConfigNode( "query" );
     ColumnBinaryMakerConfig queryConfig = queryConfigNode.getCurrentConfig();
     assertEquals( DefaultCompressor.class.getName() , queryConfig.compressorClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.unionMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.arrayMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.spreadMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.booleanMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.byteMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.bytesMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.doubleMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.floatMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.integerMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.longMakerClass.getClass().getName() );
-    Assert.assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.shortMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.unionMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.arrayMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.spreadMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.booleanMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.byteMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.bytesMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.doubleMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.floatMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.integerMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.longMakerClass.getClass().getName() );
+    assertEquals( UnsupportedColumnBinaryMaker.class.getName() , queryConfig.shortMakerClass.getClass().getName() );
        
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_newInstance_2() throws IOException{
     InputStream in = this.getClass().getClassLoader().getResource( "binary/TestColumnBinaryMakerCustomConfigNode_2.json" ).openStream();
     BufferedReader br = new BufferedReader( new InputStreamReader( in ) );
@@ -103,11 +103,14 @@ public class TestColumnBinaryMakerCustomConfigNode{
     IParser jsonParser = jacksonReader.create( br.readLine() );
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
-    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser );
-
+    assertThrows( IOException.class , 
+      () -> { 
+        ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser );
+      }
+    );
   }
 
-  @Test( expectedExceptions = { IOException.class } )
+  @Test
   public void T_newInstance_3() throws IOException{
     InputStream in = this.getClass().getClassLoader().getResource( "binary/TestColumnBinaryMakerCustomConfigNode_3.json" ).openStream();
     BufferedReader br = new BufferedReader( new InputStreamReader( in ) );
@@ -115,8 +118,11 @@ public class TestColumnBinaryMakerCustomConfigNode{
     IParser jsonParser = jacksonReader.create( br.readLine() );
 
     ColumnBinaryMakerConfig defaultConfig = new ColumnBinaryMakerConfig();
-    ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser );
-
+    assertThrows( IOException.class ,
+      () -> {
+        ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( defaultConfig , jsonParser );
+      }
+    );
   }
 
   @Test
@@ -125,20 +131,5 @@ public class TestColumnBinaryMakerCustomConfigNode{
     ColumnBinaryMakerCustomConfigNode configNode = new ColumnBinaryMakerCustomConfigNode( "root" , defaultConfig );
     assertNull( configNode.getChildConfigNode( "hoge" ) );
   }
-
-/*
-  public ColumnBinaryMakerConfig getCurrentConfig(){
-    return currentConfig;
-  }
-
-  public ColumnBinaryMakerCustomConfigNode getChildConfigNode( final String columnName ){
-    return childConfigNode.get( columnName );
-  }
-
-  public String getColumnName(){
-    return currentColumnName;
-  }
-*/
-
 
 }

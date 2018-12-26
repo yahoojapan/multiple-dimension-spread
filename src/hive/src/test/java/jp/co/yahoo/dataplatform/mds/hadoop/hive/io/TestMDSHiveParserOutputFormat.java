@@ -19,10 +19,15 @@ package jp.co.yahoo.dataplatform.mds.hadoop.hive.io;
 
 import java.io.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.*;
 
@@ -33,10 +38,14 @@ public class TestMDSHiveParserOutputFormat{
     new TestMDSHiveParserOutputFormat();
   }
 
-  @Test( expectedExceptions = { RuntimeException.class } )
+  @Test
   public void T_getRecordWriter() throws IOException{
     MDSHiveParserOutputFormat a = new MDSHiveParserOutputFormat();
-    a.getRecordWriter( null , null , "hoge" , null );
+    assertThrows( RuntimeException.class ,
+      () -> {
+        a.getRecordWriter( null , null , "hoge" , null );
+      }
+    );
   }
 
 }

@@ -21,11 +21,15 @@ import java.io.IOException;
 
 import java.util.*;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -39,59 +43,58 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestNullCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createBooleanTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" ) },
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createBooleanTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" ) ),
 
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createShortTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createIntTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) },
-      { createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) },
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeLongColumnBinaryMaker" ) ),
+      arguments( createLongTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDumpLongColumnBinaryMaker" ) ),
 
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) },
-      { createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) },
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpFloatColumnBinaryMaker" ) ),
+      arguments( createFloatTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeFloatColumnBinaryMaker" ) ),
 
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) },
-      { createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) },
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.RangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeRangeDumpDoubleColumnBinaryMaker" ) ),
+      arguments( createDoubleTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeDoubleColumnBinaryMaker" ) ),
 
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) },
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsafeOptimizeStringColumnBinaryMaker" ) ),
 
-      { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },
+      arguments( createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) ),
 
-      { createArrayTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpArrayColumnBinaryMaker" ) },
+      arguments( createArrayTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpArrayColumnBinaryMaker" ) ),
 
-      { createSpreadTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpSpreadColumnBinaryMaker" ) },
+      arguments( createSpreadTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpSpreadColumnBinaryMaker" ) ),
 
-      { createNullTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsupportedColumnBinaryMaker" ) },
-    };
+      arguments( createNullTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.UnsupportedColumnBinaryMaker" ) )
+    );
   }
 
-  private IColumn createByteTestData( final String targetClassName ) throws IOException{
+  private static IColumn createByteTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTE , "column" );
     column.add( ColumnType.BYTE , new ByteObj( (byte)-10 ) , 0 );
     column.add( ColumnType.BYTE , new ByteObj( (byte)-11 ) , 1 );
@@ -122,7 +125,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createShortTestData( final String targetClassName ) throws IOException{
+  private static IColumn createShortTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.SHORT , "column" );
     column.add( ColumnType.SHORT , new ShortObj( (short)-10 ) , 0 );
     column.add( ColumnType.SHORT , new ShortObj( (short)-11 ) , 1 );
@@ -153,7 +156,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createIntTestData( final String targetClassName ) throws IOException{
+  private static IColumn createIntTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.INTEGER , "column" );
     column.add( ColumnType.INTEGER , new IntegerObj( -10 ) , 0 );
     column.add( ColumnType.INTEGER , new IntegerObj( -11 ) , 1 );
@@ -184,7 +187,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createLongTestData( final String targetClassName ) throws IOException{
+  private static IColumn createLongTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.LONG , "column" );
     column.add( ColumnType.LONG , new LongObj( -10 ) , 0 );
     column.add( ColumnType.LONG , new LongObj( -11 ) , 1 );
@@ -215,7 +218,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createFloatTestData( final String targetClassName ) throws IOException{
+  private static IColumn createFloatTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.FLOAT , "column" );
     column.add( ColumnType.FLOAT , new FloatObj( -10.0f ) , 0 );
     column.add( ColumnType.FLOAT , new FloatObj( -11.0f ) , 1 );
@@ -246,7 +249,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createDoubleTestData( final String targetClassName ) throws IOException{
+  private static IColumn createDoubleTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "column" );
     column.add( ColumnType.DOUBLE , new DoubleObj( -10.0d ) , 0 );
     column.add( ColumnType.DOUBLE , new DoubleObj( -11.0d ) , 1 );
@@ -277,7 +280,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createStringTestData( final String targetClassName ) throws IOException{
+  private static IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "-10" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "-11" ) , 1 );
@@ -308,7 +311,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  private static IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "-10".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "-11".getBytes() ) , 1 );
@@ -339,7 +342,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createBooleanTestData( final String targetClassName ) throws IOException{
+  private static IColumn createBooleanTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BOOLEAN , "column" );
     column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 0 );
     column.add( ColumnType.BOOLEAN , new BooleanObj( false ) , 1 );
@@ -370,7 +373,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createArrayTestData( final String targetClassName ) throws IOException{
+  private static IColumn createArrayTestData( final String targetClassName ) throws IOException{
     List<Object> data = new ArrayList<Object>();
     data.add( new BooleanObj( true ) );
     IColumn column = new ArrayColumn( "column" );
@@ -403,7 +406,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createSpreadTestData( final String targetClassName ) throws IOException{
+  private static IColumn createSpreadTestData( final String targetClassName ) throws IOException{
     Map<Object,Object> data = new HashMap<Object,Object>();
     data.put( "t" , new BooleanObj( true ) );
     IColumn column = new SpreadColumn( "column" );
@@ -436,7 +439,7 @@ public class TestNullCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  private IColumn createNullTestData( final String targetClassName ) throws IOException{
+  private static IColumn createNullTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BOOLEAN , "column" );
     column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 0 );
     column.add( ColumnType.BOOLEAN , new BooleanObj( false ) , 1 );
@@ -476,7 +479,8 @@ public class TestNullCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_null_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 10 , 11 , 12 , 13 , 14 , 15 , 16 ,17 , 18 , 19 };
     IFilter filter = new NullFilter( column.getColumnType() );
@@ -491,7 +495,8 @@ public class TestNullCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_null_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 10 , 11 , 12 , 13 , 14 , 15 , 16 ,17 , 18 , 19 , 30 , 31 , 32 , 33 , 34 };
     IFilter filter = new NullFilter( column.getColumnType() );
@@ -506,7 +511,8 @@ public class TestNullCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notnull_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new NotNullFilter( column.getColumnType() );
@@ -521,7 +527,8 @@ public class TestNullCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_notnull_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 20 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 };
     IFilter filter = new NotNullFilter( column.getColumnType() );

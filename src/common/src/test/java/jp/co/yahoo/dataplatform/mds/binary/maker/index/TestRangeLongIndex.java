@@ -25,11 +25,15 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNull;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.binary.maker.IDicManager;
 import jp.co.yahoo.dataplatform.mds.spread.column.*;
@@ -42,59 +46,59 @@ import jp.co.yahoo.dataplatform.mds.spread.column.index.ICellIndex;
 
 public class TestRangeLongIndex{
 
-  private final boolean[] dummy = new boolean[0];
+  private static final boolean[] dummy = new boolean[0];
 
-  @DataProvider(name = "T_filter_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)21 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)9 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)15 ) ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)10 ) ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)20 ) ) , null },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)21 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)9 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)15 ) ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)10 ) ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)20 ) ) , null ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)9 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)10 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)11 ) ) , null },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)9 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)10 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)11 ) ) , null ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)9 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)10 ) ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)11 ) ) , null },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)9 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)10 ) ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)11 ) ) , null ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)21 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)20 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)19 ) ) , null },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)21 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)20 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)19 ) ) , null ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)21 ) ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)20 ) ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)19 ) ) , null },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)21 ) ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)20 ) ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)19 ) ) , null ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , dummy },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , dummy },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , dummy ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , dummy ),
 
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , null },
-      { new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , null },
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , null ),
+      arguments( new RangeLongIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , null )
 
-    };
+    );
   }
 
-  @Test( dataProvider = "T_filter_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_filter_1( final ICellIndex cIndex , final IFilter filter , final boolean[] result ) throws IOException{
     boolean[] r = cIndex.filter( filter , new boolean[0] );
     if( r == null ){

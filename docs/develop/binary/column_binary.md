@@ -280,7 +280,3 @@ Although it is not tested until its own implementation, there are test cases abs
 If you are developing in common repository, please use it in the following directory according to the column type.
 
 [Common unit test](../../../src/common/src/test/java/jp/co/yahoo/dataplatform/mds/blackbox)
-
-If you are developing in another repository please inherit it and use it.
-
-[For example](../../../src/example/src/test/java/jp/co/yahoo/dataplatform/mds/example/blackbox/TestExampleIntegerPrimitiveColumn.java)

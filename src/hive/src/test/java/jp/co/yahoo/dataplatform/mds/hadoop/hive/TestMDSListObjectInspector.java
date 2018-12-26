@@ -24,12 +24,18 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.hadoop.hive.io.ColumnAndIndex;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
-import org.testng.annotations.Test;
 
 import org.apache.hadoop.io.*;
 

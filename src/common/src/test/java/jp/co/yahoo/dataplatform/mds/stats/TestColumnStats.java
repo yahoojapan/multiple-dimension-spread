@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.stats;
 
 import java.util.Map;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
 
@@ -42,26 +46,25 @@ public class TestColumnStats {
     return stats;
   }
 
-  @DataProvider(name = "T_addSummaryStats_1")
-  public Object[][] data() {
-    return new Object[][] {
-      { ColumnType.STRING , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.INTEGER , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.UNION , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.ARRAY , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.SPREAD , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.BOOLEAN , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.BYTE , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.BYTES , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.DOUBLE , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.FLOAT , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.LONG , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.SHORT , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.NULL , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.EMPTY_ARRAY , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.EMPTY_SPREAD , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-      { ColumnType.UNKNOWN , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) }, 
-    };
+  public static Stream<Arguments> data1(){
+    return Stream.of(
+      arguments( ColumnType.STRING , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.INTEGER , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.UNION , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.ARRAY , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.SPREAD , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.BOOLEAN , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.BYTE , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.BYTES , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.DOUBLE , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.FLOAT , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.LONG , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.SHORT , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.NULL , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.EMPTY_ARRAY , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.EMPTY_SPREAD , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ), 
+      arguments( ColumnType.UNKNOWN , new SummaryStats( 10 , 100 , 50 , 100 , 10 ) ) 
+    );
   }
 
   @Test
@@ -69,7 +72,8 @@ public class TestColumnStats {
     ColumnStats stats = new ColumnStats( null );
   }
 
-  @Test( dataProvider = "T_addSummaryStats_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_addSummaryStats_1( final ColumnType columnType , final SummaryStats summaryStats ){
     ColumnStats stats = new ColumnStats( "root" );
     stats.addSummaryStats( columnType , summaryStats );
@@ -81,7 +85,8 @@ public class TestColumnStats {
     assertEquals( result.getRealDataSize() , 50 );
   }
 
-  @Test( dataProvider = "T_addSummaryStats_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_mergeSummaryStats_1( final ColumnType columnType , final SummaryStats summaryStats ){
     ColumnStats stats = new ColumnStats( "root" );
     stats.addSummaryStats( columnType , summaryStats );
@@ -94,7 +99,8 @@ public class TestColumnStats {
     assertEquals( result.getRealDataSize() , 100 );
   }
 
-  @Test( dataProvider = "T_addSummaryStats_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_mergeSummaryStats_2( final ColumnType columnType , final SummaryStats summaryStats ){
     ColumnStats stats = new ColumnStats( "root" );
     stats.mergeSummaryStats( columnType , summaryStats );

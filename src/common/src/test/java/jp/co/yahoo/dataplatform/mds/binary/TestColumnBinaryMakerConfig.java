@@ -18,38 +18,41 @@
 package jp.co.yahoo.dataplatform.mds.binary;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import jp.co.yahoo.dataplatform.mds.binary.maker.*;
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.mds.spread.column.ColumnType;
+import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestColumnBinaryMakerConfig{
 
-  @DataProvider(name = "D_T_getColumnMaker_1")
-  public Object[][] D_T_addRowNotException(){
-    return new Object[][]{
-      { ColumnType.UNION , DumpUnionColumnBinaryMaker.class.getName() },
-      { ColumnType.ARRAY , DumpArrayColumnBinaryMaker.class.getName() },
-      { ColumnType.SPREAD , DumpSpreadColumnBinaryMaker.class.getName() },
-      { ColumnType.BOOLEAN , DumpBooleanColumnBinaryMaker.class.getName() },
-      { ColumnType.BYTE , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() },
-      { ColumnType.BYTES , DumpBytesColumnBinaryMaker.class.getName() },
-      { ColumnType.DOUBLE , UnsafeRangeDumpDoubleColumnBinaryMaker.class.getName() },
-      { ColumnType.FLOAT , UnsafeRangeDumpFloatColumnBinaryMaker.class.getName() },
-      { ColumnType.INTEGER , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() },
-      { ColumnType.LONG , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() },
-      { ColumnType.SHORT , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() },
-      { ColumnType.STRING , UnsafeOptimizeDumpStringColumnBinaryMaker.class.getName() },
-      { ColumnType.NULL , UnsupportedColumnBinaryMaker.class.getName() },
-      { ColumnType.EMPTY_ARRAY , UnsupportedColumnBinaryMaker.class.getName() },
-      { ColumnType.EMPTY_SPREAD , UnsupportedColumnBinaryMaker.class.getName() },
-      { ColumnType.UNKNOWN , UnsupportedColumnBinaryMaker.class.getName() },
-    };
+  private static Stream<Arguments> parametersForT_getColumnMaker_1(){
+    return Stream.of(
+      arguments( ColumnType.UNION , DumpUnionColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.ARRAY , DumpArrayColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.SPREAD , DumpSpreadColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.BOOLEAN , DumpBooleanColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.BYTE , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.BYTES , DumpBytesColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.DOUBLE , UnsafeRangeDumpDoubleColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.FLOAT , UnsafeRangeDumpFloatColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.INTEGER , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.LONG , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.SHORT , UnsafeOptimizeDumpLongColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.STRING , UnsafeOptimizeDumpStringColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.NULL , UnsupportedColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.EMPTY_ARRAY , UnsupportedColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.EMPTY_SPREAD , UnsupportedColumnBinaryMaker.class.getName() ),
+      arguments( ColumnType.UNKNOWN , UnsupportedColumnBinaryMaker.class.getName() )
+    );
   }
 
   @Test
@@ -62,7 +65,8 @@ public class TestColumnBinaryMakerConfig{
     new ColumnBinaryMakerConfig( new ColumnBinaryMakerConfig() );
   }
 
-  @Test(dataProvider = "D_T_getColumnMaker_1")
+  @ParameterizedTest
+  @MethodSource( "parametersForT_getColumnMaker_1" )
   public void T_getColumnMaker_1( final ColumnType columnType , final String className ) throws IOException{
     ColumnBinaryMakerConfig config = new ColumnBinaryMakerConfig();
     IColumnBinaryMaker maker = config.getColumnMaker( columnType );

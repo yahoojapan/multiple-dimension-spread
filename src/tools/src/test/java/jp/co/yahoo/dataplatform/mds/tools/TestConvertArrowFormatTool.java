@@ -31,8 +31,15 @@ import java.util.List;
 import java.nio.channels.Channels;
 import java.nio.channels.SeekableByteChannel;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.FieldVector;
@@ -52,10 +59,6 @@ import jp.co.yahoo.dataplatform.mds.MDSWriter;
 import jp.co.yahoo.dataplatform.mds.MDSReader;
 import jp.co.yahoo.dataplatform.mds.MDSArrowReader;
 import jp.co.yahoo.dataplatform.mds.spread.Spread;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 
 public class TestConvertArrowFormatTool{
 

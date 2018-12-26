@@ -20,16 +20,19 @@ package jp.co.yahoo.dataplatform.mds.compressor;
 import java.io.IOException;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNull;
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class TestCompressor {
 
-  private String[] getCompressorClass(){
+  private static String[] getCompressorClass(){
     return new String[]{
       DefaultCompressor.class.getName(),
       GzipCompressor.class.getName(),
@@ -43,18 +46,18 @@ public class TestCompressor {
     };
   }
 
-  @DataProvider(name = "T_compress_1")
-  public Object[][] data() throws IOException{
-    return new Object[][] {
-      { getCompressorClass() , "abcde".getBytes() , 0 , 5 , "abcde".getBytes() },
-      { getCompressorClass() , "abcde".getBytes() , 0 , 1 , "a".getBytes() },
-      { getCompressorClass() , "abcde".getBytes() , 4 , 1 , "e".getBytes() },
-      { getCompressorClass() , "abcde".getBytes() , 1 , 3 , "bcd".getBytes() },
-      { getCompressorClass() , "abcde".getBytes() , 0 , 0 , new byte[0] },
-    };
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( getCompressorClass() , "abcde".getBytes() , 0 , 5 , "abcde".getBytes() ),
+      arguments( getCompressorClass() , "abcde".getBytes() , 0 , 1 , "a".getBytes() ),
+      arguments( getCompressorClass() , "abcde".getBytes() , 4 , 1 , "e".getBytes() ),
+      arguments( getCompressorClass() , "abcde".getBytes() , 1 , 3 , "bcd".getBytes() ),
+      arguments( getCompressorClass() , "abcde".getBytes() , 0 , 0 , new byte[0] )
+    );
   }
 
-  @Test( dataProvider = "T_compress_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compress_1( final String[] classNames , final byte[] compressTarget , final int start , final int length , final byte[] success ) throws IOException{
     for( int i = 0 ; i < classNames.length ; i++ ){
       ICompressor compressor = FindCompressor.get( classNames[i] );
@@ -65,7 +68,8 @@ public class TestCompressor {
     }
   }
 
-  @Test( dataProvider = "T_compress_1")
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_compressAndSet_1( final String[] classNames , final byte[] compressTarget , final int start , final int length , final byte[] success ) throws IOException{
     for( int i = 0 ; i < classNames.length ; i++ ){
       ICompressor compressor = FindCompressor.get( classNames[i] );

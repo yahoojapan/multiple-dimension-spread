@@ -1,13 +1,9 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:8u171-jdk
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -18,7 +14,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      MAVEN_OPTS=-Xmx3600m 
     
     steps:
       - checkout
@@ -37,5 +33,48 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
-      # run tests!
-      - run: mvn integration-test
+      # check 
+      - run: mvn apache-rat:check
+
+      # run test and package
+      - run: mvn clean package
+
+      # Save JUnit result.
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex "./src/.*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit     
+
+      # run site
+      - run: mvn site
+
+      - run:
+          command: |
+            cp -r ./src/arrow/target/site ~/site_arrow
+            cp -r ./src/common/target/site ~/site_common
+            cp -r ./src/example/target/site ~/site_example
+            cp -r ./src/hive/target/site ~/site_hive
+            cp -r ./src/legacy-maker/target/site ~/site_legacy-maker
+            cp -r ./src/schema/target/site ~/site_schema
+            cp -r ./src/tools/target/site ~/site_tools
+
+      - store_artifacts:
+          path: ~/site_arrow
+      - store_artifacts:
+          path: ~/site_common
+      - store_artifacts:
+          path: ~/site_example
+      - store_artifacts:
+          path: ~/site_hive
+      - store_artifacts:
+          path: ~/site_legacy-maker
+      - store_artifacts:
+          path: ~/site_schema
+      - store_artifacts:
+          path: ~/site_tools

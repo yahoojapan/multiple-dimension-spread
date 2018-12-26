@@ -18,15 +18,20 @@
 package jp.co.yahoo.dataplatform.mds.blackbox;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import java.util.Set;
 import java.util.HashSet;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -40,20 +45,19 @@ import jp.co.yahoo.dataplatform.mds.binary.maker.*;
 
 public class TestBooleanCellIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    return new Object[][] {
-      { createBooleanTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" ) },
+  public static Stream<Arguments> data1() throws IOException{
+    return Stream.of(
+      arguments( createBooleanTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBooleanColumnBinaryMaker" ) ),
 
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) },
-      { createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) },
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpStringColumnBinaryMaker" ) ),
+      arguments( createStringTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeIndexDumpStringColumnBinaryMaker" ) ),
 
-      { createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) },
-    };
+      arguments( createBytesTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.DumpBytesColumnBinaryMaker" ) ) 
+    );
   }
 
-  public IColumn createBooleanTestData( final String targetClassName ) throws IOException{
+  public static IColumn createBooleanTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BOOLEAN , "column" );
     column.add( ColumnType.BOOLEAN , new BooleanObj( true ) , 0 );
     column.add( ColumnType.BOOLEAN , new BooleanObj( false ) , 1 );
@@ -84,7 +88,7 @@ public class TestBooleanCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createStringTestData( final String targetClassName ) throws IOException{
+  public static IColumn createStringTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.STRING , "column" );
     column.add( ColumnType.STRING , new StringObj( "true" ) , 0 );
     column.add( ColumnType.STRING , new StringObj( "false" ) , 1 );
@@ -115,7 +119,7 @@ public class TestBooleanCellIndex{
     return maker.toColumn( columnBinary );
   }
 
-  public IColumn createBytesTestData( final String targetClassName ) throws IOException{
+  public static IColumn createBytesTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTES , "column" );
     column.add( ColumnType.BYTES , new BytesObj( "true".getBytes() ) , 0 );
     column.add( ColumnType.BYTES , new BytesObj( "false".getBytes() ) , 1 );
@@ -155,7 +159,8 @@ public class TestBooleanCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_match_1( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 0 , 2 , 6 , 8 , 20 , 22 , 24 , 26 , 28 };
     IFilter filter = new BooleanFilter( true );
@@ -170,7 +175,8 @@ public class TestBooleanCellIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_match_2( final IColumn column ) throws IOException{
     int[] mustReadIndex = { 1 , 3 , 5 , 7 , 9 , 21 , 23 , 25 , 27 , 29 };
     IFilter filter = new BooleanFilter( false );

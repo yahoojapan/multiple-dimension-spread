@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -34,54 +38,53 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class TestLongRangeBlockIndex{
 
-  @DataProvider(name = "T_canBlockSkip_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)21 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)9 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)15 ) ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)10 ) ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)20 ) ) , false },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)21 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)9 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)15 ) ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)10 ) ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.EQUAL , new LongObj( (long)20 ) ) , false ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)9 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)10 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)11 ) ) , false },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)9 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)10 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LT , new LongObj( (long)11 ) ) , false ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)9 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)10 ) ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)11 ) ) , false },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)9 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)10 ) ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.LE , new LongObj( (long)11 ) ) , false ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)21 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)20 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)19 ) ) , false },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)21 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)20 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GT , new LongObj( (long)19 ) ) , false ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)21 ) ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)20 ) ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)19 ) ) , false },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)21 ) ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)20 ) ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberFilter( NumberFilterType.GE , new LongObj( (long)19 ) ) , false ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , true },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , true },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , true ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( false , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , true ),
 
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , false },
-      { new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , false },
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)5 ) , true , new LongObj( (long)15 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)21 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)25 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)20 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)10 ) , true , new LongObj( (long)10 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)20 ) , true , new LongObj( (long)20 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)15 ) , true , new LongObj( (long)16 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)9 ) , true , new LongObj( (long)9 ) , true ) , false ),
+      arguments( new LongRangeBlockIndex( (long)10 , (long)20 ) , new NumberRangeFilter( true , new LongObj( (long)21 ) , true , new LongObj( (long)21 ) , true ) , false )
 
-    };
+    );
   }
 
   @Test
@@ -171,7 +174,8 @@ public class TestLongRangeBlockIndex{
     assertEquals( bIndex2.getMax() , bIndex.getMax() );
   }
 
-  @Test( dataProvider = "T_canBlockSkip_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
     if( result ){
       assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );

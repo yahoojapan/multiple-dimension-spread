@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -31,54 +35,53 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.*;
 
 public class TestStringRangeBlockIndex{
 
-  @DataProvider(name = "T_canBlockSkip_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "21" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "09" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "15" ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "10" ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "20" ) , false },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "21" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "09" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "15" ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "10" ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new PerfectMatchStringFilter( "20" ) , false ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter("09" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter( "10" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter( "11" ) , false },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter("09" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter( "10" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LtStringCompareFilter( "11" ) , false ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "09" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "10" ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "11" ) , false },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "09" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "10" ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new LeStringCompareFilter( "11" ) , false ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "21" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "20" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "19" ) , false },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "21" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "20" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GtStringCompareFilter( "19" ) , false ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "21" ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "20" ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "19" ) , false },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "21" ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "20" ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new GeStringCompareFilter( "19" ) , false ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true ) , false },
-      { new StringRangeBlockIndex( "00" , "20" ) , new RangeStringCompareFilter( "05" , true , "15" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "21" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "25" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "20" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "20" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "16" , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "09" , true , "09" , true ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "21" , true , "21" , true ) , true },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "00" , "20" ) , new RangeStringCompareFilter( "05" , true , "15" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "21" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "25" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "20" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "20" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "16" , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "09" , true , "09" , true ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "21" , true , "21" , true ) , true ),
 
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "05" , true , "15" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "21" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "25" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "20" , true , true ) , true },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "20" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "16" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "09" , true , "09" , true , true ) , false },
-      { new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "21" , true , "21" , true , true ) , false },
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "05" , true , "15" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "21" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "25" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "20" , true , true ) , true ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "10" , true , "10" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "20" , true , "20" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "15" , true , "16" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "09" , true , "09" , true , true ) , false ),
+      arguments( new StringRangeBlockIndex( "10" , "20" ) , new RangeStringCompareFilter( "21" , true , "21" , true , true ) , false )
 
-    };
+    );
   }
 
   @Test
@@ -168,7 +171,8 @@ public class TestStringRangeBlockIndex{
     assertEquals( bIndex2.getMax() , bIndex.getMax() );
   }
 
-  @Test( dataProvider = "T_canBlockSkip_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
     if( result ){
       assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );

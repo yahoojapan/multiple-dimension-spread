@@ -21,9 +21,15 @@ import java.io.IOException;
 
 import java.util.*;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.config.Configuration;
 
@@ -38,14 +44,7 @@ import jp.co.yahoo.dataplatform.mds.blockindex.*;
 
 public class TestNumberBlockIndex{
 
-  @DataProvider(name = "target_class")
-  public Object[][] data1() throws IOException{
-    List<Object[]> result = new ArrayList<Object[]>();
-    result.addAll( Arrays.asList(byteData1()) );
-    return result.toArray( new Object[0][] );
-  }
-
-  public IBlockIndex[] createBlockIndex() throws IOException{
+  public static IBlockIndex[] createBlockIndex() throws IOException{
     return  new IBlockIndex[] {
       createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeDumpLongColumnBinaryMaker" ) ,
       createByteTestData( "jp.co.yahoo.dataplatform.mds.binary.maker.OptimizeLongColumnBinaryMaker" ) ,
@@ -81,7 +80,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public Object[][] byteData1() throws IOException{
+  public static Stream<Arguments> data1() throws IOException{
     IBlockIndex[] byteClassNames = createBlockIndex();
 
     Object[] filter = new Object[6];
@@ -92,19 +91,17 @@ public class TestNumberBlockIndex{
     filter[4] = createFloatFilter(); 
     filter[5] = createDoubleFilter(); 
 
-    Object[][] result = new Object[byteClassNames.length * filter.length][];
+    Arguments[] result = new Arguments[byteClassNames.length * filter.length];
     for( int i = 0 ; i < byteClassNames.length ; i++ ){
       int index = i * filter.length;
       for( int ii = 0 ; ii < filter.length ; ii++ ){
-        result[index+ii] = new Object[2];
-        result[index+ii][0] = byteClassNames[i];
-        result[index+ii][1] = filter[ii];
+        result[index+ii] = arguments( byteClassNames[i] , filter[ii] );
       }
     }
-    return result;
+    return Stream.of( result );
   }
 
-  public IFilter[] createByteFilter() throws IOException{
+  public static IFilter[] createByteFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)5 ) ),
       new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)10 ) ),
@@ -132,7 +129,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IFilter[] createShortFilter() throws IOException{
+  public static IFilter[] createShortFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new ShortObj( (short)5 ) ),
       new NumberFilter( NumberFilterType.EQUAL , new ShortObj( (short)10 ) ),
@@ -160,7 +157,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IFilter[] createIntegerFilter() throws IOException{
+  public static IFilter[] createIntegerFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( 5 ) ),
       new NumberFilter( NumberFilterType.EQUAL , new IntegerObj( 10 ) ),
@@ -188,7 +185,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IFilter[] createLongFilter() throws IOException{
+  public static IFilter[] createLongFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new LongObj( 5 ) ),
       new NumberFilter( NumberFilterType.EQUAL , new LongObj( 10 ) ),
@@ -216,7 +213,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IFilter[] createFloatFilter() throws IOException{
+  public static IFilter[] createFloatFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new FloatObj( 5f ) ),
       new NumberFilter( NumberFilterType.EQUAL , new FloatObj( 10f ) ),
@@ -244,7 +241,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IFilter[] createDoubleFilter() throws IOException{
+  public static IFilter[] createDoubleFilter() throws IOException{
     return new IFilter[]{
       new NumberFilter( NumberFilterType.EQUAL , new DoubleObj( 5d ) ),
       new NumberFilter( NumberFilterType.EQUAL , new DoubleObj( 10d ) ),
@@ -272,7 +269,7 @@ public class TestNumberBlockIndex{
     };
   }
 
-  public IBlockIndex createByteTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createByteTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.BYTE , "column" );
     column.add( ColumnType.BYTE , new ByteObj( (byte)-10 ) , 0 );
     column.add( ColumnType.BYTE , new ByteObj( (byte)10 ) , 1 );
@@ -308,7 +305,7 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  public IBlockIndex createShortTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createShortTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.SHORT , "column" );
     column.add( ColumnType.SHORT , new ShortObj( (short)-10 ) , 0 );
     column.add( ColumnType.SHORT , new ShortObj( (short)10 ) , 1 );
@@ -344,7 +341,7 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  public IBlockIndex createIntegerTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createIntegerTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.INTEGER , "column" );
     column.add( ColumnType.INTEGER , new IntegerObj( (int)-10 ) , 0 );
     column.add( ColumnType.INTEGER , new IntegerObj( (int)10 ) , 1 );
@@ -380,7 +377,7 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  public IBlockIndex createLongTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createLongTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.LONG , "column" );
     column.add( ColumnType.LONG , new LongObj( (long)-10 ) , 0 );
     column.add( ColumnType.LONG , new LongObj( (long)10 ) , 1 );
@@ -416,7 +413,7 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  public IBlockIndex createFloatTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createFloatTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.FLOAT , "column" );
     column.add( ColumnType.FLOAT , new FloatObj( (float)-10 ) , 0 );
     column.add( ColumnType.FLOAT , new FloatObj( (float)10 ) , 1 );
@@ -452,7 +449,7 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  public IBlockIndex createDoubleTestData( final String targetClassName ) throws IOException{
+  public static IBlockIndex createDoubleTestData( final String targetClassName ) throws IOException{
     IColumn column = new PrimitiveColumn( ColumnType.DOUBLE , "column" );
     column.add( ColumnType.DOUBLE , new DoubleObj( (double)-10 ) , 0 );
     column.add( ColumnType.DOUBLE , new DoubleObj( (double)10 ) , 1 );
@@ -488,7 +485,8 @@ public class TestNumberBlockIndex{
     return node.getChildNode( "column" ).getBlockIndex();
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 2 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[0] );
@@ -505,7 +503,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[1] );
@@ -522,7 +521,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_equal_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[2] );
@@ -539,7 +539,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[3] );
@@ -556,7 +557,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[4] );
@@ -573,7 +575,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_lt_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[5] );
@@ -590,7 +593,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[6] );
@@ -607,7 +611,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[7] );
@@ -624,7 +629,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_le_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[8] );
@@ -641,7 +647,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[9] );
@@ -658,7 +665,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[10] );
@@ -675,7 +683,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_gt_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[11] );
@@ -692,7 +701,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[12] );
@@ -709,7 +719,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[13] );
@@ -726,7 +737,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_ge_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 2 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[14] );
@@ -743,7 +755,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_1( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[15] );
@@ -760,7 +773,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_2( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 2 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[16] );
@@ -777,7 +791,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_3( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[17] );
@@ -794,7 +809,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_4( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 2 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[18] );
@@ -811,7 +827,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_5( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[19] );
@@ -828,7 +845,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_6( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[20] );
@@ -845,7 +863,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_7( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[21] );
@@ -862,7 +881,8 @@ public class TestNumberBlockIndex{
     }
   }
 
-  @Test( dataProvider = "target_class" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_range_8( final IBlockIndex index , final IFilter[] filter ) throws IOException{
     int[] mustReadIndex = { 0 , 1 , 2 , 3 };
     List<Integer> resultIndexList = index.getBlockSpreadIndex( filter[22] );

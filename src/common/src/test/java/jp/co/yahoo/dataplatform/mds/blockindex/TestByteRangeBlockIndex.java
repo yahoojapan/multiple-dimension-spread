@@ -19,11 +19,15 @@ package jp.co.yahoo.dataplatform.mds.blockindex;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.DataProvider;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import jp.co.yahoo.dataplatform.schema.objects.*;
 
@@ -34,54 +38,52 @@ import jp.co.yahoo.dataplatform.mds.spread.column.filter.IFilter;
 
 public class TestByteRangeBlockIndex{
 
-  @DataProvider(name = "T_canBlockSkip_1")
-  public Object[][] data1() {
-    return new Object[][] {
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)21 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)9 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)15 ) ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)10 ) ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)20 ) ) , false },
+  public static Stream<Arguments> data1() {
+    return Stream.of(
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)21 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)9 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)15 ) ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)10 ) ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.EQUAL , new ByteObj( (byte)20 ) ) , false ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)9 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)10 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)11 ) ) , false },
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)9 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)10 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LT , new ByteObj( (byte)11 ) ) , false ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)9 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)10 ) ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)11 ) ) , false },
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)9 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)10 ) ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.LE , new ByteObj( (byte)11 ) ) , false ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)21 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)20 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)19 ) ) , false },
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)21 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)20 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GT , new ByteObj( (byte)19 ) ) , false ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)21 ) ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)20 ) ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)19 ) ) , false },
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)21 ) ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)20 ) ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberFilter( NumberFilterType.GE , new ByteObj( (byte)19 ) ) , false ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)5 ) , true , new ByteObj( (byte)15 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)21 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)25 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)20 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)20 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)16 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)9 ) , true , new ByteObj( (byte)9 ) , true ) , true },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)21 ) , true , new ByteObj( (byte)21 ) , true ) , true },
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)5 ) , true , new ByteObj( (byte)15 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)21 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)25 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)20 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)20 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)16 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)9 ) , true , new ByteObj( (byte)9 ) , true ) , true ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( false , new ByteObj( (byte)21 ) , true , new ByteObj( (byte)21 ) , true ) , true ),
 
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)5 ) , true , new ByteObj( (byte)15 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)21 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)25 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)20 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)20 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)16 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)9 ) , true , new ByteObj( (byte)9 ) , true ) , false },
-      { new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)21 ) , true , new ByteObj( (byte)21 ) , true ) , false },
-
-    };
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)5 ) , true , new ByteObj( (byte)15 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)21 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)25 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)20 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)10 ) , true , new ByteObj( (byte)10 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)20 ) , true , new ByteObj( (byte)20 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)15 ) , true , new ByteObj( (byte)16 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)9 ) , true , new ByteObj( (byte)9 ) , true ) , false ),
+      arguments( new ByteRangeBlockIndex( (byte)10 , (byte)20 ) , new NumberRangeFilter( true , new ByteObj( (byte)21 ) , true , new ByteObj( (byte)21 ) , true ) , false )
+    );
   }
 
   @Test
@@ -171,7 +173,8 @@ public class TestByteRangeBlockIndex{
     assertEquals( bIndex2.getMax() , bIndex.getMax() );
   }
 
-  @Test( dataProvider = "T_canBlockSkip_1" )
+  @ParameterizedTest
+  @MethodSource( "data1" )
   public void T_canBlockSkip_1( final IBlockIndex bIndex , final IFilter filter , final boolean result ){
     if( result ){
       assertEquals( result , bIndex.getBlockSpreadIndex( filter ).isEmpty() );
