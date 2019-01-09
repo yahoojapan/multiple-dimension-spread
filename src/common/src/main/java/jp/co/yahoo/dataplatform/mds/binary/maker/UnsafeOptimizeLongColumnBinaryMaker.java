@@ -350,7 +350,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
 
     @Override
     public int calcBinarySize( final int dicSize ){
-      return Integer.BYTES * dicSize;
+      return converter.calcBinarySize( dicSize );
     }
 
     @Override
