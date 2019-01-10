@@ -266,6 +266,29 @@ public class TestUnsafeOptimizeLongColumnBinaryMaker{
   }
 
   @Test
+  public void T_BinaryMaker_diffInt_2() throws IOException{
+    UnsafeOptimizeLongColumnBinaryMaker.IDictionaryMaker maker = UnsafeOptimizeLongColumnBinaryMaker.chooseDictionaryMaker( 1545879688722L , 1545881797492L );
+    assertTrue( maker instanceof UnsafeOptimizeLongColumnBinaryMaker.DiffIntDictionaryMaker );
+
+    List<PrimitiveObject> l = new ArrayList<PrimitiveObject>(2);
+    l.add( new LongObj( 0 ) );
+    l.add( new LongObj( 1545881701856L ) );
+    l.add( new LongObj( 1545879728989L ) );
+    l.add( new LongObj( 1545879882906L ) );
+    l.add( new LongObj( 1545879688722L ) );
+
+    byte[] b = new byte[ maker.calcBinarySize( l.size() ) ];
+    maker.create( l , b , 0 , b.length , ByteOrder.nativeOrder() );
+
+    PrimitiveObject[] rp = maker.getDicPrimitiveArray( l.size() , b , 0 , b.length , ByteOrder.nativeOrder() );
+    assertEquals( rp.length , l.size() );
+    assertNull( rp[0] );
+    for( int i = 1 ; i < rp.length ; i++ ){
+      assertEquals( rp[i].getLong() , l.get( i ).getLong() );
+    }
+  }
+
+  @Test
   public void T_BinaryMaker_long_1() throws IOException{
     UnsafeOptimizeLongColumnBinaryMaker.IDictionaryMaker maker = UnsafeOptimizeLongColumnBinaryMaker.chooseDictionaryMaker( Long.valueOf( Long.MIN_VALUE ).longValue() , Long.valueOf( Long.MAX_VALUE ).longValue() );
     assertTrue( maker instanceof UnsafeOptimizeLongColumnBinaryMaker.LongDictionaryMaker );
