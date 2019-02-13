@@ -179,8 +179,11 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
     @Override
     public PrimitiveObject[] getPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length ){
       PrimitiveObject[] result = new PrimitiveObject[length];
-      for( int i = start,index=0 ; i < buffer.length && i < ( start + length ); i++,index++ ){
+      for( int i = start,index=0 ; i < ( start + length ); i++,index++ ){
         int targetIndex = indexList.get(i);
+        if( buffer.length <= targetIndex ){
+          break;
+        }
         int cellIndex = buffer[targetIndex];
         if( cellIndex == Byte.MAX_VALUE ){
           cellIndex = 2;
@@ -196,8 +199,11 @@ public class DumpBooleanColumnBinaryMaker implements IColumnBinaryMaker{
     @Override
     public void setPrimitiveObjectArray(final IExpressionIndex indexList , final int start , final int length , final IMemoryAllocator allocator ){
       int index = 0;
-      for( int i = start ; i < buffer.length && i < ( start + length ); i++,index++ ){
+      for( int i = start ; i < ( start + length ); i++,index++ ){
         int targetIndex = indexList.get(i);
+        if( buffer.length <= targetIndex ){
+          break;
+        }
         int cellIndex = buffer[targetIndex];
         try{
           if( cellIndex == Byte.MAX_VALUE ){
