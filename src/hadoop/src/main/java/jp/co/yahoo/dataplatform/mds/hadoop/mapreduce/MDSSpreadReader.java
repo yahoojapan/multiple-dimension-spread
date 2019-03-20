@@ -72,6 +72,7 @@ public class MDSSpreadReader extends RecordReader<NullWritable, Spread> {
     long start = fileSplit.getStart();
     long length = fileSplit.getLength();
     InputStream in = fs.open( path );
+    setStream( in , fileLength , start , length );
   }
 
   public void setStream( final InputStream in , final long fileLength , final long start , final long length ) throws IOException{
