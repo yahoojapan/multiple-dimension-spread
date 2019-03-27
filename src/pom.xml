@@ -16,7 +16,7 @@
   <parent>
     <groupId>jp.co.yahoo.dataplatform.mds</groupId>
     <artifactId>multiple-dimension-spread</artifactId>
-    <version>0.8.9_hive-1.2.1000.2.6.4.0-91</version>
+    <version>0.8.10_hive-1.2.1000.2.6.4.0-91</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
