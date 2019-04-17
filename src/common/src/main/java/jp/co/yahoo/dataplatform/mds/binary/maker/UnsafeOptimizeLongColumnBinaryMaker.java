@@ -513,7 +513,7 @@ public class UnsafeOptimizeLongColumnBinaryMaker implements IColumnBinaryMaker{
        * TODO: calculation row size method may not clear, then it should be impremented.
        */
       int size = length / converter.getBaseBytes();
-      //int size = length / Integer.BYTES;
+
       IReadSupporter wrapBuffer = converter.toReadSupporter( buffer , start , length );
       IntBuffer result = IntBuffer.allocate( size );
       for( int i = 0 ; i < size ; i++ ){
