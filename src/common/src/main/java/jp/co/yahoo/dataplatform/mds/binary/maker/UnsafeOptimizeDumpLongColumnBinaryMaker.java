@@ -345,9 +345,9 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
     @Override
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length , final ByteOrder order , final int rowCount ) throws IOException{
-      IWriteSupporter supporter = converter.toWriteSuppoter( longArray.length , buffer , start , length );
-      for( long l : longArray ){
-        supporter.putInt( (int)l );
+      IWriteSupporter supporter = converter.toWriteSuppoter( rowCount , buffer , start , length );
+      for ( int i = 0 ; i < rowCount ; i++ ) {
+        supporter.putInt( (int)longArray[i] );
       }
     }
 
@@ -395,7 +395,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
     @Override
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length , final ByteOrder order , final int rowCount ) throws IOException{
-      IWriteSupporter supporter = converter.toWriteSuppoter( longArray.length , buffer , start , length );
+      IWriteSupporter supporter = converter.toWriteSuppoter( rowCount , buffer , start , length );
       for( int i = 0 ; i < rowCount ; i++ ){
         int castValue = (int)( longArray[i] - min );
         supporter.putInt( castValue );
@@ -443,7 +443,7 @@ public class UnsafeOptimizeDumpLongColumnBinaryMaker implements IColumnBinaryMak
 
     @Override
     public void create( final long[] longArray , final byte[] buffer , final int start , final int length , final ByteOrder order , final int rowCount ) throws IOException{
-      IWriteSupporter wrapBuffer = converter.toWriteSuppoter( longArray.length , buffer , start , length );
+      IWriteSupporter wrapBuffer = converter.toWriteSuppoter( rowCount , buffer , start , length );
       for( int i = 0 ; i < rowCount ; i++ ){
         wrapBuffer.putLong( longArray[i] );
       }
